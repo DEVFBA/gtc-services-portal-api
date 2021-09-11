@@ -1,7 +1,7 @@
 const config = {
     user: "sa",
-    password: "H1llr0m2020",
-    server: "129.159.85.10",
+    password: "GTC-D3v*",
+    server: "129.159.99.152",
     database: "PortalGTC",
     options: {
         trustedconnection: false,

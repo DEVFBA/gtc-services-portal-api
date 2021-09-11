@@ -1,17 +1,18 @@
 const router = require('express').Router();
 
-const dbroutes = require('../controllers/routes')
+//const dbappconfigclient = require('../controllers/routes')
 
-//Ruta para obtener el menú dependiendo del tipo de cliente
-router.route('/').get((request, response)=>{
-    const params = {
+//Ruta para todas las commercial releases
+router.route('/:id').get((request, response)=>{
+    console.log(request.params.id)
+    /*const params = {
         pvOptionCRUD: request.query.pvOptionCRUD,
         piIdCustomer : request.query.piIdCustomer,
         pvIdRole : request.query.pvIdRole
     };
     dbroutes.getRoutes(params).then(result => {
         response.json(result[0]);
-    })
+    })*/
 })
 
 module.exports = router;

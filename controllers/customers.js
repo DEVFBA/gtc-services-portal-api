@@ -1,20 +1,18 @@
 var config = require("../dbconfig"); //instanciamos el archivo dbconfig
 const sql = require("mssql"); //necesitamos el paquete sql
 
-async function getRoutes(params){
+async function getCustomers(params){
     try{
         let pool = await sql.connect(config);
-        let routes = await pool.request()
+        let customers = await pool.request()
             .input('pvOptionCRUD', sql.VarChar, params.pvOptionCRUD)
-            .input('piIdCustomer', sql.Int, params.piIdCustomer)
-            .input('pvIdRole', sql.VarChar, params.pvIdRole)
-            .execute('spSecurity_Access_CRUD_Records')
-        return routes.recordsets
+            .execute('spCustomers_CRUD_Records')
+        return customers.recordsets
     }catch(error){
         console.log(error)
     }
 }
 
 module.exports = {
-    getRoutes : getRoutes,
+    getCustomers : getCustomers,
 }
