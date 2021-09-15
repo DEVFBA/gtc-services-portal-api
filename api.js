@@ -20,6 +20,8 @@ router.get('/', (req, res)=>{
     res.send('welcome to GTC Portal Services API');
 });*/
 
+
+
 // Agregamos el código de nuestro router (routes/index.js)
 app.use('/api', require('./routes'));
 
