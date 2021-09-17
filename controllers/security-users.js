@@ -1,6 +1,8 @@
 var config = require("../dbconfig"); //instanciamos el archivo dbconfig
 const sql = require("mssql"); //necesitamos el paquete sql
 var jwt = require('jsonwebtoken');
+var config2 = require('../configs/config');
+
 
 var sha256 = require('js-sha256').sha256;
 const publicIp = require('public-ip');
@@ -104,6 +106,27 @@ async function updateUserRegisterWP(userRegister){
     }
 }
 
+//Actualizar un registro de los usuarios (solo la contraseña)
+async function updateUserRegisterPass(userRegister){
+    const ip = await publicIp.v4();
+    try{
+        let pool = await sql.connect(config);
+        let updateUserRegister = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
+            .input('pvIdUser', sql.VarChar, userRegister.pvIdUser)
+            .input('pvPassword', sql.VarChar, sha256(userRegister.pvPassword))
+            .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
+            .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
+            .input('pvUser', sql.VarChar, userRegister.pvUser)
+            .input('pvIP', sql.VarChar, ip)
+            .execute('spSecurity_Users_CRUD_Records')
+        console.log(JSON.stringify(updateUserRegister.recordsets[0][0])); 
+        return updateUserRegister.recordsets
+    }catch(error){
+        console.log(error)
+    }
+}
+
 //Iniciar sesión
 async function iniciarSesion(req) {
     
@@ -125,7 +148,7 @@ async function iniciarSesion(req) {
             id: req.pvIdUser,
             username: req.pvPassword,
             exp: parseInt(exp.getTime() / 1000),
-        }, "secret");
+        }, config2.llave);
         //console.log(token)
         userLogin.recordsets[0][1] = {token: token}
         return userLogin.recordsets
@@ -141,4 +164,5 @@ module.exports = {
     updateUserRegisterWP: updateUserRegisterWP,
     iniciarSesion: iniciarSesion,
     getUserId: getUserId,
+    updateUserRegisterPass: updateUserRegisterPass,
 }

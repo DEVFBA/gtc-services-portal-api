@@ -1,9 +1,10 @@
 const router = require('express').Router();
+const auth = require('./auth');
 
 const dbgeneralparameters = require('../controllers/cat-general-parameters')
 
 //Ruta para obtener todos los general parameters
-router.route('/').get((request, response)=>{
+router.route('/').get(auth,(request, response)=>{
     const params = {
         pvOptionCRUD: request.query.pvOptionCRUD,
     };

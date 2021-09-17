@@ -1,9 +1,9 @@
 const router = require('express').Router();
-
+const auth = require('./auth');
 const dbcustomers = require('../controllers/customers')
 
 //Ruta para obtener todos los Customers
-router.route('/').get((request, response)=>{
+router.route('/').get(auth, (request, response)=>{
     const params = {
         pvOptionCRUD: request.query.pvOptionCRUD,
     };
