@@ -12,6 +12,17 @@ router.route('/').get(auth, (request, response)=>{
     })
 })
 
+//Ruta para obtener usuarios por Customer Role Service
+router.route('/get-users-customer-role-service').get(auth, (request, response)=>{
+    const params = {
+        pvOptionCRUD: request.query.pvOptionCRUD,
+        piIdCustomer: request.query.piIdCustomer,
+    };
+    dbusers.getUsersCustomer(params).then(result => {
+        response.json(result[0]);
+    })
+})
+
 //Ruta para obtener un usuario por ID
 router.route('/:id').get(auth, (request, response)=>{
     dbusers.getUserId(request.params.id).then(result => {

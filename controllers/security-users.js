@@ -33,6 +33,21 @@ async function getUserId(params){
     }
 }
 
+//Para obtener usuarios de acuerdo a un Customer Role Service
+async function getUsersCustomer(params){
+    try{
+        let pool = await sql.connect(config);
+        let users = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, params.pvOptionCRUD)
+            .input('piIdCustomer', sql.Int, params.piIdCustomer)
+            .input('pvIdRole', sql.VarChar, "SERVICE")
+            .execute('spSecurity_Users_CRUD_Records')
+        return users.recordsets
+    }catch(error){
+        console.log(error)
+    }
+}
+
 //Crear un usuario
 async function insertUserRegister(userRegister){
     console.log(userRegister.pvFinalEffectiveDate)
@@ -113,7 +128,10 @@ async function updateUserRegisterPass(userRegister){
         let pool = await sql.connect(config);
         let updateUserRegister = await pool.request()
             .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
+            .input('piIdCustomer', sql.VarChar, userRegister.piIdCustomer)
             .input('pvIdUser', sql.VarChar, userRegister.pvIdUser)
+            .input('pvIdRole', sql.VarChar, userRegister.pvIdRole)
+            .input('pvName', sql.VarChar, userRegister.pvName)
             .input('pvPassword', sql.VarChar, sha256(userRegister.pvPassword))
             .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
             .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
@@ -142,7 +160,7 @@ async function iniciarSesion(req) {
 
         const today = new Date();
         const exp = new Date(today);
-        exp.setDate(today.getDate() + 24); // 24 días antes de expirar
+        exp.setDate(today.getDate() + 1); // 1 día antes de expirar
 
         const token = jwt.sign({
             id: req.pvIdUser,
@@ -165,4 +183,5 @@ module.exports = {
     iniciarSesion: iniciarSesion,
     getUserId: getUserId,
     updateUserRegisterPass: updateUserRegisterPass,
+    getUsersCustomer: getUsersCustomer
 }

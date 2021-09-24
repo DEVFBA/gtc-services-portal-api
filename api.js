@@ -6,9 +6,20 @@ var cors = require('cors');
 var app = express();
 
 // configuración de middlewares
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cors());
+app.use(bodyParser.urlencoded({ 
+    limit: '50mb',
+    extended: true
+ }));
+app.use(bodyParser.json({
+    limit: '50mb', 
+    extended: true
+}));
+
+app.use(cors(
+    {
+        origin: true,
+    }
+));
 
 // Agregamos el código de nuestro router (routes/index.js)
 //app.use('/v1', require('./routes'));
