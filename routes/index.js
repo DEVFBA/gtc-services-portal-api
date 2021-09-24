@@ -27,4 +27,17 @@ router.use('/security-users', require('./security-users.js'));
 //Rutas de los customers
 router.use('/customers', require('./customers.js'));
 
+//Rutas de los general parameters
+router.use('/general-parameters', require('./cat-general-parameters.js'));
+
+//Rutas para las aplicaciones
+router.use('/cat-applications', require('./cat-applications.js'));
+
+//Rutas para las aplicaciones por cliente
+router.use('/customer-applications', require('./customer-applications.js'));
+
+//Rutas para las aplicaciones por cliente - usuarios
+router.use('/customer-applications-users', require('./customer-applications-users.js'));
+
+
 module.exports = router;
