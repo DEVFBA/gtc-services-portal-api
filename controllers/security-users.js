@@ -58,6 +58,7 @@ async function insertUserRegister(userRegister){
     var filename = ""
 
     //Si la imagen no viene vacia la guardamos en carpeta
+    console.log(userRegister.pathImage)
     if(userRegister.pvProfilePicPath !== "")
     {
         /*path of the folder where your project is saved. (In my case i got it from config file, root path of project).*/
@@ -65,15 +66,15 @@ async function insertUserRegister(userRegister){
         //path of folder where you want to save the image.
         localPath = `${userRegister.pathImage}`;
         //Find extension of file
-        const ext = userRegister.pvLogo.substring(userRegister.pvLogo.indexOf("/")+1, userRegister.pvLogo.indexOf(";base64"));
-        const fileType = userRegister.pvLogo.substring("data:".length,userRegister.pvLogo.indexOf("/"));
+        const ext = userRegister.pvProfilePicPath.substring(userRegister.pvProfilePicPath.indexOf("/")+1, userRegister.pvProfilePicPath.indexOf(";base64"));
+        const fileType = userRegister.pvProfilePicPath.substring("data:".length,userRegister.pvProfilePicPath.indexOf("/"));
         //Forming regex to extract base64 data of file.
         const regex = new RegExp(`^data:${fileType}\/${ext};base64,`, 'gi');
         //Extract base64 data.
-        const base64Data = userRegister.pvLogo.replace(regex, "");
+        const base64Data = userRegister.pvProfilePicPath.replace(regex, "");
         const rand = Math.ceil(Math.random()*1000);
         //Random photo name with timeStamp so it will not overide previous images.
-        filename = `${userRegister.pvIdCountry}${userRegister.pvTaxId}.${ext}`;
+        filename = `${userRegister.pvIdUser}.${ext}`;
         
         //Check that if directory is present or not.
         if(!fs.existsSync(`${uploadPath}`)) {
@@ -115,6 +116,8 @@ async function updateUserRegister(userRegister){
     var localPath=""
     var filename = ""
 
+    console.log(userRegister.pathImage)
+
     //Si la imagen no viene vacia la guardamos en carpeta
     if(userRegister.pvProfilePicPath !== "")
     {
@@ -123,15 +126,15 @@ async function updateUserRegister(userRegister){
         //path of folder where you want to save the image.
         localPath = `${userRegister.pathImage}`;
         //Find extension of file
-        const ext = userRegister.pvLogo.substring(userRegister.pvLogo.indexOf("/")+1, userRegister.pvLogo.indexOf(";base64"));
-        const fileType = userRegister.pvLogo.substring("data:".length,userRegister.pvLogo.indexOf("/"));
+        const ext = userRegister.pvProfilePicPath.substring(userRegister.pvProfilePicPath.indexOf("/")+1, userRegister.pvProfilePicPath.indexOf(";base64"));
+        const fileType = userRegister.pvProfilePicPath.substring("data:".length,userRegister.pvProfilePicPath.indexOf("/"));
         //Forming regex to extract base64 data of file.
         const regex = new RegExp(`^data:${fileType}\/${ext};base64,`, 'gi');
         //Extract base64 data.
-        const base64Data = userRegister.pvLogo.replace(regex, "");
+        const base64Data = userRegister.pvProfilePicPath.replace(regex, "");
         const rand = Math.ceil(Math.random()*1000);
         //Random photo name with timeStamp so it will not overide previous images.
-        filename = `${userRegister.pvIdCountry}${userRegister.pvTaxId}.${ext}`;
+        filename =  `${userRegister.pvIdUser}.${ext}`;
         
         //Check that if directory is present or not.
         if(!fs.existsSync(`${uploadPath}`)) {
@@ -169,6 +172,35 @@ async function updateUserRegister(userRegister){
 //Actualizar un registro de los usuarios sin cambiar el password
 async function updateUserRegisterWP(userRegister){
     const ip = await publicIp.v4();
+
+    //Si la imagen no viene vacia la guardamos en carpeta
+    if(userRegister.pvProfilePicPath !== "")
+    {
+        /*path of the folder where your project is saved. (In my case i got it from config file, root path of project).*/
+        const uploadPath = `${userRegister.pathImage}`;
+        //path of folder where you want to save the image.
+        localPath = `${userRegister.pathImage}`;
+        //Find extension of file
+        const ext = userRegister.pvProfilePicPath.substring(userRegister.pvProfilePicPath.indexOf("/")+1, userRegister.pvProfilePicPath.indexOf(";base64"));
+        const fileType = userRegister.pvProfilePicPath.substring("data:".length,userRegister.pvProfilePicPath.indexOf("/"));
+        //Forming regex to extract base64 data of file.
+        const regex = new RegExp(`^data:${fileType}\/${ext};base64,`, 'gi');
+        //Extract base64 data.
+        const base64Data = userRegister.pvProfilePicPath.replace(regex, "");
+        const rand = Math.ceil(Math.random()*1000);
+        //Random photo name with timeStamp so it will not overide previous images.
+        filename =  `${userRegister.pvIdUser}.${ext}`;
+        
+        //Check that if directory is present or not.
+        if(!fs.existsSync(`${uploadPath}`)) {
+            fs.mkdirSync(`${uploadPath}`);
+        }
+        if (!fs.existsSync(localPath)) {
+            fs.mkdirSync(localPath);
+        }
+        fs.writeFileSync(localPath+filename, base64Data, 'base64');
+        //return {filename, localPath
+    }
     try{
         let pool = await sql.connect(config);
         let updateUserRegister = await pool.request()
@@ -177,6 +209,7 @@ async function updateUserRegisterWP(userRegister){
             .input('pvIdUser', sql.VarChar, userRegister.pvIdUser)
             .input('pvIdRole', sql.VarChar, userRegister.pvIdRole)
             .input('pvName', sql.VarChar, userRegister.pvName)
+            .input('pvProfilePicPath', sql.VarChar, localPath+filename)
             .input('pbStatus', sql.Bit, userRegister.pbStatus)
             .input('pvUser', sql.VarChar, userRegister.pvUser)
             .input('pvIP', sql.VarChar, ip)
