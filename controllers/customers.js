@@ -21,14 +21,15 @@ async function insertCustomerRegister(userRegister){
     
     const ip = await publicIp.v4();
     var localPath=""
+    var filename = ""
 
     //Si la imagen no viene vacia la guardamos en carpeta
     if(userRegister.pvLogo !== "")
     {
         /*path of the folder where your project is saved. (In my case i got it from config file, root path of project).*/
-        const uploadPath = "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/uploads/images";
+        const uploadPath = `${userRegister.pathLogo}`;
         //path of folder where you want to save the image.
-        localPath = `${userRegister.pvLogo}`;
+        localPath = `${userRegister.pathLogo}`;
         //Find extension of file
         const ext = userRegister.pvLogo.substring(userRegister.pvLogo.indexOf("/")+1, userRegister.pvLogo.indexOf(";base64"));
         const fileType = userRegister.pvLogo.substring("data:".length,userRegister.pvLogo.indexOf("/"));
@@ -38,17 +39,17 @@ async function insertCustomerRegister(userRegister){
         const base64Data = userRegister.pvLogo.replace(regex, "");
         const rand = Math.ceil(Math.random()*1000);
         //Random photo name with timeStamp so it will not overide previous images.
-        const filename = `${userRegister.pvIdCountry}${userRegister.pvTaxId}.${ext}`;
+        filename = `${userRegister.pvIdCountry}${userRegister.pvTaxId}.${ext}`;
         
         //Check that if directory is present or not.
-        if(!fs.existsSync(`${uploadPath}/uploads/`)) {
-            fs.mkdirSync(`${uploadPath}/uploads/`);
+        if(!fs.existsSync(`${uploadPath}`)) {
+            fs.mkdirSync(`${uploadPath}`);
         }
         if (!fs.existsSync(localPath)) {
             fs.mkdirSync(localPath);
         }
         fs.writeFileSync(localPath+filename, base64Data, 'base64');
-        //return {filename, localPath};
+        //return {filename, localPath
     }
     
 
@@ -68,7 +69,7 @@ async function insertCustomerRegister(userRegister){
             .input('pvPhone1', sql.VarChar, userRegister.pvPhone1)
             .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
             .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
-            .input('pvLogo', sql.VarChar, localPath)
+            .input('pvLogo', sql.VarChar, localPath+filename)
             .input('pbStatus', sql.Bit, userRegister.pbStatus)
             .input('pvIP', sql.VarChar, ip)
             .execute('spCustomers_CRUD_Records')
@@ -84,14 +85,15 @@ async function updateCustomerRegister(userRegister){
     
     const ip = await publicIp.v4();
     var localPath=""
+    var filename = ``
 
     //Si la imagen no viene vacia la guardamos en carpeta
     if(userRegister.pvLogo !== "")
     {
         /*path of the folder where your project is saved. (In my case i got it from config file, root path of project).*/
-        const uploadPath = "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/uploads/images";
+        const uploadPath =  `${userRegister.pathLogo}`;
         //path of folder where you want to save the image.
-        localPath = `${userRegister.pvLogo}`;
+        localPath =  `${userRegister.pathLogo}`;
         //Find extension of file
         const ext = userRegister.pvLogo.substring(userRegister.pvLogo.indexOf("/")+1, userRegister.pvLogo.indexOf(";base64"));
         const fileType = userRegister.pvLogo.substring("data:".length,userRegister.pvLogo.indexOf("/"));
@@ -101,21 +103,20 @@ async function updateCustomerRegister(userRegister){
         const base64Data = userRegister.pvLogo.replace(regex, "");
         const rand = Math.ceil(Math.random()*1000);
         //Random photo name with timeStamp so it will not overide previous images.
-        const filename = `${userRegister.pvIdCountry}${userRegister.pvTaxId}.${ext}`;
+        filename = `${userRegister.pvIdCountry}${userRegister.pvTaxId}.${ext}`;
         
         //Check that if directory is present or not.
-        if(!fs.existsSync(`${uploadPath}/uploads/`)) {
-            fs.mkdirSync(`${uploadPath}/uploads/`);
+        if(!fs.existsSync(`${uploadPath}`)) {
+            fs.mkdirSync(`${uploadPath}`);
         }
         if (!fs.existsSync(localPath)) {
             fs.mkdirSync(localPath);
         }
         fs.writeFileSync(localPath+filename, base64Data, 'base64');
         //return {filename, localPath};
-        console.log(localPath)
     }
     
-
+    console.log(localPath+filename)
     try{
         let pool = await sql.connect(config);
         let updateCustomer = await pool.request()
@@ -133,7 +134,7 @@ async function updateCustomerRegister(userRegister){
             .input('pvPhone1', sql.VarChar, userRegister.pvPhone1)
             .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
             .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
-            .input('pvLogo', sql.VarChar, localPath)
+            .input('pvLogo', sql.VarChar, localPath+filename)
             .input('pbStatus', sql.Bit, userRegister.pbStatus)
             .input('pvIP', sql.VarChar, ip)
             .execute('spCustomers_CRUD_Records')
