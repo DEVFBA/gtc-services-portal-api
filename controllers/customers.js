@@ -50,34 +50,59 @@ async function insertCustomerRegister(userRegister){
         }
         fs.writeFileSync(localPath+filename, base64Data, 'base64');
         //return {filename, localPath
+        try{
+            let pool = await sql.connect(config);
+            let insertCustomer = await pool.request()
+                .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
+                .input('pvIdCountry', sql.VarChar, userRegister.pvIdCountry)
+                .input('pvName', sql.VarChar, userRegister.pvName)
+                .input('pvTaxId', sql.VarChar, userRegister.pvTaxId)
+                .input('pvStreet', sql.VarChar, userRegister.pvStreet)
+                .input('pvExtNumber', sql.VarChar, userRegister.pvExtNumber)
+                .input('pvIntNumber', sql.VarChar, userRegister.pvIntNumber)
+                .input('pvCity', sql.VarChar, userRegister.pvCity)
+                .input('pvZipCode', sql.VarChar, userRegister.pvZipCode)
+                .input('pvContactPerson', sql.VarChar, userRegister.pvContactPerson)
+                .input('pvPhone1', sql.VarChar, userRegister.pvPhone1)
+                .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
+                .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
+                .input('pvLogo', sql.VarChar, localPath+filename)
+                .input('pbStatus', sql.Bit, userRegister.pbStatus)
+                .input('pvIP', sql.VarChar, ip)
+                .execute('spCustomers_CRUD_Records')
+            console.log(JSON.stringify(insertCustomer.recordsets[0][0])); 
+            return insertCustomer.recordsets
+        }catch(error){
+            console.log(error)
+        }
     }
-    
-
-    try{
-        let pool = await sql.connect(config);
-        let insertCustomer = await pool.request()
-            .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
-            .input('pvIdCountry', sql.VarChar, userRegister.pvIdCountry)
-            .input('pvName', sql.VarChar, userRegister.pvName)
-            .input('pvTaxId', sql.VarChar, userRegister.pvTaxId)
-            .input('pvStreet', sql.VarChar, userRegister.pvStreet)
-            .input('pvExtNumber', sql.VarChar, userRegister.pvExtNumber)
-            .input('pvIntNumber', sql.VarChar, userRegister.pvIntNumber)
-            .input('pvCity', sql.VarChar, userRegister.pvCity)
-            .input('pvZipCode', sql.VarChar, userRegister.pvZipCode)
-            .input('pvContactPerson', sql.VarChar, userRegister.pvContactPerson)
-            .input('pvPhone1', sql.VarChar, userRegister.pvPhone1)
-            .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
-            .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
-            .input('pvLogo', sql.VarChar, localPath+filename)
-            .input('pbStatus', sql.Bit, userRegister.pbStatus)
-            .input('pvIP', sql.VarChar, ip)
-            .execute('spCustomers_CRUD_Records')
-        console.log(JSON.stringify(insertCustomer.recordsets[0][0])); 
-        return insertCustomer.recordsets
-    }catch(error){
-        console.log(error)
-    }
+    else{
+        try{
+            let pool = await sql.connect(config);
+            let insertCustomer = await pool.request()
+                .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
+                .input('pvIdCountry', sql.VarChar, userRegister.pvIdCountry)
+                .input('pvName', sql.VarChar, userRegister.pvName)
+                .input('pvTaxId', sql.VarChar, userRegister.pvTaxId)
+                .input('pvStreet', sql.VarChar, userRegister.pvStreet)
+                .input('pvExtNumber', sql.VarChar, userRegister.pvExtNumber)
+                .input('pvIntNumber', sql.VarChar, userRegister.pvIntNumber)
+                .input('pvCity', sql.VarChar, userRegister.pvCity)
+                .input('pvZipCode', sql.VarChar, userRegister.pvZipCode)
+                .input('pvContactPerson', sql.VarChar, userRegister.pvContactPerson)
+                .input('pvPhone1', sql.VarChar, userRegister.pvPhone1)
+                .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
+                .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
+                .input('pvLogo', sql.VarChar, "")
+                .input('pbStatus', sql.Bit, userRegister.pbStatus)
+                .input('pvIP', sql.VarChar, ip)
+                .execute('spCustomers_CRUD_Records')
+            console.log(JSON.stringify(insertCustomer.recordsets[0][0])); 
+            return insertCustomer.recordsets
+        }catch(error){
+            console.log(error)
+        }
+    }  
 }
 
 //Actualizar un cliente
@@ -114,35 +139,63 @@ async function updateCustomerRegister(userRegister){
         }
         fs.writeFileSync(localPath+filename, base64Data, 'base64');
         //return {filename, localPath};
+
+        try{
+            let pool = await sql.connect(config);
+            let updateCustomer = await pool.request()
+                .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
+                .input('piIdCustomer', sql.VarChar, userRegister.piIdCustomer)
+                .input('pvIdCountry', sql.VarChar, userRegister.pvIdCountry)
+                .input('pvName', sql.VarChar, userRegister.pvName)
+                .input('pvTaxId', sql.VarChar, userRegister.pvTaxId)
+                .input('pvStreet', sql.VarChar, userRegister.pvStreet)
+                .input('pvExtNumber', sql.VarChar, userRegister.pvExtNumber)
+                .input('pvIntNumber', sql.VarChar, userRegister.pvIntNumber)
+                .input('pvCity', sql.VarChar, userRegister.pvCity)
+                .input('pvZipCode', sql.VarChar, userRegister.pvZipCode)
+                .input('pvContactPerson', sql.VarChar, userRegister.pvContactPerson)
+                .input('pvPhone1', sql.VarChar, userRegister.pvPhone1)
+                .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
+                .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
+                .input('pvLogo', sql.VarChar, localPath+filename)
+                .input('pbStatus', sql.Bit, userRegister.pbStatus)
+                .input('pvIP', sql.VarChar, ip)
+                .execute('spCustomers_CRUD_Records')
+            console.log(JSON.stringify(updateCustomer.recordsets[0][0])); 
+            return updateCustomer.recordsets
+        }catch(error){
+            console.log(error)
+        }
+    }
+    else{
+        try{
+            let pool = await sql.connect(config);
+            let updateCustomer = await pool.request()
+                .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
+                .input('piIdCustomer', sql.VarChar, userRegister.piIdCustomer)
+                .input('pvIdCountry', sql.VarChar, userRegister.pvIdCountry)
+                .input('pvName', sql.VarChar, userRegister.pvName)
+                .input('pvTaxId', sql.VarChar, userRegister.pvTaxId)
+                .input('pvStreet', sql.VarChar, userRegister.pvStreet)
+                .input('pvExtNumber', sql.VarChar, userRegister.pvExtNumber)
+                .input('pvIntNumber', sql.VarChar, userRegister.pvIntNumber)
+                .input('pvCity', sql.VarChar, userRegister.pvCity)
+                .input('pvZipCode', sql.VarChar, userRegister.pvZipCode)
+                .input('pvContactPerson', sql.VarChar, userRegister.pvContactPerson)
+                .input('pvPhone1', sql.VarChar, userRegister.pvPhone1)
+                .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
+                .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
+                .input('pvLogo', sql.VarChar, "")
+                .input('pbStatus', sql.Bit, userRegister.pbStatus)
+                .input('pvIP', sql.VarChar, ip)
+                .execute('spCustomers_CRUD_Records')
+            console.log(JSON.stringify(updateCustomer.recordsets[0][0])); 
+            return updateCustomer.recordsets
+        }catch(error){
+            console.log(error)
+        }
     }
     
-    console.log(localPath+filename)
-    try{
-        let pool = await sql.connect(config);
-        let updateCustomer = await pool.request()
-            .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
-            .input('piIdCustomer', sql.VarChar, userRegister.piIdCustomer)
-            .input('pvIdCountry', sql.VarChar, userRegister.pvIdCountry)
-            .input('pvName', sql.VarChar, userRegister.pvName)
-            .input('pvTaxId', sql.VarChar, userRegister.pvTaxId)
-            .input('pvStreet', sql.VarChar, userRegister.pvStreet)
-            .input('pvExtNumber', sql.VarChar, userRegister.pvExtNumber)
-            .input('pvIntNumber', sql.VarChar, userRegister.pvIntNumber)
-            .input('pvCity', sql.VarChar, userRegister.pvCity)
-            .input('pvZipCode', sql.VarChar, userRegister.pvZipCode)
-            .input('pvContactPerson', sql.VarChar, userRegister.pvContactPerson)
-            .input('pvPhone1', sql.VarChar, userRegister.pvPhone1)
-            .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
-            .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
-            .input('pvLogo', sql.VarChar, localPath+filename)
-            .input('pbStatus', sql.Bit, userRegister.pbStatus)
-            .input('pvIP', sql.VarChar, ip)
-            .execute('spCustomers_CRUD_Records')
-        console.log(JSON.stringify(updateCustomer.recordsets[0][0])); 
-        return updateCustomer.recordsets
-    }catch(error){
-        console.log(error)
-    }
 }
 
 module.exports = {

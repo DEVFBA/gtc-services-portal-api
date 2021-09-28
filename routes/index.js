@@ -39,5 +39,8 @@ router.use('/customer-applications', require('./customer-applications.js'));
 //Rutas para las aplicaciones por cliente - usuarios
 router.use('/customer-applications-users', require('./customer-applications-users.js'));
 
+//Rutas para las aplicaciones settings
+router.use('/applications-settings', require('./applications-settings.js'));
+
 
 module.exports = router;
