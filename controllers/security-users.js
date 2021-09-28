@@ -85,28 +85,53 @@ async function insertUserRegister(userRegister){
         }
         fs.writeFileSync(localPath+filename, base64Data, 'base64');
         //return {filename, localPath
+
+        try{
+            let pool = await sql.connect(config);
+            let insertUserRegister = await pool.request()
+                .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
+                .input('piIdCustomer', sql.Int, userRegister.piIdCustomer)
+                .input('pvIdUser', sql.VarChar, userRegister.pvIdUser)
+                .input('pvIdRole', sql.VarChar, userRegister.pvIdRole)
+                .input('pvPassword', sql.VarChar, sha256(userRegister.pvPassword))
+                .input('pvName', sql.VarChar, userRegister.pvName)
+                .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
+                .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
+                .input('pvProfilePicPath', sql.VarChar, localPath+filename)
+                .input('pbStatus', sql.Bit, userRegister.pbStatus)
+                .input('pvUser', sql.VarChar, userRegister.pvUser)
+                .input('pvIP', sql.VarChar, ip)
+                .execute('spSecurity_Users_CRUD_Records')
+            console.log(JSON.stringify(insertUserRegister.recordsets[0][0])); 
+            return insertUserRegister.recordsets
+        }catch(error){
+            console.log(error)
+        }
     }
-    try{
-        let pool = await sql.connect(config);
-        let insertUserRegister = await pool.request()
-            .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
-            .input('piIdCustomer', sql.Int, userRegister.piIdCustomer)
-            .input('pvIdUser', sql.VarChar, userRegister.pvIdUser)
-            .input('pvIdRole', sql.VarChar, userRegister.pvIdRole)
-            .input('pvPassword', sql.VarChar, sha256(userRegister.pvPassword))
-            .input('pvName', sql.VarChar, userRegister.pvName)
-            .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
-            .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
-            .input('pvProfilePicPath', sql.VarChar, localPath+filename)
-            .input('pbStatus', sql.Bit, userRegister.pbStatus)
-            .input('pvUser', sql.VarChar, userRegister.pvUser)
-            .input('pvIP', sql.VarChar, ip)
-            .execute('spSecurity_Users_CRUD_Records')
-        console.log(JSON.stringify(insertUserRegister.recordsets[0][0])); 
-        return insertUserRegister.recordsets
-    }catch(error){
-        console.log(error)
+    else{
+        try{
+            let pool = await sql.connect(config);
+            let insertUserRegister = await pool.request()
+                .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
+                .input('piIdCustomer', sql.Int, userRegister.piIdCustomer)
+                .input('pvIdUser', sql.VarChar, userRegister.pvIdUser)
+                .input('pvIdRole', sql.VarChar, userRegister.pvIdRole)
+                .input('pvPassword', sql.VarChar, sha256(userRegister.pvPassword))
+                .input('pvName', sql.VarChar, userRegister.pvName)
+                .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
+                .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
+                .input('pvProfilePicPath', sql.VarChar, "")
+                .input('pbStatus', sql.Bit, userRegister.pbStatus)
+                .input('pvUser', sql.VarChar, userRegister.pvUser)
+                .input('pvIP', sql.VarChar, ip)
+                .execute('spSecurity_Users_CRUD_Records')
+            console.log(JSON.stringify(insertUserRegister.recordsets[0][0])); 
+            return insertUserRegister.recordsets
+        }catch(error){
+            console.log(error)
+        }
     }
+    
 }
 
 //Actualizar un registro de los usuarios
@@ -145,28 +170,53 @@ async function updateUserRegister(userRegister){
         }
         fs.writeFileSync(localPath+filename, base64Data, 'base64');
         //return {filename, localPath
+
+        try{
+            let pool = await sql.connect(config);
+            let updateUserRegister = await pool.request()
+                .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
+                .input('piIdCustomer', sql.Int, userRegister.piIdCustomer)
+                .input('pvIdUser', sql.VarChar, userRegister.pvIdUser)
+                .input('pvIdRole', sql.VarChar, userRegister.pvIdRole)
+                .input('pvPassword', sql.VarChar, sha256(userRegister.pvPassword))
+                .input('pvName', sql.VarChar, userRegister.pvName)
+                .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
+                .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
+                .input('pvProfilePicPath', sql.VarChar, localPath+filename)
+                .input('pbStatus', sql.Bit, userRegister.pbStatus)
+                .input('pvUser', sql.VarChar, userRegister.pvUser)
+                .input('pvIP', sql.VarChar, ip)
+                .execute('spSecurity_Users_CRUD_Records')
+            console.log(JSON.stringify(updateUserRegister.recordsets[0][0])); 
+            return updateUserRegister.recordsets
+        }catch(error){
+            console.log(error)
+        }
     }
-    try{
-        let pool = await sql.connect(config);
-        let updateUserRegister = await pool.request()
-            .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
-            .input('piIdCustomer', sql.Int, userRegister.piIdCustomer)
-            .input('pvIdUser', sql.VarChar, userRegister.pvIdUser)
-            .input('pvIdRole', sql.VarChar, userRegister.pvIdRole)
-            .input('pvPassword', sql.VarChar, sha256(userRegister.pvPassword))
-            .input('pvName', sql.VarChar, userRegister.pvName)
-            .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
-            .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
-            .input('pvProfilePicPath', sql.VarChar, localPath+filename)
-            .input('pbStatus', sql.Bit, userRegister.pbStatus)
-            .input('pvUser', sql.VarChar, userRegister.pvUser)
-            .input('pvIP', sql.VarChar, ip)
-            .execute('spSecurity_Users_CRUD_Records')
-        console.log(JSON.stringify(updateUserRegister.recordsets[0][0])); 
-        return updateUserRegister.recordsets
-    }catch(error){
-        console.log(error)
+    else{
+        try{
+            let pool = await sql.connect(config);
+            let updateUserRegister = await pool.request()
+                .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
+                .input('piIdCustomer', sql.Int, userRegister.piIdCustomer)
+                .input('pvIdUser', sql.VarChar, userRegister.pvIdUser)
+                .input('pvIdRole', sql.VarChar, userRegister.pvIdRole)
+                .input('pvPassword', sql.VarChar, sha256(userRegister.pvPassword))
+                .input('pvName', sql.VarChar, userRegister.pvName)
+                .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
+                .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
+                .input('pvProfilePicPath', sql.VarChar, "")
+                .input('pbStatus', sql.Bit, userRegister.pbStatus)
+                .input('pvUser', sql.VarChar, userRegister.pvUser)
+                .input('pvIP', sql.VarChar, ip)
+                .execute('spSecurity_Users_CRUD_Records')
+            console.log(JSON.stringify(updateUserRegister.recordsets[0][0])); 
+            return updateUserRegister.recordsets
+        }catch(error){
+            console.log(error)
+        }
     }
+    
 }
 
 //Actualizar un registro de los usuarios sin cambiar el password
@@ -200,24 +250,45 @@ async function updateUserRegisterWP(userRegister){
         }
         fs.writeFileSync(localPath+filename, base64Data, 'base64');
         //return {filename, localPath
+
+        try{
+            let pool = await sql.connect(config);
+            let updateUserRegister = await pool.request()
+                .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
+                .input('piIdCustomer', sql.Int, userRegister.piIdCustomer)
+                .input('pvIdUser', sql.VarChar, userRegister.pvIdUser)
+                .input('pvIdRole', sql.VarChar, userRegister.pvIdRole)
+                .input('pvName', sql.VarChar, userRegister.pvName)
+                .input('pvProfilePicPath', sql.VarChar, localPath+filename)
+                .input('pbStatus', sql.Bit, userRegister.pbStatus)
+                .input('pvUser', sql.VarChar, userRegister.pvUser)
+                .input('pvIP', sql.VarChar, ip)
+                .execute('spSecurity_Users_CRUD_Records')
+            console.log(JSON.stringify(updateUserRegister.recordsets[0][0])); 
+            return updateUserRegister.recordsets
+        }catch(error){
+            console.log(error)
+        }
     }
-    try{
-        let pool = await sql.connect(config);
-        let updateUserRegister = await pool.request()
-            .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
-            .input('piIdCustomer', sql.Int, userRegister.piIdCustomer)
-            .input('pvIdUser', sql.VarChar, userRegister.pvIdUser)
-            .input('pvIdRole', sql.VarChar, userRegister.pvIdRole)
-            .input('pvName', sql.VarChar, userRegister.pvName)
-            .input('pvProfilePicPath', sql.VarChar, localPath+filename)
-            .input('pbStatus', sql.Bit, userRegister.pbStatus)
-            .input('pvUser', sql.VarChar, userRegister.pvUser)
-            .input('pvIP', sql.VarChar, ip)
-            .execute('spSecurity_Users_CRUD_Records')
-        console.log(JSON.stringify(updateUserRegister.recordsets[0][0])); 
-        return updateUserRegister.recordsets
-    }catch(error){
-        console.log(error)
+    else{
+        try{
+            let pool = await sql.connect(config);
+            let updateUserRegister = await pool.request()
+                .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
+                .input('piIdCustomer', sql.Int, userRegister.piIdCustomer)
+                .input('pvIdUser', sql.VarChar, userRegister.pvIdUser)
+                .input('pvIdRole', sql.VarChar, userRegister.pvIdRole)
+                .input('pvName', sql.VarChar, userRegister.pvName)
+                .input('pvProfilePicPath', sql.VarChar, "")
+                .input('pbStatus', sql.Bit, userRegister.pbStatus)
+                .input('pvUser', sql.VarChar, userRegister.pvUser)
+                .input('pvIP', sql.VarChar, ip)
+                .execute('spSecurity_Users_CRUD_Records')
+            console.log(JSON.stringify(updateUserRegister.recordsets[0][0])); 
+            return updateUserRegister.recordsets
+        }catch(error){
+            console.log(error)
+        }
     }
 }
 
@@ -235,6 +306,7 @@ async function updateUserRegisterPass(userRegister){
             .input('pvPassword', sql.VarChar, sha256(userRegister.pvPassword))
             .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
             .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
+            .input('pvProfilePicPath', sql.VarChar, "")
             .input('pvUser', sql.VarChar, userRegister.pvUser)
             .input('pvIP', sql.VarChar, ip)
             .execute('spSecurity_Users_CRUD_Records')
