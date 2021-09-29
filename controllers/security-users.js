@@ -86,6 +86,9 @@ async function insertUserRegister(userRegister){
         fs.writeFileSync(localPath+filename, base64Data, 'base64');
         //return {filename, localPath
 
+        var finalPath = localPath+filename
+        console.log(finalPath.substr(15))
+
         try{
             let pool = await sql.connect(config);
             let insertUserRegister = await pool.request()
@@ -97,7 +100,7 @@ async function insertUserRegister(userRegister){
                 .input('pvName', sql.VarChar, userRegister.pvName)
                 .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
                 .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
-                .input('pvProfilePicPath', sql.VarChar, localPath+filename)
+                .input('pvProfilePicPath', sql.VarChar, filename)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
                 .input('pvUser', sql.VarChar, userRegister.pvUser)
                 .input('pvIP', sql.VarChar, ip)
@@ -120,7 +123,6 @@ async function insertUserRegister(userRegister){
                 .input('pvName', sql.VarChar, userRegister.pvName)
                 .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
                 .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
-                .input('pvProfilePicPath', sql.VarChar, "")
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
                 .input('pvUser', sql.VarChar, userRegister.pvUser)
                 .input('pvIP', sql.VarChar, ip)
@@ -182,7 +184,7 @@ async function updateUserRegister(userRegister){
                 .input('pvName', sql.VarChar, userRegister.pvName)
                 .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
                 .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
-                .input('pvProfilePicPath', sql.VarChar, localPath+filename)
+                .input('pvProfilePicPath', sql.VarChar, filename)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
                 .input('pvUser', sql.VarChar, userRegister.pvUser)
                 .input('pvIP', sql.VarChar, ip)
@@ -205,7 +207,6 @@ async function updateUserRegister(userRegister){
                 .input('pvName', sql.VarChar, userRegister.pvName)
                 .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
                 .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
-                .input('pvProfilePicPath', sql.VarChar, "")
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
                 .input('pvUser', sql.VarChar, userRegister.pvUser)
                 .input('pvIP', sql.VarChar, ip)
@@ -259,8 +260,9 @@ async function updateUserRegisterWP(userRegister){
                 .input('pvIdUser', sql.VarChar, userRegister.pvIdUser)
                 .input('pvIdRole', sql.VarChar, userRegister.pvIdRole)
                 .input('pvName', sql.VarChar, userRegister.pvName)
-                .input('pvProfilePicPath', sql.VarChar, localPath+filename)
+                .input('pvProfilePicPath', sql.VarChar, filename)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
+                .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
                 .input('pvUser', sql.VarChar, userRegister.pvUser)
                 .input('pvIP', sql.VarChar, ip)
                 .execute('spSecurity_Users_CRUD_Records')
@@ -279,8 +281,8 @@ async function updateUserRegisterWP(userRegister){
                 .input('pvIdUser', sql.VarChar, userRegister.pvIdUser)
                 .input('pvIdRole', sql.VarChar, userRegister.pvIdRole)
                 .input('pvName', sql.VarChar, userRegister.pvName)
-                .input('pvProfilePicPath', sql.VarChar, "")
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
+                .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
                 .input('pvUser', sql.VarChar, userRegister.pvUser)
                 .input('pvIP', sql.VarChar, ip)
                 .execute('spSecurity_Users_CRUD_Records')
@@ -306,7 +308,6 @@ async function updateUserRegisterPass(userRegister){
             .input('pvPassword', sql.VarChar, sha256(userRegister.pvPassword))
             .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
             .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
-            .input('pvProfilePicPath', sql.VarChar, "")
             .input('pvUser', sql.VarChar, userRegister.pvUser)
             .input('pvIP', sql.VarChar, ip)
             .execute('spSecurity_Users_CRUD_Records')
