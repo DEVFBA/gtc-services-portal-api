@@ -86,9 +86,6 @@ async function insertUserRegister(userRegister){
         fs.writeFileSync(localPath+filename, base64Data, 'base64');
         //return {filename, localPath
 
-        var finalPath = localPath+filename
-        console.log(finalPath.substr(15))
-
         try{
             let pool = await sql.connect(config);
             let insertUserRegister = await pool.request()
@@ -142,8 +139,6 @@ async function updateUserRegister(userRegister){
 
     var localPath=""
     var filename = ""
-
-    console.log(userRegister.pathImage)
 
     //Si la imagen no viene vacia la guardamos en carpeta
     if(userRegister.pvProfilePicPath !== "")
@@ -241,7 +236,6 @@ async function updateUserRegisterWP(userRegister){
         const rand = Math.ceil(Math.random()*1000);
         //Random photo name with timeStamp so it will not overide previous images.
         filename =  `${userRegister.pvIdUser}.${ext}`;
-        
         //Check that if directory is present or not.
         if(!fs.existsSync(`${uploadPath}`)) {
             fs.mkdirSync(`${uploadPath}`);
