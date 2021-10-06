@@ -34,7 +34,6 @@ async function insertCustomerApplication(catRegister){
 
 //Actualizar un registro de los customer applications
 async function updateCustomerApplication(catRegister){
-    const ip = await publicIp.v4();
     try{
         let pool = await sql.connect(config);
         let insertCARegister = await pool.request()
