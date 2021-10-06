@@ -90,7 +90,6 @@ async function insertCatRegisterSAT(catRegister){
 
 //Actualizar un registro de los catálogos del SAT
 async function updateCatRegisterSAT(catRegister){
-    const ip = await publicIp.v4();
     try{
         let pool = await sql.connect(config);
         let updateCatRegister = await pool.request()
