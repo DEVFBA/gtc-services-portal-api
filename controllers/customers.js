@@ -1,6 +1,5 @@
 var config = require("../dbconfig"); //instanciamos el archivo dbconfig
 const sql = require("mssql"); //necesitamos el paquete sql
-const publicIp = require('public-ip');
 
 var fs = require('fs');
 
@@ -18,8 +17,6 @@ async function getCustomers(params){
 
 //Crear un cliente
 async function insertCustomerRegister(userRegister){
-    
-    const ip = await publicIp.v4();
     var localPath=""
     var filename = ""
 
@@ -68,7 +65,7 @@ async function insertCustomerRegister(userRegister){
                 .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
                 .input('pvLogo', sql.VarChar, filename)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
-                .input('pvIP', sql.VarChar, ip)
+                .input('pvIP', sql.VarChar, userRegister.pvIP)
                 .execute('spCustomers_CRUD_Records')
             console.log(JSON.stringify(insertCustomer.recordsets[0][0])); 
             return insertCustomer.recordsets
@@ -94,7 +91,7 @@ async function insertCustomerRegister(userRegister){
                 .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
                 .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
-                .input('pvIP', sql.VarChar, ip)
+                .input('pvIP', sql.VarChar, userRegister.pvIP)
                 .execute('spCustomers_CRUD_Records')
             console.log(JSON.stringify(insertCustomer.recordsets[0][0])); 
             return insertCustomer.recordsets
@@ -106,8 +103,6 @@ async function insertCustomerRegister(userRegister){
 
 //Actualizar un cliente
 async function updateCustomerRegister(userRegister){
-    
-    const ip = await publicIp.v4();
     var localPath=""
     var filename = ``
 
@@ -158,7 +153,7 @@ async function updateCustomerRegister(userRegister){
                 .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
                 .input('pvLogo', sql.VarChar, filename)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
-                .input('pvIP', sql.VarChar, ip)
+                .input('pvIP', sql.VarChar, userRegister.pvIP)
                 .execute('spCustomers_CRUD_Records')
             console.log(JSON.stringify(updateCustomer.recordsets[0][0])); 
             return updateCustomer.recordsets
@@ -185,7 +180,7 @@ async function updateCustomerRegister(userRegister){
                 .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
                 .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
-                .input('pvIP', sql.VarChar, ip)
+                .input('pvIP', sql.VarChar, userRegister.pvIP)
                 .execute('spCustomers_CRUD_Records')
             console.log(JSON.stringify(updateCustomer.recordsets[0][0])); 
             return updateCustomer.recordsets

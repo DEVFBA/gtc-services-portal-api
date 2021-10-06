@@ -1,6 +1,5 @@
 var config = require("../dbconfig"); //instanciamos el archivo dbconfig
 const sql = require("mssql"); //necesitamos el paquete sql
-const publicIp = require('public-ip'); //obtener la ip actual
 
 //Para obtener los catálogos tanto del portal como el SAT
 async function getCatalogs(params){
@@ -31,7 +30,6 @@ async function getCatalog(params){
 
 //Crear un registro de los catalogos del Portal
 async function insertCatRegisterPortal(catRegister){
-    const ip = await publicIp.v4();
     try{
         let pool = await sql.connect(config);
         let insertCatRegister = await pool.request()
@@ -41,7 +39,7 @@ async function insertCatRegisterPortal(catRegister){
             .input('pvLongDesc', sql.VarChar, catRegister.pvLongDesc)
             .input('pbStatus', sql.Bit, catRegister.pbStatus)
             .input('pvUser', sql.VarChar, catRegister.pvUser)
-            .input('pvIP', sql.VarChar, ip)
+            .input('pvIP', sql.VarChar, catRegister.pvIP)
             .execute(catRegister.pSpCatalog)
         console.log(JSON.stringify(insertCatRegister.recordsets[0][0])); 
         return insertCatRegister.recordsets
@@ -52,7 +50,6 @@ async function insertCatRegisterPortal(catRegister){
 
 //Actualizar un registro de los catalogos del Portal
 async function updateCatRegisterPortal(catRegister){
-    const ip = await publicIp.v4();
     try{
         let pool = await sql.connect(config);
         let updateCatRegister = await pool.request()
@@ -62,7 +59,7 @@ async function updateCatRegisterPortal(catRegister){
             .input('pvLongDesc', sql.VarChar, catRegister.pvLongDesc)
             .input('pbStatus', sql.Bit, catRegister.pbStatus)
             .input('pvUser', sql.VarChar, catRegister.pvUser)
-            .input('pvIP', sql.VarChar, ip)
+            .input('pvIP', sql.VarChar, catRegister.pvIP)
             .execute(catRegister.pSpCatalog)
         console.log(JSON.stringify(updateCatRegister.recordsets[0][0])); 
         return updateCatRegister.recordsets
@@ -73,7 +70,6 @@ async function updateCatRegisterPortal(catRegister){
 
 //Crear un registro de los catálogos del SAT
 async function insertCatRegisterSAT(catRegister){
-    const ip = await publicIp.v4();
     try{
         let pool = await sql.connect(config);
         let insertCatRegister = await pool.request()
@@ -83,7 +79,7 @@ async function insertCatRegisterSAT(catRegister){
             .input('pvLongDesc', sql.VarChar, catRegister.pvLongDesc)
             .input('pbStatus', sql.Bit, catRegister.pbStatus)
             .input('pvUser', sql.VarChar, catRegister.pvUser)
-            .input('pvIP', sql.VarChar, ip)
+            .input('pvIP', sql.VarChar, catRegister.pvIP)
             .execute(catRegister.pSpCatalog)
         console.log(JSON.stringify(insertCatRegister.recordsets[0][0])); 
         return insertCatRegister.recordsets
@@ -104,7 +100,7 @@ async function updateCatRegisterSAT(catRegister){
             .input('pvLongDesc', sql.VarChar, catRegister.pvLongDesc)
             .input('pbStatus', sql.Bit, catRegister.pbStatus)
             .input('pvUser', sql.VarChar, catRegister.pvUser)
-            .input('pvIP', sql.VarChar, ip)
+            .input('pvIP', sql.VarChar, catRegister.pvIP)
             .execute(catRegister.pSpCatalog)
         console.log(JSON.stringify(updateCatRegister.recordsets[0][0])); 
         return updateCatRegister.recordsets

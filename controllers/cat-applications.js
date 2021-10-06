@@ -1,6 +1,5 @@
 var config = require("../dbconfig"); //instanciamos el archivo dbconfig
 const sql = require("mssql"); //necesitamos el paquete sql
-const publicIp = require('public-ip');
 
 async function getCatApplications(params){
     try{
@@ -30,7 +29,6 @@ async function getApplicationId(params){
 
 //Crear un registro de los catalogos del Portal
 async function insertCatRegisterApplication(catRegister){
-    const ip = await publicIp.v4();
     try{
         let pool = await sql.connect(config);
         let insertCatRegister = await pool.request()
@@ -43,7 +41,7 @@ async function insertCatRegisterApplication(catRegister){
             .input('pvType', sql.VarChar, catRegister.pvType)
             .input('pbStatus', sql.Bit, catRegister.pbStatus)
             .input('pvUser', sql.VarChar, catRegister.pvUser)
-            .input('pvIP', sql.VarChar, ip)
+            .input('pvIP', sql.VarChar, catRegister.pvIP)
             .execute("spCat_Applications_CRUD_Records")
         console.log(JSON.stringify(insertCatRegister.recordsets[0][0])); 
         return insertCatRegister.recordsets
@@ -68,7 +66,7 @@ async function updateCatRegisterApplication(catRegister){
             .input('pvType', sql.VarChar, catRegister.pvType)
             .input('pbStatus', sql.Bit, catRegister.pbStatus)
             .input('pvUser', sql.VarChar, catRegister.pvUser)
-            .input('pvIP', sql.VarChar, ip)
+            .input('pvIP', sql.VarChar, catRegister.pvIP)
             .execute("spCat_Applications_CRUD_Records")
         console.log(JSON.stringify(updateCatRegister.recordsets[0][0])); 
         return updateCatRegister.recordsets

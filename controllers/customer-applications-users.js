@@ -1,6 +1,5 @@
 var config = require("../dbconfig"); //instanciamos el archivo dbconfig
 const sql = require("mssql"); //necesitamos el paquete sql
-const publicIp = require('public-ip');
 
 async function getCustomerApplicationsUsers(params){
     try{
@@ -26,6 +25,7 @@ async function insertCustomerApplicationsUsers(params){
             .input('pIdApplication', sql.VarChar, params.pIdApplication)
             .input('pvIdUser', sql.VarChar, params.pvIdUser)
             .input('pvUser', sql.VarChar, params.pvUser)
+            .input('pvIP', sql.VarChar, params.pvIP)
             .execute('spCustomer_Application_Users_CRUD_Records')
             console.log(JSON.stringify(users.recordsets[0][0])); 
         return users.recordsets
