@@ -42,5 +42,9 @@ router.use('/customer-applications-users', require('./customer-applications-user
 //Rutas para las aplicaciones settings
 router.use('/applications-settings', require('./applications-settings.js'));
 
+//Rutas para las cfdi pdf request
+router.use('/cfdi-pdf-requests', require('./cfdi-pdf-requests.js'));
+
+
 
 module.exports = router;

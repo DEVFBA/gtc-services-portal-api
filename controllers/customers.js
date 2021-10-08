@@ -65,6 +65,7 @@ async function insertCustomerRegister(userRegister){
                 .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
                 .input('pvLogo', sql.VarChar, filename)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
+                .input('pvUser', sql.Bit, userRegister.pvUser)
                 .input('pvIP', sql.VarChar, userRegister.pvIP)
                 .execute('spCustomers_CRUD_Records')
             console.log(JSON.stringify(insertCustomer.recordsets[0][0])); 
@@ -91,6 +92,7 @@ async function insertCustomerRegister(userRegister){
                 .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
                 .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
+                .input('pvUser', sql.Bit, userRegister.pvUser)
                 .input('pvIP', sql.VarChar, userRegister.pvIP)
                 .execute('spCustomers_CRUD_Records')
             console.log(JSON.stringify(insertCustomer.recordsets[0][0])); 
@@ -153,6 +155,7 @@ async function updateCustomerRegister(userRegister){
                 .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
                 .input('pvLogo', sql.VarChar, filename)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
+                .input('pvUser', sql.Bit, userRegister.pvUser)
                 .input('pvIP', sql.VarChar, userRegister.pvIP)
                 .execute('spCustomers_CRUD_Records')
             console.log(JSON.stringify(updateCustomer.recordsets[0][0])); 
@@ -180,6 +183,7 @@ async function updateCustomerRegister(userRegister){
                 .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
                 .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
+                .input('pvUser', sql.Bit, userRegister.pvUser)
                 .input('pvIP', sql.VarChar, userRegister.pvIP)
                 .execute('spCustomers_CRUD_Records')
             console.log(JSON.stringify(updateCustomer.recordsets[0][0])); 
