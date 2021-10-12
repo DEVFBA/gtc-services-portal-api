@@ -2,6 +2,7 @@ var config = require("../dbconfig"); //instanciamos el archivo dbconfig
 const sql = require("mssql"); //necesitamos el paquete sql
 var jwt = require('jsonwebtoken');
 var config2 = require('../configs/config');
+var generalParameters = require('./cat-general-parameters')
 
 var fs = require('fs');
 
@@ -319,9 +320,12 @@ async function iniciarSesion(req) {
             .execute('spSecurity_Users_CRUD_Records')
         console.log(JSON.stringify(userLogin.recordsets[0][0]));
 
+        var expiration = await config2.getExpiration()
+        var secret = await config2.getSecret()
+
         const today = new Date();
         const exp = new Date(today);
-        exp.setDate(today.getDate() + 1); // 1 día antes de expirar
+        exp.setDate(today.getDate() + parseInt(expiration, 10)); // 1 día antes de expirar
 
         const token = jwt.sign({
             id: req.pvIdUser,
