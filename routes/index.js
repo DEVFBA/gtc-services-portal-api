@@ -45,6 +45,7 @@ router.use('/applications-settings', require('./applications-settings.js'));
 //Rutas para las cfdi pdf request
 router.use('/cfdi-pdf-requests', require('./cfdi-pdf-requests.js'));
 
-
+//Rutas para el articulo 69
+router.use('/article-69', require('./article-69.js'));
 
 module.exports = router;

@@ -331,7 +331,7 @@ async function iniciarSesion(req) {
             id: req.pvIdUser,
             username: req.pvPassword,
             exp: parseInt(exp.getTime() / 1000),
-        }, config2.llave);
+        }, secret);
         //console.log(token)
         userLogin.recordsets[0][1] = {token: token}
         return userLogin.recordsets
