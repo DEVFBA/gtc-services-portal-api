@@ -34,7 +34,7 @@ router.route('/create-article-69').post(auth, (request, response)=>{
 })
 
 //Ruta para actualizar un registro para los catalogos del Portal
-router.route('/create-article-69-b').post(auth, (request, response)=>{
+router.route('/create-article-69-B').post(auth, (request, response)=>{
     let catRegister = {...request.body}
     dbarticulo69.insertArticle69B(catRegister).then(result => {
         response.json(result[0]);

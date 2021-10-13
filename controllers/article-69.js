@@ -47,8 +47,6 @@ async function insertArticle69(catRegister){
     const base64Data = catRegister.pvFile.replace(regex, "");
     //Random photo name with timeStamp so it will not overide previous images.
     var filename = `${"Articulo69_"+catRegister.pvSupuesto}.${ext}`;
-
-    console.log("El nombre del archivo es: " + filename)
     
     //Check that if directory is present or not.
     if(!fs.existsSync(`${uploadPath}`)) {
@@ -57,10 +55,9 @@ async function insertArticle69(catRegister){
     if (!fs.existsSync(localPath)) {
         fs.mkdirSync(localPath);
     }
-    console.log("El path es: " + uploadPath+filename)
     fs.writeFileSync(localPath+filename, base64Data, 'base64');
-    return {filename, localPath}
-
+    
+    //Hacemos la llamada al SP
     /*try{
         let pool = await sql.connect(config);
         let insertUserRegister = await pool.request()
@@ -77,31 +74,76 @@ async function insertArticle69(catRegister){
             .input('pvUser', sql.VarChar, catRegister.pvUser)
             .input('pvIP', sql.VarChar, catRegister.pvIP)
             .execute('spSecurity_Users_CRUD_Records')
-        console.log(JSON.stringify(insertUserRegister.recordsets[0][0])); 
+        console.log(JSON.stringify(insertUserRegister.recordsets[0][0]));
+        //borramos el archivo
+        try {
+            fs.unlinkSync(localPath+filename)
+            //file removed
+        } catch(err) {
+            console.error(err)
+        }
         return insertUserRegister.recordsets
     }catch(error){
         console.log(error)
     }*/
 }
 
-//Actualizar un registro de los catalogos del Portal
+//Crear los registros de la tabla articulo69b
 async function insertArticle69B(catRegister){
-    try{
+    /*path of the folder where your project is saved. (In my case i got it from config file, root path of project).*/
+    const uploadPath = `${catRegister.pvFilesPath}`;
+    //path of folder where you want to save the image.
+    var localPath = `${catRegister.pvFilesPath}`;
+    //Find extension of file
+    const ext = catRegister.pvFile.substring(catRegister.pvFile.indexOf("/")+1, catRegister.pvFile.indexOf(";base64"));
+    console.log("La extension es: "+ext)
+    const fileType = catRegister.pvFile.substring("data:".length,catRegister.pvFile.indexOf("/"));
+    console.log("El tipo de archivo es: "+fileType)
+    //Forming regex to extract base64 data of file.
+    const regex = new RegExp(`^data:${fileType}\/${ext};base64,`, 'gi');
+    //Extract base64 data.
+    const base64Data = catRegister.pvFile.replace(regex, "");
+    //Random photo name with timeStamp so it will not overide previous images.
+    var filename = `${"Articulo69B"}.${ext}`;
+    
+    //Check that if directory is present or not.
+    if(!fs.existsSync(`${uploadPath}`)) {
+        fs.mkdirSync(`${uploadPath}`);
+    }
+    if (!fs.existsSync(localPath)) {
+        fs.mkdirSync(localPath);
+    }
+    fs.writeFileSync(localPath+filename, base64Data, 'base64');
+    
+    //Hacemos la llamada al SP
+    /*try{
         let pool = await sql.connect(config);
-        let updateCatRegister = await pool.request()
+        let insertUserRegister = await pool.request()
             .input('pvOptionCRUD', sql.VarChar, catRegister.pvOptionCRUD)
-            .input('piIdSuite', sql.SmallInt, catRegister.piIdSuite)
-            .input('pvShortDesc', sql.VarChar, catRegister.pvShortDesc)
-            .input('pvLongDesc', sql.VarChar, catRegister.pvLongDesc)
+            .input('piIdCustomer', sql.Int, catRegister.piIdCustomer)
+            .input('pvIdUser', sql.VarChar, catRegister.pvIdUser)
+            .input('pvIdRole', sql.VarChar, catRegister.pvIdRole)
+            .input('pvPassword', sql.VarChar, sha256(catRegister.pvPassword))
+            .input('pvName', sql.VarChar, catRegister.pvName)
+            .input('pbTempPassword', sql.Bit, catRegister.pbTempPassword)
+            .input('pvFinalEffectiveDate', sql.VarChar, catRegister.pvFinalEffectiveDate)
+            .input('pvProfilePicPath', sql.VarChar, filename)
             .input('pbStatus', sql.Bit, catRegister.pbStatus)
             .input('pvUser', sql.VarChar, catRegister.pvUser)
             .input('pvIP', sql.VarChar, catRegister.pvIP)
-            .execute(catRegister.pSpCatalog)
-        console.log(JSON.stringify(updateCatRegister.recordsets[0][0])); 
-        return updateCatRegister.recordsets
+            .execute('spSecurity_Users_CRUD_Records')
+        console.log(JSON.stringify(insertUserRegister.recordsets[0][0]));
+        //borramos el archivo
+        try {
+            fs.unlinkSync(localPath+filename)
+            //file removed
+        } catch(err) {
+            console.error(err)
+        }
+        return insertUserRegister.recordsets
     }catch(error){
         console.log(error)
-    }
+    }*/
 }
 
 module.exports = {
