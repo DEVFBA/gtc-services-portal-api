@@ -49,10 +49,26 @@ router.route('/create-sat').post(auth, (request, response)=>{
     })
 })
 
-//Ruta para actualizar un registro para los catalogos del Portal
+//Ruta para crear un registro para los catalogos del SAT Assumptions, tiene un campo más
+router.route('/create-sat-assumptions').post(auth, (request, response)=>{
+    let catRegister = {...request.body}
+    dbcatcatalogs.insertCatRegisterSATAssumptions(catRegister).then(result => {
+        response.json(result[0]);
+    })
+})
+
+//Ruta para actualizar un registro para los catalogos del SAT
 router.route('/update-sat').put(auth, (request, response)=>{
     let catRegister = {...request.body}
     dbcatcatalogs.updateCatRegisterSAT(catRegister).then(result => {
+        response.json(result[0]);
+    })
+})
+
+//Ruta para actualizar un registro para los catalogos del SAT Assumptions, tiene un campo más
+router.route('/update-sat-assumptions').put(auth, (request, response)=>{
+    let catRegister = {...request.body}
+    dbcatcatalogs.updateCatRegisterSATAssumptions(catRegister).then(result => {
         response.json(result[0]);
     })
 })

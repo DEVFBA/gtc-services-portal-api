@@ -88,6 +88,27 @@ async function insertCatRegisterSAT(catRegister){
     }
 }
 
+//Crear un registro de los catálogos del SAT
+async function insertCatRegisterSATAssumptions(catRegister){
+    try{
+        let pool = await sql.connect(config);
+        let insertCatRegister = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, catRegister.pvOptionCRUD)
+            .input('pvIdCatalog', sql.VarChar, catRegister.pvIdCatalog)
+            .input('pvShortDesc', sql.VarChar, catRegister.pvShortDesc)
+            .input('pvLongDesc', sql.VarChar, catRegister.pvLongDesc)
+            .input('piFirstRow', sql.SmallInt, catRegister.piFirstRow)
+            .input('pbStatus', sql.Bit, catRegister.pbStatus)
+            .input('pvUser', sql.VarChar, catRegister.pvUser)
+            .input('pvIP', sql.VarChar, catRegister.pvIP)
+            .execute(catRegister.pSpCatalog)
+        console.log(JSON.stringify(insertCatRegister.recordsets[0][0])); 
+        return insertCatRegister.recordsets
+    }catch(error){
+        console.log(error)
+    }
+}
+
 //Actualizar un registro de los catálogos del SAT
 async function updateCatRegisterSAT(catRegister){
     try{
@@ -108,11 +129,34 @@ async function updateCatRegisterSAT(catRegister){
     }
 }
 
+//Actualizar un registro de los catálogos del SAT Assumptions
+async function updateCatRegisterSATAssumptions(catRegister){
+    try{
+        let pool = await sql.connect(config);
+        let updateCatRegister = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, catRegister.pvOptionCRUD)
+            .input('pvIdCatalog', sql.VarChar, catRegister.pvIdCatalog)
+            .input('pvShortDesc', sql.VarChar, catRegister.pvShortDesc)
+            .input('pvLongDesc', sql.VarChar, catRegister.pvLongDesc)
+            .input('piFirstRow', sql.SmallInt, catRegister.piFirstRow)
+            .input('pbStatus', sql.Bit, catRegister.pbStatus)
+            .input('pvUser', sql.VarChar, catRegister.pvUser)
+            .input('pvIP', sql.VarChar, catRegister.pvIP)
+            .execute(catRegister.pSpCatalog)
+        console.log(JSON.stringify(updateCatRegister.recordsets[0][0])); 
+        return updateCatRegister.recordsets
+    }catch(error){
+        console.log(error)
+    }
+}
+
 module.exports = {
     getCatalogs : getCatalogs,
     getCatalog : getCatalog,
     insertCatRegisterPortal: insertCatRegisterPortal,
     insertCatRegisterSAT:insertCatRegisterSAT,
+    insertCatRegisterSATAssumptions:insertCatRegisterSATAssumptions,
     updateCatRegisterPortal: updateCatRegisterPortal,
-    updateCatRegisterSAT: updateCatRegisterSAT
+    updateCatRegisterSAT: updateCatRegisterSAT,
+    updateCatRegisterSATAssumptions: updateCatRegisterSATAssumptions
 }

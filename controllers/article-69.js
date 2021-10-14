@@ -56,6 +56,15 @@ async function insertArticle69(catRegister){
         fs.mkdirSync(localPath);
     }
     fs.writeFileSync(localPath+filename, base64Data, 'base64');
+
+    //Una vez que tenemos el archivo en la carpeta del servidor vamos a trabajar en ella
+    fs.readFile('localPath+filename', 'utf-8', (err, data) => {
+        if(err) {
+          console.log('error: ', err);
+        } else {
+          console.log(data);
+        }
+    });
     
     //Hacemos la llamada al SP
     /*try{
