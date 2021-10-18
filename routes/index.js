@@ -48,4 +48,7 @@ router.use('/cfdi-pdf-requests', require('./cfdi-pdf-requests.js'));
 //Rutas para el articulo 69
 router.use('/article-69', require('./article-69.js'));
 
+//Rutas para el encriptado
+router.use('/encrypt', require('./encriptado.js'));
+
 module.exports = router;

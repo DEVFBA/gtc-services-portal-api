@@ -14,6 +14,32 @@ router.route('/69').get(auth, (request, response)=>{
     })
 })
 
+//Ruta para obtener los datos del artículo 69 externamente
+router.route('/external-69').get((request, response)=>{
+    const params = {
+        piIdCustomer: request.query.piIdCustomer,
+        pIdApplication : request.query.pIdApplication,
+        pvIdUser : request.query.pvIdUser,
+        pvPassword : request.query.pvPassword,
+    };
+    dbarticulo69.getArticle69External(params).then(result => {
+        response.json(result[0]);
+    })
+})
+
+//Ruta para obtener los datos del artículo 69 externamente
+router.route('/external-69B').get((request, response)=>{
+    const params = {
+        piIdCustomer: request.query.piIdCustomer,
+        pIdApplication : request.query.pIdApplication,
+        pvIdUser : request.query.pvIdUser,
+        pvPassword : request.query.pvPassword,
+    };
+    dbarticulo69.getArticle69BExternal(params).then(result => {
+        response.json(result[0]);
+    })
+})
+
 //Ruta para obtener un catálogo de catálogos en específico
 router.route('/69-B').get(auth, (request, response)=>{
     const params = {
