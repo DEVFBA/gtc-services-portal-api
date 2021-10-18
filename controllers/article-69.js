@@ -4,7 +4,8 @@ var fs = require('fs');
 var XLSX = require('xlsx')
 var stringify = require('csv-stringify');
 const { convertArrayToCSV } = require('convert-array-to-csv');
-
+const csvtojsonV2=require("csvtojson");
+const csv=require('csvtojson')
 //Para obtener todos los registros del Articulo 69
 async function getArticle69(params){
     try{
@@ -208,7 +209,7 @@ async function insertArticle69B(catRegister){
     
     //let file = fs.readFileSync(localPath+filename, 'utf-8');
     //console.log(file)
-    var config = {
+    /*var config = {
         type: 'array',
         cellDates: true,
         WTF: false,
@@ -262,7 +263,7 @@ async function insertArticle69B(catRegister){
         var fecha8 = "";
         for(var i=0; i< data.length; i++)
         {
-          /*date = data[i]["Publicación página SAT presuntos"].getDate()
+          date = data[i]["Publicación página SAT presuntos"].getDate()
           month = data[i]["Publicación página SAT presuntos"].getMonth()
           year = data[i]["Publicación página SAT presuntos"].getFullYear()
 
@@ -428,7 +429,7 @@ async function insertArticle69B(catRegister){
           else{
             fecha8 = "" + date8 + "/" + (month8+1) + "/" + year8;
           }
-          data[i]["Publicación página SAT sentencia favorable"] = fecha8*/
+          data[i]["Publicación página SAT sentencia favorable"] = fecha8
 
           //Reemplazar comas y comillas
           if(i<11560 && i>11550)
@@ -439,7 +440,7 @@ async function insertArticle69B(catRegister){
           
          //console.log(data[i]['Nombre del Contribuyente'])
           var rS1 = data[i]['Nombre del Contribuyente'].toString()
-          console.log(rS1)
+          //console.log(rS1)
           var rS2 = rS1.replace(/,/g, '');
           var rS3 = rS2.replace(/"/g, '');
           //console.log(rS3)
@@ -448,7 +449,28 @@ async function insertArticle69B(catRegister){
         //console.log(data)
         const csvFromArrayOfObjects = convertArrayToCSV(data);
         //console.log(csvFromArrayOfObjects)
+        fs.writeFileSync(localPath+filename, csvFromArrayOfObjects, 'utf-8');*/
+        const options = {
+          noheader: true,
+          headers: ["Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header"]
+        }
+        const jsonArray=await csv().fromFile(localPath+filename, options);
+        
+        for(var i=0; i< jsonArray.length; i++)
+        {
+          delete jsonArray[i]['Informaci�n actualizada al 17 de septiembre de 2021']
+          if(i<10)
+          {
+            ///console.log(jsonArray[i])
+          }
+        }
+        jsonArray.shift();
+        console.log(jsonArray[0])
+        //jsonArray.shift();
+        const csvFromArrayOfObjects = convertArrayToCSV(jsonArray);
+        //console.log(csvFromArrayOfObjects)
         fs.writeFileSync(localPath+filename, csvFromArrayOfObjects, 'utf-8');
+        //console.log(jsonArray)
 }
 
 module.exports = {
