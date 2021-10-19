@@ -4,9 +4,11 @@ var fs = require('fs');
 var XLSX = require('xlsx')
 var stringify = require('csv-stringify');
 const { convertArrayToCSV } = require('convert-array-to-csv');
+const { convertCSVToArray } = require('convert-csv-to-array');
 const csvtojsonV2=require("csvtojson");
 const csv=require('csvtojson')
 const axios = require('axios');
+let csvToJson = require('convert-csv-to-json-latin');
 //Para obtener todos los registros del Articulo 69
 async function getArticle69(params){
     try{
@@ -297,273 +299,164 @@ async function insertArticle69B(catRegister){
     fs.writeFileSync(localPath+filename, base64Data, 'base64');
 
     //Una vez que tenemos el archivo en la carpeta del servidor vamos a trabajar en ella
-    
 
-    
-    //let file = fs.readFileSync(localPath+filename, 'utf-8');
-    //console.log(file)
-    /*var config = {
-        type: 'array',
-        cellDates: true,
-        WTF: false,
-        cellStyles: true,
-        dateNF : 'dd/mm/yy',
-        cellINF: true,
-        sheets:3
+    const data = fs.readFileSync(localPath+filename, {encoding:'latin1'});
+
+    const jsonArray=await csv().fromString(data.toString());
+    for(var i=0; i< jsonArray.length; i++)
+      {
+        delete jsonArray[i]['Información actualizada al 17 de septiembre de 2021']
+
+        var rS1 = jsonArray[i]['field3'].toString()
+        //console.log(rS1)
+        var rS2 = rS1.replace(/,/g, '');
+        var rS3 = rS2.replace(/"/g, '');
+        //console.log(rS3)
+        jsonArray[i]['field3'] = rS3
+
+        var aS1 = jsonArray[i]['field4'].toString()
+        //console.log(rS1)
+        var aS2 = aS1.replace(/,/g, '');
+        var aS3 = aS2.replace(/"/g, '');
+        //console.log(rS3)
+        jsonArray[i]['field4'] = aS3
+
+        var bS1 = jsonArray[i]['field5'].toString()
+        //console.log(rS1)
+        var bS2 = bS1.replace(/,/g, '');
+        var bS3 = bS2.replace(/"/g, '');
+        //console.log(rS3)
+        jsonArray[i]['field5'] = bS3
+
+        var cS1 = jsonArray[i]['field6'].toString()
+        //console.log(rS1)
+        var cS2 = cS1.replace(/,/g, '');
+        var cS3 = cS2.replace(/"/g, '');
+        //console.log(rS3)
+        jsonArray[i]['field6'] = cS3
+
+        var dS1 = jsonArray[i]['field7'].toString()
+        //console.log(rS1)
+        var dS2 = dS1.replace(/,/g, '');
+        var dS3 = dS2.replace(/"/g, '');
+        //console.log(rS3)
+        jsonArray[i]['field7'] = dS3
+
+        var eS1 = jsonArray[i]['field8'].toString()
+        //console.log(rS1)
+        var eS2 = eS1.replace(/,/g, '');
+        var eS3 = eS2.replace(/"/g, '');
+        //console.log(rS3)
+        jsonArray[i]['field8'] = eS3
+
+        var fS1 = jsonArray[i]['field9'].toString()
+        //console.log(rS1)
+        var fS2 = fS1.replace(/,/g, '');
+        var fS3 = fS2.replace(/"/g, '');
+        //console.log(rS3)
+        jsonArray[i]['field9'] = fS3
+
+        var gS1 = jsonArray[i]['field10'].toString()
+        //console.log(rS1)
+        var gS2 = gS1.replace(/,/g, '');
+        var gS3 = gS2.replace(/"/g, '');
+        //console.log(rS3)
+        jsonArray[i]['field10'] = gS3
+
+        var hS1 = jsonArray[i]['field11'].toString()
+        //console.log(rS1)
+        var hS2 = hS1.replace(/,/g, '');
+        var hS3 = hS2.replace(/"/g, '');
+        //console.log(rS3)
+        jsonArray[i]['field11'] = hS3
+
+        var iS1 = jsonArray[i]['field12'].toString()
+        //console.log(rS1)
+        var iS2 = iS1.replace(/,/g, '');
+        var iS3 = iS2.replace(/"/g, '');
+        //console.log(rS3)
+        jsonArray[i]['field12'] = hS3
+
+        var jS1 = jsonArray[i]['field13'].toString()
+        //console.log(rS1)
+        var jS2 = jS1.replace(/,/g, '');
+        var jS3 = jS2.replace(/"/g, '');
+        //console.log(rS3)
+        jsonArray[i]['field13'] = jS3
+
+        var kS1 = jsonArray[i]['field14'].toString()
+        //console.log(rS1)
+        var kS2 = kS1.replace(/,/g, '');
+        var kS3 = kS2.replace(/"/g, '');
+        //console.log(rS3)
+        jsonArray[i]['field14'] = kS3
+
+        var lS1 = jsonArray[i]['field15'].toString()
+        //console.log(rS1)
+        var lS2 = lS1.replace(/,/g, '');
+        var lS3 = lS2.replace(/"/g, '');
+        //console.log(rS3)
+        jsonArray[i]['field15'] = lS3
+
+        var mS1 = jsonArray[i]['field16'].toString()
+        //console.log(rS1)
+        var mS2 = mS1.replace(/,/g, '');
+        var mS3 = mS2.replace(/"/g, '');
+        //console.log(rS3)
+        jsonArray[i]['field16'] = mS3
+
+        var nS1 = jsonArray[i]['field17'].toString()
+        //console.log(rS1)
+        var nS2 = nS1.replace(/,/g, '');
+        var nS3 = nS2.replace(/"/g, '');
+        //console.log(rS3)
+        jsonArray[i]['field17'] = nS3
+
+        var oS1 = jsonArray[i]['field18'].toString()
+        //console.log(rS1)
+        var oS2 = oS1.replace(/,/g, '');
+        var oS3 = oS2.replace(/"/g, '');
+        //console.log(rS3)
+        jsonArray[i]['field18'] = oS3
+
+        var pS1 = jsonArray[i]['field19'].toString()
+        //console.log(rS1)
+        var pS2 = pS1.replace(/,/g, '');
+        var pS3 = pS2.replace(/"/g, '');
+        //console.log(rS3)
+        jsonArray[i]['field19'] = pS3
+
+        var qS1 = jsonArray[i]['field20'].toString()
+        var qS2 = qS1.replace(/"/g, '');
+        //console.log(rS3)
+        jsonArray[i]['field20'] = qS2
+      }
+
+    jsonArray.shift();
+    const csvFromArrayOfObjects = convertArrayToCSV(jsonArray);
+    fs.writeFileSync(localPath+filename, csvFromArrayOfObjects, 'utf-8');
+
+    //Hacemos la llamada al SP
+    try{
+      let pool = await sql.connect(config);
+      let insert69B = await pool.request()
+          .input('pvOptionCRUD', sql.VarChar, "L")
+          .input('piIdCustomer', sql.Int, catRegister.piIdCustomer)
+          .input('pvUser', sql.VarChar, catRegister.pvUser)
+          .input('pvFileName', sql.VarChar, filename)
+          .execute('spSAT_Article_69B_Load_Records')
+      console.log(JSON.stringify(insert69B.recordsets[0][0]));
+      //borramos el archivo
+      try {
+          fs.unlinkSync(localPath+filename)
+          //file removed
+      } catch(err) {
+          console.error(err)
+      }
+      return insert69B.recordsets
+    }catch(error){
+        console.log(error)
     }
-    var workbook = XLSX.readFile(localPath+filename);
-    var sheet_name_list = workbook.SheetNames;
-    var data = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1, {range:2})
-    console.log(data.length)
-    var date;
-        var month;
-        var year;
-        var fecha = "";
-
-        var date2;
-        var month2;
-        var year2;
-        var fecha2 = "";
-
-        var date3;
-        var month3;
-        var year3;
-        var fecha3 = "";
-
-        var date4;
-        var month4;
-        var year4;
-        var fecha4 = "";
-
-        var date5;
-        var month5;
-        var year5;
-        var fecha5 = "";
-
-        var date6;
-        var month6;
-        var year6;
-        var fecha6 = "";
-
-        var date7;
-        var month7;
-        var year7;
-        var fecha7 = "";
-
-        var date8;
-        var month8;
-        var year8;
-        var fecha8 = "";
-        for(var i=0; i< data.length; i++)
-        {
-          date = data[i]["Publicación página SAT presuntos"].getDate()
-          month = data[i]["Publicación página SAT presuntos"].getMonth()
-          year = data[i]["Publicación página SAT presuntos"].getFullYear()
-
-          if(month < 10 && date < 10)
-          {
-            fecha = "0" + date + "/0" + (month+1) + "/" + year;  
-          }
-          else if(date < 10)
-          {
-            fecha = "0" + date + "/" + (month+1) + "/" + year;
-          }
-          else if(month < 10) 
-          {  
-            fecha = "" + date + "/0" + (month+1) + "/" + year;
-          }
-          else{
-            fecha = "" + date + "/" + (month+1) + "/" + year;
-          }
-          data[i]["Publicación página SAT presuntos"] = fecha
-
-          date2 = data[i]["Publicación DOF presuntos"].getDate()
-          month2 = data[i]["Publicación DOF presuntos"].getMonth()
-          year2 = data[i]["Publicación DOF presuntos"].getFullYear()
-
-          if(month2 < 10 && date2 < 10)
-          {
-            fecha2 = "0" + date2 + "/0" + (month2+1) + "/" + year2;  
-          }
-          else if(date2 < 10)
-          {
-            fecha2 = "0" + date2 + "/" + (month2+1) + "/" + year2;
-          }
-          else if(month2 < 10) 
-          {  
-            fecha2 = "" + date2 + "/0" + (month2+1) + "/" + year2;
-          }
-          else{
-            fecha2 = "" + date2 + "/" + (month2+1) + "/" + year2;
-          }
-          data[i]["Publicación DOF presuntos"] = fecha2
-
-          date3 = data[i]["Publicación página SAT desvirtuados"].getDate()
-          month3 = data[i]["Publicación página SAT desvirtuados"].getMonth()
-          year3 = data[i]["Publicación página SAT desvirtuados"].getFullYear()
-
-          if(month3 < 10 && date3 < 10)
-          {
-            fecha3 = "0" + date3 + "/0" + (month3+1) + "/" + year3;  
-          }
-          else if(date3 < 10)
-          {
-            fecha3 = "0" + date3 + "/" + (month3+1) + "/" + year3;
-          }
-          else if(month3 < 10) 
-          {  
-            fecha3 = "" + date3 + "/0" + (month3+1) + "/" + year3;
-          }
-          else{
-            fecha3 = "" + date3 + "/" + (month3+1) + "/" + year3;
-          }
-          data[i]["Publicación página SAT desvirtuados"] = fecha3
-
-          date4 = data[i]["Publicación DOF desvirtuados"].getDate()
-          month4 = data[i]["Publicación DOF desvirtuados"].getMonth()
-          year4 = data[i]["Publicación DOF desvirtuados"].getFullYear()
-
-          if(month4 < 10 && date4 < 10)
-          {
-            fecha4 = "0" + date4 + "/0" + (month4+1) + "/" + year4;  
-          }
-          else if(date4 < 10)
-          {
-            fecha4 = "0" + date4 + "/" + (month4+1) + "/" + year4;
-          }
-          else if(month4 < 10) 
-          {  
-            fecha4 = "" + date4 + "/0" + (month4+1) + "/" + year4;
-          }
-          else{
-            fecha4 = "" + date4 + "/" + (month4+1) + "/" + year4;
-          }
-          data[i]["Publicación DOF desvirtuados"] = fecha4
-
-          date5 = data[i]["Publicación página SAT definitivos"].getDate()
-          month5 = data[i]["Publicación página SAT definitivos"].getMonth()
-          year5 = data[i]["Publicación página SAT definitivos"].getFullYear()
-
-          if(month5 < 10 && date5 < 10)
-          {
-            fecha5 = "0" + date5 + "/0" + (month5+1) + "/" + year5;  
-          }
-          else if(date5 < 10)
-          {
-            fecha5 = "0" + date5 + "/" + (month5+1) + "/" + year5;
-          }
-          else if(month5 < 10) 
-          {  
-            fecha5 = "" + date5 + "/0" + (month5+1) + "/" + year5;
-          }
-          else{
-            fecha5 = "" + date5 + "/" + (month5+1) + "/" + year5;
-          }
-          data[i]["Publicación página SAT definitivos"] = fecha5
-
-          date6 = data[i]["Publicación DOF definitivos"].getDate()
-          month6 = data[i]["Publicación DOF definitivos"].getMonth()
-          year6 = data[i]["Publicación DOF definitivos"].getFullYear()
-
-          if(month6 < 10 && date6 < 10)
-          {
-            fecha6 = "0" + date6 + "/0" + (month6+1) + "/" + year6;  
-          }
-          else if(date6 < 10)
-          {
-            fecha6 = "0" + date6 + "/" + (month6+1) + "/" + year6;
-          }
-          else if(month6 < 10) 
-          {  
-            fecha6 = "" + date6 + "/0" + (month6+1) + "/" + year6;
-          }
-          else{
-            fecha6 = "" + date6 + "/" + (month6+1) + "/" + year6;
-          }
-          data[i]["Publicación DOF definitivos"] = fecha6
-
-          date7 = data[i]["Publicación página SAT sentencia favorable"].getDate()
-          month7 = data[i]["Publicación página SAT sentencia favorable"].getMonth()
-          year7 = data[i]["Publicación página SAT sentencia favorable"].getFullYear()
-
-          if(month7 < 10 && date7 < 10)
-          {
-            fecha7 = "0" + date7 + "/0" + (month7+1) + "/" + year7;  
-          }
-          else if(date7 < 10)
-          {
-            fecha7 = "0" + date7 + "/" + (month7+1) + "/" + year7;
-          }
-          else if(month7 < 10) 
-          {  
-            fecha7 = "" + date7 + "/0" + (month7+1) + "/" + year7;
-          }
-          else{
-            fecha7 = "" + date7 + "/" + (month7+1) + "/" + year7;
-          }
-          data[i]["Publicación página SAT sentencia favorable"] = fecha7
-
-          date8 = data[i]["Publicación página SAT sentencia favorable"].getDate()
-          month8 = data[i]["Publicación página SAT sentencia favorable"].getMonth()
-          year8 = data[i]["Publicación página SAT sentencia favorable"].getFullYear()
-
-          if(month8 < 10 && date8 < 10)
-          {
-            fecha8 = "0" + date8 + "/0" + (month8+1) + "/" + year8;  
-          }
-          else if(date8 < 10)
-          {
-            fecha8 = "0" + date8 + "/" + (month8+1) + "/" + year8;
-          }
-          else if(month8 < 10) 
-          {  
-            fecha8 = "" + date8 + "/0" + (month8+1) + "/" + year8;
-          }
-          else{
-            fecha8 = "" + date8 + "/" + (month8+1) + "/" + year8;
-          }
-          data[i]["Publicación página SAT sentencia favorable"] = fecha8
-
-          //Reemplazar comas y comillas
-          if(i<11560 && i>11550)
-          {
-            console.log(data[i])
-          }
-
-          
-         //console.log(data[i]['Nombre del Contribuyente'])
-          var rS1 = data[i]['Nombre del Contribuyente'].toString()
-          //console.log(rS1)
-          var rS2 = rS1.replace(/,/g, '');
-          var rS3 = rS2.replace(/"/g, '');
-          //console.log(rS3)
-          data[i]['Nombre del Contribuyente'] = rS3
-        }
-        //console.log(data)
-        const csvFromArrayOfObjects = convertArrayToCSV(data);
-        //console.log(csvFromArrayOfObjects)
-        fs.writeFileSync(localPath+filename, csvFromArrayOfObjects, 'utf-8');*/
-        const options = {
-          noheader: true,
-          headers: ["Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header", "Header"]
-        }
-        const jsonArray=await csv().fromFile(localPath+filename, options);
-        
-        for(var i=0; i< jsonArray.length; i++)
-        {
-          delete jsonArray[i]['Informaci�n actualizada al 17 de septiembre de 2021']
-          if(i<10)
-          {
-            ///console.log(jsonArray[i])
-          }
-        }
-        jsonArray.shift();
-        console.log(jsonArray[0])
-        //jsonArray.shift();
-        const csvFromArrayOfObjects = convertArrayToCSV(jsonArray);
-        //console.log(csvFromArrayOfObjects)
-        fs.writeFileSync(localPath+filename, csvFromArrayOfObjects, 'utf-8');
-        //console.log(jsonArray)
 }
 
 module.exports = {
