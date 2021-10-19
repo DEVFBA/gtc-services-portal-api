@@ -3,13 +3,9 @@ const auth = require('./auth');
 
 const dbarticulo69 = require('../controllers/article-69')
 
-//Ruta para obtener los catálogos para el portal o SAT
+//Ruta para obtener los datos del Articulo 69
 router.route('/69').get(auth, (request, response)=>{
-    const params = {
-        pvOptionCRUD: request.query.pvOptionCRUD,
-        piIdCatalogType : request.query.piIdCatalogType,
-    };
-    dbarticulo69.getArticle69(params).then(result => {
+    dbarticulo69.getArticle69().then(result => {
         response.json(result[0]);
     })
 })
@@ -40,13 +36,9 @@ router.route('/external-69B').get((request, response)=>{
     })
 })
 
-//Ruta para obtener un catálogo de catálogos en específico
+//Ruta para obtener los datos del articulo 69 b
 router.route('/69-B').get(auth, (request, response)=>{
-    const params = {
-        pvOptionCRUD: request.query.pvOptionCRUD,
-        pSpCatalog : request.query.pSpCatalog,
-    };
-    dbarticulo69.getArticle69B(params).then(result => {
+    dbarticulo69.getArticle69B().then(result => {
         response.json(result[0]);
     })
 })

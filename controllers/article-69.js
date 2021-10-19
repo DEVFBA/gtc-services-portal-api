@@ -2,21 +2,16 @@ var config = require("../dbconfig"); //instanciamos el archivo dbconfig
 const sql = require("mssql"); //necesitamos el paquete sql
 var fs = require('fs');
 var XLSX = require('xlsx')
-var stringify = require('csv-stringify');
-const { convertArrayToCSV } = require('convert-array-to-csv');
-const { convertCSVToArray } = require('convert-csv-to-array');
-const csvtojsonV2=require("csvtojson");
 const csv=require('csvtojson')
 const axios = require('axios');
-let csvToJson = require('convert-csv-to-json-latin');
+
 //Para obtener todos los registros del Articulo 69
-async function getArticle69(params){
+async function getArticle69(){
     try{
         let pool = await sql.connect(config);
         let routes = await pool.request()
-            .input('pvOptionCRUD', sql.VarChar, params.pvOptionCRUD)
-            .input('piIdCatalogType', sql.Int, params.piIdCatalogType)
-            .execute('spCat_Catalogs_CRUD_Records')
+            .input('pvOptionCRUD', sql.VarChar, "R")
+            .execute('spSAT_Article_69_Load_Records')
         return routes.recordsets
     }catch(error){
         console.log(error)
@@ -116,12 +111,12 @@ async function getArticle69BExternal(params){
 }
 
 //Para obtener todos los registros del Articulo 69 B
-async function getArticle69B(params){
+async function getArticle69B(){
     try{
         let pool = await sql.connect(config);
         let routes = await pool.request()
-            .input('pvOptionCRUD', sql.VarChar, params.pvOptionCRUD)
-            .execute(params.pSpCatalog)
+            .input('pvOptionCRUD', sql.VarChar, "R")
+            .execute("spSAT_Article_69B_Load_Records")
         return routes.recordsets
     }catch(error){
         console.log(error)
