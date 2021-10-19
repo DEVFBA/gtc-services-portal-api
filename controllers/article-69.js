@@ -4,6 +4,8 @@ var fs = require('fs');
 var XLSX = require('xlsx')
 const csv=require('csvtojson')
 const axios = require('axios');
+var jwt = require('jsonwebtoken');
+var config2 = require('../configs/config');
 
 //Para obtener todos los registros del Articulo 69
 async function getArticle69(){
@@ -19,22 +21,22 @@ async function getArticle69(){
 }
 
 //Para obtener todos los registros del Articulo externamente
-async function getArticle69External(params){
+async function login(req){
   const data = {
-    text: params.pvPassword
+    text: req.pvPassword
   }
   const res = await axios.post("http://129.159.99.152/GTC_DEV/api/Hash/EncryptMD5", data)
   var pass = res.data
 
-  var idCustomer = Number(params.piIdCustomer)
-  var idApplication = Number(params.pIdApplication)
+  var idCustomer = Number(req.piIdCustomer)
+  var idApplication = Number(req.pIdApplication)
   try{
       let pool = await sql.connect(config);
       let userLogin = await pool.request()
           .input('pvOptionCRUD', sql.VarChar, "VA")
           .input('piIdCustomer', sql.Int, idCustomer)
           .input('pIdApplication', sql.SmallInt, idApplication)
-          .input('pvIdUser', sql.VarChar, params.pvIdUser)
+          .input('pvIdUser', sql.VarChar, req.pvIdUser)
           .input('pvPassword', sql.VarChar, pass)
           .execute('spCustomer_Application_Users_CRUD_Records')
       console.log(JSON.stringify(userLogin.recordsets[0][0]));
@@ -47,16 +49,23 @@ async function getArticle69External(params){
         return response
       }
       else{
-        //return userLogin.recordsets
-        try{
-          let pool = await sql.connect(config);
-          let routes = await pool.request()
-              .input('pvOptionCRUD', sql.VarChar, "R")
-              .execute('spSAT_Article_69_Load_Records')
-          return routes.recordsets
-        }catch(error){
-            console.log(error)
+        var expiration = await config2.getExpiration69()
+        var secret = await config2.getSecret69()
+
+        const today = new Date();
+        const exp = new Date(today);
+        exp.setDate(today.getDate() + parseInt(expiration, 10)); // 1 día antes de expirar
+        const token = jwt.sign({
+          id: req.pvIdUser,
+          username: req.pvPassword,
+          exp: parseInt(exp.getTime() / 1000),
+        }, secret);
+
+        const regreso = {
+          token: token
         }
+        const response = [regreso]
+        return response
       }
       //console.log(token)
   }catch(error){
@@ -64,47 +73,27 @@ async function getArticle69External(params){
   }
 }
 
-//Para obtener todos los registros del Articulo 69 B externamente
-async function getArticle69BExternal(params){
-  const data = {
-    text: params.pvPassword
-  }
-  const res = await axios.post("http://129.159.99.152/GTC_DEV/api/Hash/EncryptMD5", data)
-  var pass = res.data
-
-  var idCustomer = Number(params.piIdCustomer)
-  var idApplication = Number(params.pIdApplication)
+//Para obtener todos los registros del Articulo externamente
+async function getArticle69External(){
   try{
-      let pool = await sql.connect(config);
-      let userLogin = await pool.request()
-          .input('pvOptionCRUD', sql.VarChar, "VA")
-          .input('piIdCustomer', sql.Int, idCustomer)
-          .input('pIdApplication', sql.SmallInt, idApplication)
-          .input('pvIdUser', sql.VarChar, params.pvIdUser)
-          .input('pvPassword', sql.VarChar, pass)
-          .execute('spCustomer_Application_Users_CRUD_Records')
-      console.log(JSON.stringify(userLogin.recordsets[0][0]));
-      if(userLogin.recordsets[0][0].Code_Type=="Error")
-      {
-        const regreso = {
-          mensaje: userLogin.recordsets[0][0].Code_Message_User
-        }
-        const response = [regreso]
-        return response
-      }
-      else{
-        //return userLogin.recordsets
-        try{
-          let pool = await sql.connect(config);
-          let routes = await pool.request()
-              .input('pvOptionCRUD', sql.VarChar, "R")
-              .execute('spSAT_Article_69B_Load_Records')
-          return routes.recordsets
-        }catch(error){
-            console.log(error)
-        }
-      }
-      //console.log(token)
+    let pool = await sql.connect(config);
+    let routes = await pool.request()
+        .input('pvOptionCRUD', sql.VarChar, "R")
+        .execute('spSAT_Article_69_Load_Records')
+    return routes.recordsets
+  }catch(error){
+      console.log(error)
+  }
+}
+
+//Para obtener todos los registros del Articulo 69 B externamente
+async function getArticle69BExternal(){
+  try{
+    let pool = await sql.connect(config);
+    let routes = await pool.request()
+        .input('pvOptionCRUD', sql.VarChar, "R")
+        .execute('spSAT_Article_69B_Load_Records')
+    return routes.recordsets
   }catch(error){
       console.log(error)
   }
@@ -460,5 +449,6 @@ module.exports = {
     insertArticle69 : insertArticle69,
     insertArticle69B : insertArticle69B,
     getArticle69External: getArticle69External,
-    getArticle69BExternal: getArticle69BExternal
+    getArticle69BExternal: getArticle69BExternal,
+    login: login
 }

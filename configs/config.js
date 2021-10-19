@@ -7,8 +7,31 @@ async function getExpiration(){
         let generalParameters = await pool.request()
             .input('pvOptionCRUD', sql.VarChar, "R")
             .execute('spCat_General_Parameters_CRUD_Records')
-            //console.log(generalParameters.recordsets[0][6].Value)
         return generalParameters.recordsets[0][6].Value
+    }catch(error){
+        console.log(error)
+    }
+}
+
+async function getExpiration69(){
+    try{
+        let pool = await sql.connect(config);
+        let generalParameters = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, "R")
+            .execute('spCat_General_Parameters_CRUD_Records')
+        return generalParameters.recordsets[0][12].Value
+    }catch(error){
+        console.log(error)
+    }
+}
+
+async function getSecret69(){
+    try{
+        let pool = await sql.connect(config);
+        let generalParameters = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, "R")
+            .execute('spCat_General_Parameters_CRUD_Records')
+        return generalParameters.recordsets[0][11].Value
     }catch(error){
         console.log(error)
     }
@@ -20,7 +43,6 @@ async function getSecret(){
         let generalParameters = await pool.request()
             .input('pvOptionCRUD', sql.VarChar, "R")
             .execute('spCat_General_Parameters_CRUD_Records')
-            console.log(generalParameters.recordsets[0][5].Value)
         return generalParameters.recordsets[0][5].Value
     }catch(error){
         console.log(error)
@@ -30,5 +52,7 @@ async function getSecret(){
 module.exports = {
     llave: "miclaveultrasecreta123*",
     getExpiration: getExpiration,
-    getSecret: getSecret
+    getSecret: getSecret,
+    getSecret69 : getSecret69,
+    getExpiration69 : getExpiration69
 }

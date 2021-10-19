@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const auth = require('./auth');
+const auth69 = require('./auth69');
 
 const dbarticulo69 = require('../controllers/article-69')
 
@@ -11,20 +12,14 @@ router.route('/69').get(auth, (request, response)=>{
 })
 
 //Ruta para obtener los datos del artículo 69 externamente
-router.route('/external-69').get((request, response)=>{
-    const params = {
-        piIdCustomer: request.query.piIdCustomer,
-        pIdApplication : request.query.pIdApplication,
-        pvIdUser : request.query.pvIdUser,
-        pvPassword : request.query.pvPassword,
-    };
-    dbarticulo69.getArticle69External(params).then(result => {
+router.route('/external-69').get(auth69, (request, response)=>{
+    dbarticulo69.getArticle69External().then(result => {
         response.json(result[0]);
     })
 })
 
 //Ruta para obtener los datos del artículo 69 externamente
-router.route('/external-69B').get((request, response)=>{
+router.route('/external-69B').get(auth69, (request, response)=>{
     const params = {
         piIdCustomer: request.query.piIdCustomer,
         pIdApplication : request.query.pIdApplication,
@@ -55,6 +50,14 @@ router.route('/create-article-69').post(auth, (request, response)=>{
 router.route('/create-article-69-B').post(auth, (request, response)=>{
     let catRegister = {...request.body}
     dbarticulo69.insertArticle69B(catRegister).then(result => {
+        response.json(result[0]);
+    })
+})
+
+//Ruta para iniciar sesion
+router.route('/login').post((request, response)=>{
+    let userRegister = {...request.body}
+    dbarticulo69.login(userRegister, response).then(result => {
         response.json(result[0]);
     })
 })
