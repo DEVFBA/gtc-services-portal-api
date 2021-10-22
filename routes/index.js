@@ -51,4 +51,7 @@ router.use('/article-69', require('./article-69.js'));
 //Rutas para el encriptado
 router.use('/encrypt', require('./encriptado.js'));
 
+//Rutas para los assumptions
+router.use('/assumptions', require('./assumptions.js'));
+
 module.exports = router;
