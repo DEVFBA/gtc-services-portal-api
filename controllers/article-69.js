@@ -6,6 +6,7 @@ const csv=require('csvtojson')
 const axios = require('axios');
 var jwt = require('jsonwebtoken');
 var config2 = require('../configs/config');
+const { convertArrayToCSV } = require('convert-array-to-csv');
 
 //Para obtener todos los registros del Articulo 69
 async function getArticle69(){
