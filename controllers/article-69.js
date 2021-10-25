@@ -44,7 +44,11 @@ async function login(req){
       if(userLogin.recordsets[0][0].Code_Type=="Error")
       {
         const regreso = {
-          mensaje: userLogin.recordsets[0][0].Code_Message_User
+          error: {
+            code: userLogin.recordsets[0][0].Code,
+            idTransacLog: userLogin.recordsets[0][0].IdTransacLog,
+            mensaje: userLogin.recordsets[0][0].Code_Message_User
+          } 
         }
         const response = [regreso]
         return response
@@ -63,6 +67,7 @@ async function login(req){
         }, secret);
 
         const regreso = {
+          mensaje: userLogin.recordsets[0][0].Code_Message_User,
           token: token
         }
         const response = [regreso]
@@ -81,7 +86,39 @@ async function getArticle69External(){
     let routes = await pool.request()
         .input('pvOptionCRUD', sql.VarChar, "R")
         .execute('spSAT_Article_69_Load_Records')
-    return routes.recordsets
+
+        if(routes.recordsets[0][0].Code_Type=="Error" || routes.recordsets[0][0].Code_Type=="Warning")
+        {
+          const regreso = {
+            error: {
+              code: userLogin.recordsets[0][0].Code,
+              idTransacLog: userLogin.recordsets[0][0].IdTransacLog,
+              mensaje: userLogin.recordsets[0][0].Code_Message_User
+            } 
+          }
+          const response = [regreso]
+          return response
+        }
+        else {
+          var aux = []
+          for(var i=0; i< routes.recordsets[0].length; i++)
+          {
+            aux[i] = {
+              RFC: routes.recordsets[0][i].RFC,
+              Razon_Social: routes.recordsets[0][i].Razon_Social,
+              Tipo_Persona: routes.recordsets[0][i].Tipo_Persona,
+              Supuesto: routes.recordsets[0][i].Supuesto,
+              Fecha_Publicacion: routes.recordsets[0][i].Fecha_Publicacion,
+              Entidad_Federativa: routes.recordsets[0][i].Entidad_Federativa
+            }
+          }
+          const regreso = {
+            data: aux
+          }
+          const response = [regreso]
+          return response
+        }
+    //return routes.recordsets
   }catch(error){
       console.log(error)
   }
@@ -94,7 +131,31 @@ async function getArticle69BExternal(){
     let routes = await pool.request()
         .input('pvOptionCRUD', sql.VarChar, "R")
         .execute('spSAT_Article_69B_Load_Records')
-    return routes.recordsets
+        if(routes.recordsets[0][0].Code_Type=="Error" || routes.recordsets[0][0].Code_Type=="Warning")
+        {
+          const regreso = {
+            error: {
+              code: userLogin.recordsets[0][0].Code,
+              idTransacLog: userLogin.recordsets[0][0].IdTransacLog,
+              mensaje: userLogin.recordsets[0][0].Code_Message_User
+            } 
+          }
+          const response = [regreso]
+          return response
+        }
+        else {
+          var aux = []
+          for(var i=0; i< routes.recordsets[0].length; i++)
+          {
+            delete routes.recordsets[0][i].Register_Date
+            delete routes.recordsets[0][i].Version_Load
+          }
+          const regreso = {
+            data: routes.recordsets[0]
+          }
+          const response = [regreso]
+          return response
+        }
   }catch(error){
       console.log(error)
   }

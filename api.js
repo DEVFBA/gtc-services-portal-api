@@ -15,12 +15,6 @@ app.use(bodyParser.json({
     extended: true
 }));
 
-app.use(cors(
-    {
-        origin: true,
-    }
-));
-
 // Agregamos el código de nuestro router (routes/index.js)
 //app.use('/v1', require('./routes'));
 

@@ -19,7 +19,11 @@ auth69.use(async (req, res, next) => {
     if (token) {
       jwt.verify(token, secret, (err, decoded) => {      
         if (err) {
-          return res.json({ mensaje: 'Token inválida' });    
+          res.status(403)
+          return res.json({ error: {
+            message: "Unauthorized / Invalid Token"
+        }
+     });    
         } else {
           req.decoded = decoded;    
           next();

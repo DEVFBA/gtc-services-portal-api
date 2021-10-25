@@ -14,6 +14,10 @@ router.route('/69').get(auth, (request, response)=>{
 //Ruta para obtener los datos del artículo 69 externamente
 router.route('/external-69').get(auth69, (request, response)=>{
     dbarticulo69.getArticle69External().then(result => {
+        if(result[0].error !== undefined)
+        {
+            response.status(422)
+        }
         response.json(result[0]);
     })
 })
@@ -58,6 +62,12 @@ router.route('/create-article-69-B').post(auth, (request, response)=>{
 router.route('/login').post((request, response)=>{
     let userRegister = {...request.body}
     dbarticulo69.login(userRegister, response).then(result => {
+        //console.log(response.status)
+       
+        if(result[0].error !== undefined)
+        {
+            response.status(401)
+        }
         response.json(result[0]);
     })
 })
