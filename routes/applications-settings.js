@@ -16,4 +16,12 @@ router.route('/').get(auth, (request, response)=>{
     })
 })
 
+//Ruta para actualizar una configuracion
+router.route('/update-settings').put(auth, (request, response)=>{
+    let settingRegister = {...request.body}
+    dbapplicationsettings.updateSettings(settingRegister).then(result => {
+        response.json(result[0]);
+    })
+})
+
 module.exports = router;

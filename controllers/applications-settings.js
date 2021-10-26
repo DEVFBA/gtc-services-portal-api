@@ -15,6 +15,27 @@ async function getApplicationsSettings(params){
     }
 }
 
+//Actualizar un registro de los usuarios
+async function updateSettings(settingRegister){
+    try{
+        let pool = await sql.connect(config);
+        let updateSettingRegister = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, settingRegister.pvOptionCRUD)
+            .input('piIdCustomer', sql.Int, settingRegister.piIdCustomer)
+            .input('pvIdApplication', sql.VarChar, settingRegister.pvIdApplication)
+            .input('pvSettingsKey', sql.VarChar, settingRegister.pvSettingsKey)
+            .input('pvSettingsValue', sql.VarChar, settingRegister.pvSettingsValue)
+            .input('pvUser', sql.VarChar, settingRegister.pvUser)
+            .input('pvIP', sql.VarChar, settingRegister.pvIP)
+            .execute('spApplication_Settings_CRUD_Records')
+        console.log(JSON.stringify(updateSettingRegister.recordsets[0][0])); 
+        return updateSettingRegister.recordsets
+    }catch(error){
+        console.log(error)
+    }
+}
+
 module.exports = {
     getApplicationsSettings : getApplicationsSettings,
+    updateSettings : updateSettings
 }

@@ -17,4 +17,11 @@ router.route('/login').post((request, response)=>{
     })
 })
 
+//Ruta para obtener todas los assumptions
+router.route('/').get(auth, (request, response)=>{
+    dbdistances.getDistance().then(result => {
+        response.json(result);
+    })
+})
+
 module.exports = router;

@@ -14,7 +14,7 @@ router.route('/').get(auth, (request, response)=>{
 })
 
 //Ruta para obtener una customer application de un cliente en especifico
-router.route('/:id').get( (request, response)=>{
+router.route('/:id').get(auth, (request, response)=>{
     dbcustomerapplications.getCustomerApplicationsId(request.params.id).then(result => {
         response.json(result[0]);
     })
