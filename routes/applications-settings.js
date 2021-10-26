@@ -1,22 +1,16 @@
 const router = require('express').Router();
 const auth = require('./auth');
 
-const dbapplicationsettings = require('../controllers/application-settings')
+const dbapplicationsettings = require('../controllers/applications-settings')
 
-//Ruta para obtener todas las aplicaciones
+//Ruta para obtener todas las aplicaciones de un cliente en específico
 router.route('/').get(auth, (request, response)=>{
     const params = {
         pvOptionCRUD: request.query.pvOptionCRUD,
+        piIdCustomer: request.query.piIdCustomer,
     };
+    console.log(params)
     dbapplicationsettings.getApplicationsSettings(params).then(result => {
-        response.json(result[0]);
-    })
-})
-
-//Ruta para obtener una aplicacion por ID
-router.route('/:id').get(auth, (request, response)=>{
-    
-    dbapplicationsettings.getApplicationsSettingsId(request.params.id).then(result => {
         response.json(result[0]);
     })
 })

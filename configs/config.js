@@ -13,6 +13,18 @@ async function getExpiration(){
     }
 }
 
+async function getExpirationDistances(){
+    try{
+        let pool = await sql.connect(config);
+        let generalParameters = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, "R")
+            .execute('spCat_General_Parameters_CRUD_Records')
+        return generalParameters.recordsets[0][13].Value
+    }catch(error){
+        console.log(error)
+    }
+}
+
 async function getExpiration69(){
     try{
         let pool = await sql.connect(config);
@@ -37,6 +49,18 @@ async function getSecret69(){
     }
 }
 
+async function getSecretDistances(){
+    try{
+        let pool = await sql.connect(config);
+        let generalParameters = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, "R")
+            .execute('spCat_General_Parameters_CRUD_Records')
+        return generalParameters.recordsets[0][14].Value
+    }catch(error){
+        console.log(error)
+    }
+}
+
 async function getSecret(){
     try{
         let pool = await sql.connect(config);
@@ -54,5 +78,7 @@ module.exports = {
     getExpiration: getExpiration,
     getSecret: getSecret,
     getSecret69 : getSecret69,
-    getExpiration69 : getExpiration69
+    getExpiration69 : getExpiration69,
+    getSecretDistances : getSecretDistances,
+    getExpirationDistances : getExpirationDistances
 }
