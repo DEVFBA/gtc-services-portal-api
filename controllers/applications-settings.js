@@ -22,7 +22,7 @@ async function updateSettings(settingRegister){
         let updateSettingRegister = await pool.request()
             .input('pvOptionCRUD', sql.VarChar, settingRegister.pvOptionCRUD)
             .input('piIdCustomer', sql.Int, settingRegister.piIdCustomer)
-            .input('pvIdApplication', sql.VarChar, settingRegister.pvIdApplication)
+            .input('piIdApplication', sql.VarChar, settingRegister.piIdApplication)
             .input('pvSettingsKey', sql.VarChar, settingRegister.pvSettingsKey)
             .input('pvSettingsValue', sql.VarChar, settingRegister.pvSettingsValue)
             .input('pvUser', sql.VarChar, settingRegister.pvUser)
