@@ -13,6 +13,32 @@ async function getCustomerApplications(params){
     }
 }
 
+async function getCustomerApplications(params){
+    try{
+        let pool = await sql.connect(config);
+        let catApplications = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, params.pvOptionCRUD)
+            .execute('spCustomer_Applications_CRUD_Records')
+        return catApplications.recordsets
+    }catch(error){
+        console.log(error)
+    }
+}
+
+//Funcion para obtener un usuario mediante su id
+async function getCustomerApplicationsId(params){
+    try{
+        let pool = await sql.connect(config);
+        let applicationsSettings = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, "R")
+            .input('piIdCustomer', sql.Int, params)
+            .execute('spCustomer_Applications_CRUD_Records')
+        return applicationsSettings.recordsets
+    }catch(error){
+        console.log(error)
+    }
+}
+
 //Crear un registro de los customer applications
 async function insertCustomerApplication(catRegister){
     try{
@@ -54,5 +80,6 @@ async function updateCustomerApplication(catRegister){
 module.exports = {
     getCustomerApplications : getCustomerApplications,
     insertCustomerApplication : insertCustomerApplication,
-    updateCustomerApplication: updateCustomerApplication
+    updateCustomerApplication: updateCustomerApplication,
+    getCustomerApplicationsId: getCustomerApplicationsId
 }
