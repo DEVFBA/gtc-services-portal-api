@@ -7,6 +7,7 @@ async function getApplicationsSettings(params){
         let applicationsSettings = await pool.request()
             .input('pvOptionCRUD', sql.VarChar, params.pvOptionCRUD)
             .input('piIdCustomer', sql.VarChar, params.piIdCustomer)
+            .input('piIdApplication', sql.VarChar, params.piIdApplication)
             .execute('spApplication_Settings_CRUD_Records')
         return applicationsSettings.recordsets
     }catch(error){

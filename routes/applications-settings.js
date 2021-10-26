@@ -8,6 +8,7 @@ router.route('/').get(auth, (request, response)=>{
     const params = {
         pvOptionCRUD: request.query.pvOptionCRUD,
         piIdCustomer: request.query.piIdCustomer,
+        piIdApplication: request.query.piIdApplication
     };
     console.log(params)
     dbapplicationsettings.getApplicationsSettings(params).then(result => {
