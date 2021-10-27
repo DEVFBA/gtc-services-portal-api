@@ -64,8 +64,7 @@ async function login(req){
 }
 
 async function getDistance(){
-  //const res = await axios.get('https://maps.googleapis.com/maps/api/distancematrix/json?origins=40.6655101%2C-73.89188969999998&destinations=40.659569%2C-73.933783%7C40.729029%2C-73.851524%7C40.6860072%2C-73.6334271%7C40.598566%2C-73.7527626&key=AIzaSyDYlA2dPrmOWqveoQXfQ766MGfwwEzRpC0')
-  const res = await axios.get('https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyDYlA2dPrmOWqveoQXfQ766MGfwwEzRpC0')
+  
   //console.log(res.data)
   return res.data
 }
