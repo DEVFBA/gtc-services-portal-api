@@ -22,6 +22,10 @@ router.route('/login').post((request, response)=>{
 router.route('/').post(authDistances, (request, response)=>{
     let distances = {...request.body}
     dbdistances.getDistance(distances, response).then(result => {
+        if(result.error!== undefined)
+        {
+            response.status(400)
+        }
         response.json(result);
     })
 })

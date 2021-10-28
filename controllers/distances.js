@@ -125,7 +125,7 @@ async function getDistance(req){
         urlDistances = urlDistances + "%2C" + response.data.results[0].geometry.location.lng + "&destinations="
       } catch(err){
           return {
-            error: "Hubo un error, consulte con el administrador"
+            error: err
           }
       }
     }
@@ -196,7 +196,8 @@ async function getDistance(req){
           
         } catch(err){
             return {
-              error: "Hubo un error, consulte con el administrador"
+              mensaje: "Error al obtener COORDENADAS, Valide",
+              error: err
             }
         }
       }
@@ -216,7 +217,8 @@ async function getDistance(req){
         distanciasFinal[i] = response.data
     } catch(err){
           return {
-            error: "Hubo un error, consulte con el administrador"
+            mensaje: "Error al obtener DISTANCIAS, Valide",
+            error: err
           }
     }
   }
