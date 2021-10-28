@@ -2,7 +2,7 @@ var jwt = require('jsonwebtoken');
 var express = require('express');
 var config = require('../configs/config');
 
-const auth69 = express.Router(); 
+const authDistances = express.Router(); 
 
 function getTokenFromHeader(req) {
     if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Token' ||
@@ -13,9 +13,9 @@ function getTokenFromHeader(req) {
     return null;
 }
 
-auth69.use(async (req, res, next) => {
+authDistances.use(async (req, res, next) => {
     const token = getTokenFromHeader(req);
-    var secret = await config.getSecret69()
+    var secret = await config.getSecretDistances()
     if (token) {
       jwt.verify(token, secret, (err, decoded) => {      
         if (err) {
@@ -36,4 +36,4 @@ auth69.use(async (req, res, next) => {
     }
 });
 
-module.exports = auth69;
+module.exports = authDistances;

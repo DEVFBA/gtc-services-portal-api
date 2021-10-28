@@ -73,6 +73,18 @@ async function getSecret(){
     }
 }
 
+async function getGoogleApiKey(){
+    try{
+        let pool = await sql.connect(config);
+        let generalParameters = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, "R")
+            .execute('spCat_General_Parameters_CRUD_Records')
+        return generalParameters.recordsets[0][15].Value
+    }catch(error){
+        console.log(error)
+    }
+}
+
 module.exports = {
     llave: "miclaveultrasecreta123*",
     getExpiration: getExpiration,
@@ -80,5 +92,6 @@ module.exports = {
     getSecret69 : getSecret69,
     getExpiration69 : getExpiration69,
     getSecretDistances : getSecretDistances,
-    getExpirationDistances : getExpirationDistances
+    getExpirationDistances : getExpirationDistances,
+    getGoogleApiKey : getGoogleApiKey
 }

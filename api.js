@@ -15,6 +15,10 @@ app.use(bodyParser.json({
     extended: true
 }));
 
+app.use(cors({
+    origin: ['http://localhost:3000', 'http://localhost:3001', 'http://129.159.99.152']
+}));
+
 // Agregamos el código de nuestro router (routes/index.js)
 //app.use('/v1', require('./routes'));
 

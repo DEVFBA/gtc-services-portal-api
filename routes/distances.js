@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const auth = require('./auth');
 const authDistances = require('./authDistances');
+var config2 = require('../configs/config');
 
 const dbdistances = require('../controllers/distances')
 
@@ -18,8 +19,9 @@ router.route('/login').post((request, response)=>{
 })
 
 //Ruta para obtener todas los assumptions
-router.route('/').get(auth, (request, response)=>{
-    dbdistances.getDistance().then(result => {
+router.route('/').post(authDistances, (request, response)=>{
+    let distances = {...request.body}
+    dbdistances.getDistance(distances, response).then(result => {
         response.json(result);
     })
 })
