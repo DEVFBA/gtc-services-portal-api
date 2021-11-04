@@ -18,10 +18,22 @@ router.route('/login').post((request, response)=>{
     })
 })
 
-//Ruta para obtener todas los assumptions
+//Ruta para obtener distancias
 router.route('/').post(authDistances, (request, response)=>{
     let distances = {...request.body}
     dbdistances.getDistance(distances, response).then(result => {
+        if(result.error!== undefined)
+        {
+            response.status(400)
+        }
+        response.json(result);
+    })
+})
+
+//Ruta para obtener distancias sin token
+router.route('/WT/').post((request, response)=>{
+    let distances = {...request.body}
+    dbdistances.getDistanceWT(distances, response).then(result => {
         if(result.error!== undefined)
         {
             response.status(400)
