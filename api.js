@@ -5,7 +5,7 @@ var timeout = require('connect-timeout')
 
 // Objeto global de la app
 var app = express();
-app.use(timeout('7600s'))
+app.use(timeout('10800'))
 // configuración de middlewares
 app.use(bodyParser.urlencoded({ 
     limit: '100mb',
