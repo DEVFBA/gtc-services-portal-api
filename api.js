@@ -1,25 +1,20 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var cors = require('cors');
-var timeout = require('connect-timeout')
 
 // Objeto global de la app
 var app = express();
-app.use(timeout('10800'))
+
 // configuración de middlewares
 app.use(bodyParser.urlencoded({ 
     limit: '100mb',
     extended: true
- }));
-
-app.use(haltOnTimedout)
+}));
 
 app.use(bodyParser.json({
     limit: '100mb', 
     extended: true
 }));
-
-app.use(haltOnTimedout)
 
 app.use(cors({
     origin: ['http://localhost:3000', 'http://localhost:3001', 'http://129.159.99.152']
