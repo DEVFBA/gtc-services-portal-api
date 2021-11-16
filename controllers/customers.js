@@ -109,7 +109,7 @@ async function updateCustomerRegister(userRegister){
     var filename = ``
 
     //Si la imagen no viene vacia la guardamos en carpeta
-    if(userRegister.pvLogo !== "")
+    if(userRegister.pvChangeImage !== false)
     {
         /*path of the folder where your project is saved. (In my case i got it from config file, root path of project).*/
         const uploadPath =  `${userRegister.pathLogo}`;
@@ -182,6 +182,7 @@ async function updateCustomerRegister(userRegister){
                 .input('pvPhone1', sql.VarChar, userRegister.pvPhone1)
                 .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
                 .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
+                .input('pvLogo', sql.VarChar, userRegister.pvLogo)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
                 .input('pvUser', sql.Bit, userRegister.pvUser)
                 .input('pvIP', sql.VarChar, userRegister.pvIP)

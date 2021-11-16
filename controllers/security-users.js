@@ -138,7 +138,7 @@ async function updateUserRegister(userRegister){
     var filename = ""
 
     //Si la imagen no viene vacia la guardamos en carpeta
-    if(userRegister.pvProfilePicPath !== "")
+    if(userRegister.pvChangeImage !== false)
     {
         /*path of the folder where your project is saved. (In my case i got it from config file, root path of project).*/
         const uploadPath = `${userRegister.pathImage}`;
@@ -216,7 +216,7 @@ async function updateUserRegister(userRegister){
 async function updateUserRegisterWP(userRegister){
 
     //Si la imagen no viene vacia la guardamos en carpeta
-    if(userRegister.pvProfilePicPath !== "")
+    if(userRegister.pvChangeImage !== false)
     {
         /*path of the folder where your project is saved. (In my case i got it from config file, root path of project).*/
         const uploadPath = `${userRegister.pathImage}`;
