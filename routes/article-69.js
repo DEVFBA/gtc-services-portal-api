@@ -6,7 +6,10 @@ const dbarticulo69 = require('../controllers/article-69')
 
 //Ruta para obtener los datos del Articulo 69
 router.route('/69').get(auth, (request, response)=>{
-    dbarticulo69.getArticle69().then(result => {
+    const params = {
+        pvIdAssumption: request.query.pvIdAssumption,
+    };
+    dbarticulo69.getArticle69(params).then(result => {
         response.json(result[0]);
     })
 })

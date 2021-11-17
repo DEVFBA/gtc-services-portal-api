@@ -9,11 +9,12 @@ var config2 = require('../configs/config');
 const { convertArrayToCSV } = require('convert-array-to-csv');
 
 //Para obtener todos los registros del Articulo 69
-async function getArticle69(){
+async function getArticle69(params){
     try{
         let pool = await sql.connect(config);
         let routes = await pool.request()
             .input('pvOptionCRUD', sql.VarChar, "R")
+            .input('pvIdAssumption', sql.VarChar, params.pvIdAssumption)
             .execute('spSAT_Article_69_Load_Records')
         return routes.recordsets
     }catch(error){

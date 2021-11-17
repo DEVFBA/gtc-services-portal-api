@@ -20,16 +20,16 @@ app.use(cors({
     origin: ['http://localhost:3000', 'http://localhost:3001', 'http://129.159.99.152']
 }));
 
-// Agregamos el código de nuestro router (routes/index.js)
-//app.use('/v1', require('./routes'));
+const _json = bodyParser.json()
 
-//Creacion de ruta principal
-/*app.use('/api', router)
-
-router.get('/', (req, res)=>{
-    res.send('welcome to GTC Portal Services API');
-});*/
-
+app.use((req, res, next) => {
+  const id  = `${Date.now() + Math.random()}`
+  console.log('Start #%s', id)
+  _json(req, res, (err) => {
+    console.log('End $%s', id)
+    next(err)
+  })
+})
 
 
 // Agregamos el código de nuestro router (routes/index.js)
