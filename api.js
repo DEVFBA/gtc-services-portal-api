@@ -20,18 +20,6 @@ app.use(cors({
     origin: ['http://localhost:3000', 'http://localhost:3001', 'http://129.159.99.152']
 }));
 
-const _json = bodyParser.json()
-
-app.use((req, res, next) => {
-  const id  = `${Date.now() + Math.random()}`
-  console.log('Start #%s', id)
-  _json(req, res, (err) => {
-    console.log('End $%s', id)
-    next(err)
-  })
-})
-
-
 // Agregamos el código de nuestro router (routes/index.js)
 app.use('/api', require('./routes'));
 
