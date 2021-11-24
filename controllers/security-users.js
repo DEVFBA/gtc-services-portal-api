@@ -2,11 +2,11 @@ var config = require("../dbconfig"); //instanciamos el archivo dbconfig
 const sql = require("mssql"); //necesitamos el paquete sql
 var jwt = require('jsonwebtoken');
 var config2 = require('../configs/config');
+var generalParameters = require('./cat-general-parameters')
 
 var fs = require('fs');
 
 var sha256 = require('js-sha256').sha256;
-const publicIp = require('public-ip');
 
 async function getUsers(params){
     try{
@@ -52,8 +52,6 @@ async function getUsersCustomer(params){
 //Crear un usuario
 async function insertUserRegister(userRegister){
 
-    const ip = await publicIp.v4();
-
     var localPath=""
     var filename = ""
 
@@ -97,10 +95,10 @@ async function insertUserRegister(userRegister){
                 .input('pvName', sql.VarChar, userRegister.pvName)
                 .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
                 .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
-                .input('pvProfilePicPath', sql.VarChar, localPath+filename)
+                .input('pvProfilePicPath', sql.VarChar, filename)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
                 .input('pvUser', sql.VarChar, userRegister.pvUser)
-                .input('pvIP', sql.VarChar, ip)
+                .input('pvIP', sql.VarChar, userRegister.pvIP)
                 .execute('spSecurity_Users_CRUD_Records')
             console.log(JSON.stringify(insertUserRegister.recordsets[0][0])); 
             return insertUserRegister.recordsets
@@ -120,10 +118,9 @@ async function insertUserRegister(userRegister){
                 .input('pvName', sql.VarChar, userRegister.pvName)
                 .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
                 .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
-                .input('pvProfilePicPath', sql.VarChar, "")
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
                 .input('pvUser', sql.VarChar, userRegister.pvUser)
-                .input('pvIP', sql.VarChar, ip)
+                .input('pvIP', sql.VarChar, userRegister.pvIP)
                 .execute('spSecurity_Users_CRUD_Records')
             console.log(JSON.stringify(insertUserRegister.recordsets[0][0])); 
             return insertUserRegister.recordsets
@@ -136,15 +133,12 @@ async function insertUserRegister(userRegister){
 
 //Actualizar un registro de los usuarios
 async function updateUserRegister(userRegister){
-    const ip = await publicIp.v4();
 
     var localPath=""
     var filename = ""
 
-    console.log(userRegister.pathImage)
-
     //Si la imagen no viene vacia la guardamos en carpeta
-    if(userRegister.pvProfilePicPath !== "")
+    if(userRegister.pvChangeImage !== false)
     {
         /*path of the folder where your project is saved. (In my case i got it from config file, root path of project).*/
         const uploadPath = `${userRegister.pathImage}`;
@@ -182,10 +176,10 @@ async function updateUserRegister(userRegister){
                 .input('pvName', sql.VarChar, userRegister.pvName)
                 .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
                 .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
-                .input('pvProfilePicPath', sql.VarChar, localPath+filename)
+                .input('pvProfilePicPath', sql.VarChar, filename)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
                 .input('pvUser', sql.VarChar, userRegister.pvUser)
-                .input('pvIP', sql.VarChar, ip)
+                .input('pvIP', sql.VarChar, userRegister.pvIP)
                 .execute('spSecurity_Users_CRUD_Records')
             console.log(JSON.stringify(updateUserRegister.recordsets[0][0])); 
             return updateUserRegister.recordsets
@@ -205,10 +199,9 @@ async function updateUserRegister(userRegister){
                 .input('pvName', sql.VarChar, userRegister.pvName)
                 .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
                 .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
-                .input('pvProfilePicPath', sql.VarChar, "")
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
                 .input('pvUser', sql.VarChar, userRegister.pvUser)
-                .input('pvIP', sql.VarChar, ip)
+                .input('pvIP', sql.VarChar, userRegister.pvIP)
                 .execute('spSecurity_Users_CRUD_Records')
             console.log(JSON.stringify(updateUserRegister.recordsets[0][0])); 
             return updateUserRegister.recordsets
@@ -221,10 +214,9 @@ async function updateUserRegister(userRegister){
 
 //Actualizar un registro de los usuarios sin cambiar el password
 async function updateUserRegisterWP(userRegister){
-    const ip = await publicIp.v4();
 
     //Si la imagen no viene vacia la guardamos en carpeta
-    if(userRegister.pvProfilePicPath !== "")
+    if(userRegister.pvChangeImage !== false)
     {
         /*path of the folder where your project is saved. (In my case i got it from config file, root path of project).*/
         const uploadPath = `${userRegister.pathImage}`;
@@ -240,7 +232,6 @@ async function updateUserRegisterWP(userRegister){
         const rand = Math.ceil(Math.random()*1000);
         //Random photo name with timeStamp so it will not overide previous images.
         filename =  `${userRegister.pvIdUser}.${ext}`;
-        
         //Check that if directory is present or not.
         if(!fs.existsSync(`${uploadPath}`)) {
             fs.mkdirSync(`${uploadPath}`);
@@ -259,10 +250,11 @@ async function updateUserRegisterWP(userRegister){
                 .input('pvIdUser', sql.VarChar, userRegister.pvIdUser)
                 .input('pvIdRole', sql.VarChar, userRegister.pvIdRole)
                 .input('pvName', sql.VarChar, userRegister.pvName)
-                .input('pvProfilePicPath', sql.VarChar, localPath+filename)
+                .input('pvProfilePicPath', sql.VarChar, filename)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
+                .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
                 .input('pvUser', sql.VarChar, userRegister.pvUser)
-                .input('pvIP', sql.VarChar, ip)
+                .input('pvIP', sql.VarChar, userRegister.pvIP)
                 .execute('spSecurity_Users_CRUD_Records')
             console.log(JSON.stringify(updateUserRegister.recordsets[0][0])); 
             return updateUserRegister.recordsets
@@ -279,10 +271,10 @@ async function updateUserRegisterWP(userRegister){
                 .input('pvIdUser', sql.VarChar, userRegister.pvIdUser)
                 .input('pvIdRole', sql.VarChar, userRegister.pvIdRole)
                 .input('pvName', sql.VarChar, userRegister.pvName)
-                .input('pvProfilePicPath', sql.VarChar, "")
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
+                .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
                 .input('pvUser', sql.VarChar, userRegister.pvUser)
-                .input('pvIP', sql.VarChar, ip)
+                .input('pvIP', sql.VarChar, userRegister.pvIP)
                 .execute('spSecurity_Users_CRUD_Records')
             console.log(JSON.stringify(updateUserRegister.recordsets[0][0])); 
             return updateUserRegister.recordsets
@@ -294,7 +286,6 @@ async function updateUserRegisterWP(userRegister){
 
 //Actualizar un registro de los usuarios (solo la contraseña)
 async function updateUserRegisterPass(userRegister){
-    const ip = await publicIp.v4();
     try{
         let pool = await sql.connect(config);
         let updateUserRegister = await pool.request()
@@ -306,9 +297,8 @@ async function updateUserRegisterPass(userRegister){
             .input('pvPassword', sql.VarChar, sha256(userRegister.pvPassword))
             .input('pbTempPassword', sql.Bit, userRegister.pbTempPassword)
             .input('pvFinalEffectiveDate', sql.VarChar, userRegister.pvFinalEffectiveDate)
-            .input('pvProfilePicPath', sql.VarChar, "")
             .input('pvUser', sql.VarChar, userRegister.pvUser)
-            .input('pvIP', sql.VarChar, ip)
+            .input('pvIP', sql.VarChar, userRegister.pvIP)
             .execute('spSecurity_Users_CRUD_Records')
         console.log(JSON.stringify(updateUserRegister.recordsets[0][0])); 
         return updateUserRegister.recordsets
@@ -330,15 +320,18 @@ async function iniciarSesion(req) {
             .execute('spSecurity_Users_CRUD_Records')
         console.log(JSON.stringify(userLogin.recordsets[0][0]));
 
+        var expiration = await config2.getExpiration()
+        var secret = await config2.getSecret()
+
         const today = new Date();
         const exp = new Date(today);
-        exp.setDate(today.getDate() + 1); // 1 día antes de expirar
+        exp.setDate(today.getDate() + parseInt(expiration, 10)); // 1 día antes de expirar
 
         const token = jwt.sign({
             id: req.pvIdUser,
             username: req.pvPassword,
             exp: parseInt(exp.getTime() / 1000),
-        }, config2.llave);
+        }, secret);
         //console.log(token)
         userLogin.recordsets[0][1] = {token: token}
         return userLogin.recordsets

@@ -20,4 +20,20 @@ router.route('/:id').get(auth, (request, response)=>{
     })
 })
 
+//Ruta para crear una aplicación
+router.route('/create-application').post(auth, (request, response)=>{
+    let catRegister = {...request.body}
+    dbcatapplications.insertCatRegisterApplication(catRegister).then(result => {
+        response.json(result[0]);
+    })
+})
+
+//Ruta para actualizar una aplicación
+router.route('/update-application').put(auth, (request, response)=>{
+    let catRegister = {...request.body}
+    dbcatapplications.updateCatRegisterApplication(catRegister).then(result => {
+        response.json(result[0]);
+    })
+})
+
 module.exports = router;

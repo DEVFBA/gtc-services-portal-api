@@ -1,6 +1,5 @@
 var config = require("../dbconfig"); //instanciamos el archivo dbconfig
 const sql = require("mssql"); //necesitamos el paquete sql
-const publicIp = require('public-ip');
 
 var fs = require('fs');
 
@@ -18,8 +17,6 @@ async function getCustomers(params){
 
 //Crear un cliente
 async function insertCustomerRegister(userRegister){
-    
-    const ip = await publicIp.v4();
     var localPath=""
     var filename = ""
 
@@ -66,9 +63,10 @@ async function insertCustomerRegister(userRegister){
                 .input('pvPhone1', sql.VarChar, userRegister.pvPhone1)
                 .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
                 .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
-                .input('pvLogo', sql.VarChar, localPath+filename)
+                .input('pvLogo', sql.VarChar, filename)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
-                .input('pvIP', sql.VarChar, ip)
+                .input('pvUser', sql.Bit, userRegister.pvUser)
+                .input('pvIP', sql.VarChar, userRegister.pvIP)
                 .execute('spCustomers_CRUD_Records')
             console.log(JSON.stringify(insertCustomer.recordsets[0][0])); 
             return insertCustomer.recordsets
@@ -93,9 +91,9 @@ async function insertCustomerRegister(userRegister){
                 .input('pvPhone1', sql.VarChar, userRegister.pvPhone1)
                 .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
                 .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
-                .input('pvLogo', sql.VarChar, "")
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
-                .input('pvIP', sql.VarChar, ip)
+                .input('pvUser', sql.Bit, userRegister.pvUser)
+                .input('pvIP', sql.VarChar, userRegister.pvIP)
                 .execute('spCustomers_CRUD_Records')
             console.log(JSON.stringify(insertCustomer.recordsets[0][0])); 
             return insertCustomer.recordsets
@@ -107,13 +105,11 @@ async function insertCustomerRegister(userRegister){
 
 //Actualizar un cliente
 async function updateCustomerRegister(userRegister){
-    
-    const ip = await publicIp.v4();
     var localPath=""
     var filename = ``
 
     //Si la imagen no viene vacia la guardamos en carpeta
-    if(userRegister.pvLogo !== "")
+    if(userRegister.pvChangeImage !== false)
     {
         /*path of the folder where your project is saved. (In my case i got it from config file, root path of project).*/
         const uploadPath =  `${userRegister.pathLogo}`;
@@ -157,9 +153,10 @@ async function updateCustomerRegister(userRegister){
                 .input('pvPhone1', sql.VarChar, userRegister.pvPhone1)
                 .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
                 .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
-                .input('pvLogo', sql.VarChar, localPath+filename)
+                .input('pvLogo', sql.VarChar, filename)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
-                .input('pvIP', sql.VarChar, ip)
+                .input('pvUser', sql.Bit, userRegister.pvUser)
+                .input('pvIP', sql.VarChar, userRegister.pvIP)
                 .execute('spCustomers_CRUD_Records')
             console.log(JSON.stringify(updateCustomer.recordsets[0][0])); 
             return updateCustomer.recordsets
@@ -185,9 +182,10 @@ async function updateCustomerRegister(userRegister){
                 .input('pvPhone1', sql.VarChar, userRegister.pvPhone1)
                 .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
                 .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
-                .input('pvLogo', sql.VarChar, "")
+                .input('pvLogo', sql.VarChar, userRegister.pvLogo)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
-                .input('pvIP', sql.VarChar, ip)
+                .input('pvUser', sql.Bit, userRegister.pvUser)
+                .input('pvIP', sql.VarChar, userRegister.pvIP)
                 .execute('spCustomers_CRUD_Records')
             console.log(JSON.stringify(updateCustomer.recordsets[0][0])); 
             return updateCustomer.recordsets
