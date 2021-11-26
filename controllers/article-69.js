@@ -372,11 +372,11 @@ async function insertArticle69B(catRegister){
               //parse out the column, row, and value
               var tt = 0;
               for (var i = 0; i < z.length; i++) {
-                  /*if (!isNaN(z[i])) {
+                  if (!isNaN(z[i])) {
                       tt = i;
                       break;
-                  }*/
-                  tt=i
+                  }
+                  //tt=i
               };
               var col = z.substring(0,tt);
               var row = parseInt(z.substring(tt));
@@ -397,14 +397,14 @@ async function insertArticle69B(catRegister){
         data.shift();
         data.shift();
         data.shift();
-
+        
        
       for(var i=0; i< data.length; i++)
       {
         var rfc = data[i]['RFC']
 
         var nC;
-        var rS1 = data[i]['Nombre del Contribuyente']
+        var rS1 = data[i]['Nombre del Contribuyente'].toString()
         var rS2 = rS1.replace(/,/g, '');
         var rS3 = rS2.replace(/'/g, '');
         nC = rS3;
@@ -416,7 +416,7 @@ async function insertArticle69B(catRegister){
           sC = ' '
         }
         else {
-          var aS1 = data[i]['Situación del contribuyente']
+          var aS1 = data[i]['Situación del contribuyente'].toString()
           var aS2 = aS1.replace(/,/g, '');
           var aS3 = aS2.replace(/"/g, '');
           //data[i]['Situación del contribuyente'] = aS3
@@ -429,7 +429,7 @@ async function insertArticle69B(catRegister){
           nFO = ' '
         }
         else {
-          var bS1 = data[i]['Número y fecha de oficio global de presunción SAT']
+          var bS1 = data[i]['Número y fecha de oficio global de presunción SAT'].toString()
           //console.log(rS1)
           var bS2 = bS1.replace(/,/g, '');
           var bS3 = bS2.replace(/"/g, '');
@@ -445,8 +445,8 @@ async function insertArticle69B(catRegister){
         else
         {
           
-          var cS1 = data[i]['Publicación página SAT presuntos']
-          var date = cS1.getDate()
+          var cS1 = data[i]['Publicación página SAT presuntos'].toString()
+          /*var date = cS1.getDate()
           var month = cS1.getMonth() + 1
           var year = cS1.getFullYear()
           var finalDate2 = ""
@@ -465,13 +465,13 @@ async function insertArticle69B(catRegister){
           }
           else{
               finalDate2 = date + "/" + month + "/" + year;
-          }
+          }*/
           //console.log(rS1)
           /*var cS2 = cS1.replace(/,/g, '');
           var cS3 = cS2.replace(/"/g, '');
-          //console.log(rS3)*/
-          //data[i]['Publicación página SAT presuntos'] = cS3
-          pPS = finalDate2;
+          //console.log(rS3)
+          //data[i]['Publicación página SAT presuntos'] = cS3*/
+          pPS = cS1;
         } 
        
 
@@ -499,7 +499,7 @@ async function insertArticle69B(catRegister){
         else
         {
           var eS1 = data[i]['Publicación DOF presuntos']
-          var date = eS1.getDate()
+          /*var date = eS1.getDate()
           var month = eS1.getMonth() + 1
           var year = eS1.getFullYear()
           var finalDate2 = ""
@@ -518,8 +518,8 @@ async function insertArticle69B(catRegister){
           }
           else{
               finalDate2 = date + "/" + month + "/" + year;
-          }
-          pDP = finalDate2
+          }*/
+          pDP = eS1
         }
         
         var nFGC;
@@ -546,7 +546,7 @@ async function insertArticle69B(catRegister){
         else
         {
           var gS1 = data[i]['Publicación página SAT desvirtuados']
-          var date = gS1.getDate()
+          /*var date = gS1.getDate()
           var month = gS1.getMonth() + 1
           var year = gS1.getFullYear()
           var finalDate2 = ""
@@ -565,8 +565,8 @@ async function insertArticle69B(catRegister){
           }
           else{
               finalDate2 = date + "/" + month + "/" + year;
-          }
-          pPSD = finalDate2;
+          }*/
+          pPSD = gS1;
         }
        
         var nFGCD;
@@ -592,7 +592,7 @@ async function insertArticle69B(catRegister){
         else
         {
           var iS1 = data[i]['Publicación DOF desvirtuados']
-          var date = iS1.getDate()
+          /*var date = iS1.getDate()
           var month = iS1.getMonth() + 1
           var year = iS1.getFullYear()
           var finalDate2 = ""
@@ -611,8 +611,8 @@ async function insertArticle69B(catRegister){
           }
           else{
               finalDate2 = date + "/" + month + "/" + year;
-          }
-          pDD = finalDate2;
+          }*/
+          pDD = iS1;
         }
         
         var nFOG;
@@ -638,7 +638,7 @@ async function insertArticle69B(catRegister){
         else 
         {
           var kS1 = data[i]['Publicación página SAT definitivos']
-          var date = kS1.getDate()
+          /*var date = kS1.getDate()
           var month = kS1.getMonth() + 1
           var year = kS1.getFullYear()
           var finalDate2 = ""
@@ -657,8 +657,8 @@ async function insertArticle69B(catRegister){
           }
           else{
               finalDate2 = date + "/" + month + "/" + year;
-          }
-          pPSDEF = finalDate2
+          }*/
+          pPSDEF = kS1
         }
        
         var nFOGD;
@@ -683,7 +683,7 @@ async function insertArticle69B(catRegister){
         else
         {
           var mS1 = data[i]['Publicación DOF definitivos']
-          var date = mS1.getDate()
+          /*var date = mS1.getDate()
           var month = mS1.getMonth() + 1
           var year = mS1.getFullYear()
           var finalDate2 = ""
@@ -702,8 +702,8 @@ async function insertArticle69B(catRegister){
           }
           else{
               finalDate2 = date + "/" + month + "/" + year;
-          }
-          pDDEF = finalDate2;
+          }*/
+          pDDEF = mS1;
         }
 
         var nFOGS;
@@ -727,13 +727,14 @@ async function insertArticle69B(catRegister){
         }
         else 
         {
+          
           var oS1 = data[i]['Publicación página SAT sentencia favorable']
-          var date = oS1.getDate()
-          var month = oS1.getMonth() + 1
-          var year = oS1.getFullYear()
-          var finalDate2 = ""
+          //var date = oS1.getDate()
+          //var month = oS1.getMonth() + 1
+          //var year = oS1.getFullYear()
+          //var finalDate2 = ""
 
-          if(month < 10 && date < 10)
+          /*if(month < 10 && date < 10)
           {
               finalDate2 =  "0" + date + "/0" + month + "/" + year;  
           }
@@ -747,8 +748,8 @@ async function insertArticle69B(catRegister){
           }
           else{
               finalDate2 = date + "/" + month + "/" + year;
-          }
-          pPSS = finalDate2
+          }*/
+          pPSS = oS1
         }
         
         var nFOGSF;
@@ -772,7 +773,7 @@ async function insertArticle69B(catRegister){
         else
         {
           var qS1 = data[i]['Publicación DOF sentencia favorable']
-          var date = qS1.getDate()
+          /*var date = qS1.getDate()
           var month = qS1.getMonth() + 1
           var year = qS1.getFullYear()
           var finalDate2 = ""
@@ -791,8 +792,8 @@ async function insertArticle69B(catRegister){
           }
           else{
               finalDate2 = date + "/" + month + "/" + year;
-          }
-          pDSF = finalDate2
+          }*/
+          pDSF = qS1
         } 
 
         var obj = {
@@ -818,9 +819,7 @@ async function insertArticle69B(catRegister){
           "Publicación DOF sentencia favorable" : pDSF
         }
         data[i] = obj;
-        
       }
-      console.log(data)
       const csvFromArrayOfObjects = convertArrayToCSV(data);
       //console.log(csvFromArrayOfObjects)
       fs.writeFileSync(localPath+filename, csvFromArrayOfObjects, 'utf-8');
