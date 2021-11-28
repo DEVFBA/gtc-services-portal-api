@@ -60,4 +60,10 @@ router.use('/distances', require('./distances.js'));
 //Rutas para los application settings
 router.use('/applications-settings', require('./applications-settings.js'));
 
+/*TIMBRADO CASA DIAZ*/
+
+//Rutas para el Timbrado de Casa Díaz
+
+router.use('/timbrado-ws-CD', require('./timbrado-ws-CD.js'));
+
 module.exports = router;

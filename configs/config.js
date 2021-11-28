@@ -85,6 +85,34 @@ async function getGoogleApiKey(){
     }
 }
 
+// Secret - Expiration Timbrado
+
+async function getExpirationTimbrado(){
+    try{
+        let pool = await sql.connect(config);
+        let expiration = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, "R")
+            .input('piIdParameter', sql.Int, 18)
+            .execute('spCat_General_Parameters_CRUD_Records')
+        return expiration.recordset[0].Value
+    }catch(error){
+        console.log(error)
+    }
+}
+
+async function getSecretTimbrado(){
+    try{
+        let pool = await sql.connect(config);
+        let secret = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, "R")
+            .input('piIdParameter', sql.Int, 17)
+            .execute('spCat_General_Parameters_CRUD_Records')
+        return secret.recordset[0].Value
+    }catch(error){
+        console.log(error)
+    }
+}
+
 module.exports = {
     llave: "miclaveultrasecreta123*",
     getExpiration: getExpiration,
@@ -93,5 +121,7 @@ module.exports = {
     getExpiration69 : getExpiration69,
     getSecretDistances : getSecretDistances,
     getExpirationDistances : getExpirationDistances,
-    getGoogleApiKey : getGoogleApiKey
+    getGoogleApiKey : getGoogleApiKey,
+    getExpirationTimbrado: getExpirationTimbrado,
+    getSecretTimbrado: getSecretTimbrado
 }
