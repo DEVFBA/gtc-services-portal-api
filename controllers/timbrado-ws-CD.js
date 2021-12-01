@@ -24,7 +24,8 @@ const {
   getTemporalFileName
 } = require('../utils/general');
 const {
-  timbrarFactura
+  timbrarFactura,
+  obtenerPDFTimbrado
 } = require('../utils/SolucionFactible');
 
 async function login(req, res) {
@@ -152,6 +153,12 @@ async function timbrar(req, res){
 
   });
 
+  let urlPDF = appConfig[0].filter((data) => {
+
+    return data.Settings_Key === 'PDFWSURL';
+
+  });
+
   let wsUser = appConfig[0].filter((data) => {
 
     return data.Settings_Key === 'TimbradoWSUser';
@@ -164,12 +171,13 @@ async function timbrar(req, res){
 
   });
 
-  cerFilePath = cerFilePath[0].Settings_Value;
-  keyFilePath = keyFilePath[0].Settings_Value;
-  keyPassword = keyPassword[0].Settings_Value;
-  urlWS       = urlWS[0].Settings_Value;
-  wsUser      = wsUser[0].Settings_Value;
-  wsPassword  = wsPassword[0].Settings_Value;
+  cerFilePath   = cerFilePath[0].Settings_Value;
+  keyFilePath   = keyFilePath[0].Settings_Value;
+  keyPassword   = keyPassword[0].Settings_Value;
+  urlWS         = urlWS[0].Settings_Value;
+  urlPDF        = urlPDF[0].Settings_Value;
+  wsUser        = wsUser[0].Settings_Value;
+  wsPassword    = wsPassword[0].Settings_Value;
 
   /* Serializar XML recibido en Base 64 */
 
@@ -230,30 +238,54 @@ async function timbrar(req, res){
 
   const xmlBase64 = Buffer.from(xml).toString('base64');
 
-  const response = await timbrarFactura(xmlBase64, urlWS, wsUser, wsPassword, fileName);
+  const timbradoResponse = await timbrarFactura(xmlBase64, urlWS, wsUser, wsPassword, fileName);
 
   fs.unlinkSync(`./Temp/${fileName}.xml`);
 
+  let response = {
+    status: null
+  }
+
   /* Regresar respuesta */
 
-  if(response.status === 200){
+  if(timbradoResponse.status === 200){
 
-    res.json({
-      estatus: response.status,
-      data:{
-        uuid: response.uuid,
-        cfdiTimbrado: response.cfdiTimbrado
+    response.status = timbradoResponse.status
+
+    response.cfdiData = {
+      uuid: timbradoResponse.uuid,
+      cfdiTimbrado: timbradoResponse.cfdiTimbrado
+    }
+
+    const pdfResponse = await obtenerPDFTimbrado(urlPDF, timbradoResponse.uuid, wsUser, wsPassword);
+
+    console.log('PDF Responde fuera: ', pdfResponse);
+
+    if(pdfResponse.status === 200) {
+      
+      response.pdfData = {
+        pdfBase64: pdfResponse.pdf
       }
-    })
+
+    } else {
+
+      response.pdfError = {
+        mensaje: pdfResponse.mensaje
+      }
+
+    }
+
+    res.json({ response });
 
   } else {
 
-    res.json({
-      estatus: response.status,
-      error: {
-        mensaje: response.mensaje
-      }
-    })
+    response.status = timbradoResponse.status
+
+    response.error = {
+      mensaje: timbradoResponse.mensaje
+    }
+
+    res.json({ response });
 
   }
 
