@@ -8,25 +8,38 @@ const crypto = require('crypto');
 const { DOMParser, XMLSerializer } = require('@xmldom/xmldom');
 
 const config = require('../dbconfig');
+
 const {
     getSecretTimbrado,
     getExpirationTimbrado
 } = require('../configs/config');
+
 const {
   getApplicationsSettings
 } = require('./applications-settings');
+
+const {
+  getCustomers
+} = require('./customers');
+
 const {
   certificar,
   getCadena,
   getSello
 } = require('../utils/SAT');
+
 const {
-  getTemporalFileName
-} = require('../utils/general');
+  getGeneralParametersbyID
+} = require('./cat-general-parameters');
+
 const {
   timbrarFactura,
   obtenerPDFTimbrado
 } = require('../utils/SolucionFactible');
+
+const {
+  serializeXML
+} = require('../utils/xml');
 
 async function login(req, res) {
 
@@ -36,7 +49,8 @@ async function login(req, res) {
         user: req.body.user,
         password: req.body.password,
         idCustomer: req.body.idCustomer,
-        idApplication: req.body.idApplication
+        idApplication: req.body.idApplication,
+        timbradoApplication: req.body.timbradoApplication
     }
 
     //console.log('REQ: ', req.body)
@@ -86,10 +100,11 @@ async function login(req, res) {
         const exp = new Date(today);
         exp.setDate(today.getDate() + parseInt(expiration, 10)); // 1 día antes de expirar
         const token = jwt.sign({
-          userName:       data.user,
-          idCustomer:     data.idCustomer,
-          idApplication:  data.idApplication,
-          exp:            parseInt(exp.getTime() / 1000),
+          userName:             data.user,
+          idCustomer:           data.idCustomer,
+          idApplication:        data.idApplication,
+          timbradoApplication:  data.timbradoApplication,
+          exp:                  parseInt(exp.getTime() / 1000)
         }, secret);
 
         const response = {
@@ -119,53 +134,94 @@ async function login(req, res) {
 
 async function timbrar(req, res){
 
-  const decode = jwt.decode(req.headers.authorization.split(' ')[1]);
-  const fileName = getTemporalFileName();
+  /* Retrieve General Configuration */
+  const decode        = jwt.decode(req.headers.authorization.split(' ')[1]);
+  
+  let tempPath        = await getGeneralParametersbyID( { pvOptionCRUD: 'R', piIdParameter: 20 } );
+  tempPath = tempPath[0][0].Value;
+  
+  /*
+      cfdis is the Array which will have the API Response, having an Array with a response for each
+      xml received in the body request
+  */
+  let cfdis = [];
+
+  /* Retrieve data to process */
+  const xmls = req.body.XMLs;
+
+  //console.log("XMLS Array: ", xmls);
+
+  /******  Aquí debe iniciar a barrer cada XML recibido en el Array ******/
+
+  const fileName      = xmls[0].fileName;
+
+  //console.log(fileName);
+
+  /* Serialize received Base 64 XML */
+
+  let xmlDoc = await serializeXML(xmls[0].xmlBase64);
+
+  /* Retrieve RFCEmisor to resolve Id Customer for Timbrado Configuration */
+
+  const rfcEmisor = xmlDoc.getElementsByTagName('cfdi:Emisor')[0].getAttribute('Rfc');
+
+  //console.log('RFC Emisor: ', rfcEmisor);
+
+  let idCustomer = await getCustomers( { pvOptionCRUD: 'R' } );
+
+  idCustomer = idCustomer[0].filter( (customer) => {
+
+    return customer.Tax_Id === rfcEmisor;
+
+  });
+
+  idCustomer = idCustomer[0].Id_Customer;
+
+  //console.log('Customers: ', idCustomer);
+
+  const idApplication = decode.timbradoApplication;
 
   /* Recuperar datos de configuración del Portal GTC */
 
-  const idCustomer      = decode.idCustomer;
-  const idApplication   = decode.idApplication;
-
   const appConfig = await getApplicationsSettings( { pvOptionCRUD: 'R', piIdCustomer: idCustomer, piIdApplication: idApplication } );
 
-  let cerFilePath = appConfig[0].filter((data) => {
+  let cerFilePath = appConfig[0].filter( (data) => {
 
     return data.Settings_Key === 'CerFile';
 
   });
 
-  let keyFilePath = appConfig[0].filter((data) => {
+  let keyFilePath = appConfig[0].filter( (data) => {
 
     return data.Settings_Key === 'KeyFile';
 
   });
 
-  let keyPassword = appConfig[0].filter((data) => {
+  let keyPassword = appConfig[0].filter( (data) => {
 
     return data.Settings_Key === 'KeyPassword';
 
   });
 
-  let urlWS = appConfig[0].filter((data) => {
+  let urlWS = appConfig[0].filter( (data) => {
 
     return data.Settings_Key === 'TimbradoWSURL';
 
   });
 
-  let urlPDF = appConfig[0].filter((data) => {
+  let urlPDF = appConfig[0].filter( (data) => {
 
     return data.Settings_Key === 'PDFWSURL';
 
   });
 
-  let wsUser = appConfig[0].filter((data) => {
+  let wsUser = appConfig[0].filter( (data) => {
 
     return data.Settings_Key === 'TimbradoWSUser';
 
   });
 
-  let wsPassword = appConfig[0].filter((data) => {
+  let wsPassword = appConfig[0].filter( (data) => {
 
     return data.Settings_Key === 'TimbradoWSPassword';
 
@@ -179,18 +235,9 @@ async function timbrar(req, res){
   wsUser        = wsUser[0].Settings_Value;
   wsPassword    = wsPassword[0].Settings_Value;
 
-  /* Serializar XML recibido en Base 64 */
-
-  const data = {
-    xmlBase64: req.body.xmlBase64
-  }
-
-  let buff = Buffer.from(data.xmlBase64, 'base64');
-  let xml = buff.toString('utf-8');
-
-  let xmlDoc = new DOMParser().parseFromString(xml);
-
   /* Obtener Certificado y NoCertificado */
+
+  //console.log('Cer Path: ', cerFilePath);
 
   const serialNumber = certificar(cerFilePath);
 
@@ -206,11 +253,11 @@ async function timbrar(req, res){
 
   let stringXML = new XMLSerializer().serializeToString(xmlDoc);
 
-  fs.writeFileSync(`./Temp/${fileName}.xml`, stringXML);
+  fs.writeFileSync(`${tempPath}${fileName}`, stringXML);
 
   /* Sellar XML */
 
-  const cadena = await getCadena('./resources/XSLT/cadenaoriginal_3_3.xslt', `./Temp/${fileName}.xml`);
+  const cadena = await getCadena('./resources/XSLT/cadenaoriginal_3_3.xslt', `${tempPath}${fileName}`);
 
   const prm = await getSello(keyFilePath, keyPassword);
 
@@ -220,7 +267,7 @@ async function timbrar(req, res){
 
   const sello = sign.sign(prm, 'base64');
 
-  xml = fs.readFileSync(`./Temp/${fileName}.xml`, 'utf8');
+  xml = fs.readFileSync(`${tempPath}${fileName}`, 'utf8');
 
   xmlDoc = new DOMParser().parseFromString(xml);
 
@@ -228,66 +275,110 @@ async function timbrar(req, res){
 
   stringXML = new XMLSerializer().serializeToString(xmlDoc);
 
-  fs.unlinkSync(`./Temp/${fileName}.xml`);
+  fs.unlinkSync(`${tempPath}${fileName}`);
 
-  fs.writeFileSync(`./Temp/${fileName}.xml`, stringXML);
+  fs.writeFileSync(`${tempPath}${fileName}`, stringXML);
 
   /* Convertir a Base 64 y timbrar */
 
-  xml = fs.readFileSync(`./Temp/${fileName}.xml`, 'utf8');
+  xml = fs.readFileSync(`${tempPath}${fileName}`, 'utf8');
 
   const xmlBase64 = Buffer.from(xml).toString('base64');
 
   const timbradoResponse = await timbrarFactura(xmlBase64, urlWS, wsUser, wsPassword, fileName);
 
-  fs.unlinkSync(`./Temp/${fileName}.xml`);
+  fs.unlinkSync(`${tempPath}${fileName}`);
 
-  let response = {
-    status: null
-  }
+  //console.log(fileName);
 
   /* Regresar respuesta */
 
   if(timbradoResponse.status === 200){
 
-    response.status = timbradoResponse.status
+    let cfdiData = {
+      file: fileName,
+      cfdi: {
+        status: timbradoResponse.status,
+        message: timbradoResponse.message,
+        uuid: timbradoResponse.uuid,
+        cfdiTimbrado: timbradoResponse.cfdiTimbrado
+      }
+    }
 
-    response.cfdiData = {
+    //cfdi.status = timbradoResponse.status
+/* 
+    cfdi.cfdiData = {
       uuid: timbradoResponse.uuid,
       cfdiTimbrado: timbradoResponse.cfdiTimbrado
-    }
+    } */
 
     const pdfResponse = await obtenerPDFTimbrado(urlPDF, timbradoResponse.uuid, wsUser, wsPassword);
 
-    console.log('PDF Responde fuera: ', pdfResponse);
+    //console.log('PDF Responde fuera: ', pdfResponse);
 
     if(pdfResponse.status === 200) {
       
-      response.pdfData = {
-        pdfBase64: pdfResponse.pdf
+      cfdiData.pdf = {
+        status: pdfResponse.status,
+        message: pdfResponse.mensaje,
+        pdf: pdfResponse.pdf
       }
 
     } else {
 
-      response.pdfError = {
-        mensaje: pdfResponse.mensaje
+      cfdiData.pdf = {
+        error: {
+          status: pdfResponse.status,
+          message: pdfResponse.mensaje,
+          pdf: pdfResponse.pdf
+        }
       }
 
     }
 
-    res.json({ response });
+    cfdis = [...cfdis, cfdiData];
+
+    //res.json({ cfdi });
 
   } else {
 
-    response.status = timbradoResponse.status
+    //console.log(fileName);
 
-    response.error = {
-      mensaje: timbradoResponse.mensaje
+    //console.log(timbradoResponse);
+
+    let cfdiData = {
+      file: fileName,
+      cfdi: {
+        error: {
+          status: timbradoResponse.status,
+          message: timbradoResponse.mensaje,
+          uuid: timbradoResponse.uuid,
+          cfdiTimbrado: timbradoResponse.cfdiTimbrado
+        }
+      }
     }
+    
+    //console.log(cfdis);
 
-    res.json({ response });
+    //console.log(cfdiData);
+
+    cfdis = [...cfdis, cfdiData];
+
+    //console.log('cfdis: ', cfdis);
+
+/*     cfdi.status = timbradoResponse.status
+
+    cfdi.error = {
+      mensaje: timbradoResponse.mensaje
+    } */
+
+    //res.json({ cfdi });
 
   }
+
+  /* Aquí termina el barrido del arreglo */
+
+  res.json( { cfdis } );
 
 }
 
