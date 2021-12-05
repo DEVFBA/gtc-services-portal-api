@@ -1,18 +1,22 @@
 const router = require('express').Router();
 const auth = require('./auth-timbrado-CD');
-const auth69 = require('./auth69');
 
 const {
     login,
-    timbrar
+    timbrar,
+    getClientSettings
 } = require('../controllers/timbrado-ws-CD');
 
 
-// Ruta para iniciar sesion
+// Login Route
 
 router.post('/login', login);
 
-// Ruta para timbrar
+// Route to Client application settings
+
+router.get('/get-client-settings', auth, getClientSettings);
+
+// Timbrar Route
 
 router.post('/timbrado', auth, timbrar);
 

@@ -43,8 +43,6 @@ const {
 
 async function login(req, res) {
 
-    //console.log('Entró');
-
     const data = {
         user: req.body.user,
         password: req.body.password,
@@ -53,17 +51,11 @@ async function login(req, res) {
         timbradoApplication: req.body.timbradoApplication
     }
 
-    //console.log('REQ: ', req.body)
-
-    //console.log('Body: ', body);
-
-    let encRes = await axios.post('http://129.159.99.152/GTC_DEV/api/Hash/EncryptMD5', {text: data.password});
-
-    let encryptedPassword = encRes.data;
-
-    //console.log('Encrypted Password', encryptedPassword);
-
     try {
+      
+      let encRes = await axios.post('http://129.159.99.152/GTC_DEV/api/Hash/EncryptMD5', {text: data.password});
+  
+      let encryptedPassword = encRes.data;
 
       const pool = await sql.connect(config);
 
@@ -75,15 +67,13 @@ async function login(req, res) {
         .input('pvPassword', sql.VarChar, encryptedPassword)
         .execute('spCustomer_Application_Users_CRUD_Records');
 
-        //console.log('En Login: ', userLogin.recordset[0]);
-
       if(userLogin.recordset[0].Code_Type === 'Error')
       {
         const response = {
           error: {
             code: userLogin.recordsets[0][0].Code,
             idTransacLog: userLogin.recordsets[0][0].IdTransacLog,
-            mensaje: userLogin.recordsets[0][0].Code_Message_User
+            message: userLogin.recordsets[0][0].Code_Message_User
           }
         }
         //const response = [regreso]
@@ -109,20 +99,17 @@ async function login(req, res) {
 
         const response = {
             data: {
-                mensaje: userLogin.recordsets[0][0].Code_Message_User,
-                token: token
+                message: userLogin.recordsets[0][0].Code_Message_User,
+                token: token,
+                exp: exp
             }
           }
-
-        //console.log(expiration);
 
         res.json(response);
 
       }
 
       pool.close();
-
-      //console.log(JSON.stringify('Respuesta', userLogin.recordsets[0][0]));
       
   } catch (error) {
 
@@ -131,6 +118,86 @@ async function login(req, res) {
   }
     
 }   
+
+async function getClientSettings(req, res, next){
+
+  const decode        = jwt.decode(req.headers.authorization.split(' ')[1]);
+  const idApplication = decode.idApplication;
+  const idCustomer    = decode.idCustomer;
+
+  try {
+
+    const appConfig = await getApplicationsSettings( { pvOptionCRUD: 'R', piIdCustomer: idCustomer, piIdApplication: idApplication } );
+  
+    let rootFolder = appConfig[0].filter( (data) => {
+      
+      return data.Settings_Key === 'RootPath';
+  
+    });
+  
+    let pendingFolder = appConfig[0].filter( (data) => {
+      
+      return data.Settings_Key === 'PendingFilesPath';
+  
+    });
+  
+    let processedFolder = appConfig[0].filter( (data) => {
+      
+      return data.Settings_Key === 'ProcessedFilesPath';
+  
+    });
+  
+    let xmlsFolder = appConfig[0].filter( (data) => {
+      
+      return data.Settings_Key === 'XMLPath';
+  
+    });
+  
+    let pdfsFolder = appConfig[0].filter( (data) => {
+      
+      return data.Settings_Key === 'PDFPath';
+  
+    });
+  
+    let errorsFolder = appConfig[0].filter( (data) => {
+      
+      return data.Settings_Key === 'ErrorsPath';
+  
+    });
+  
+    rootFolder              = rootFolder[0].Settings_Value;
+    pendingFolder           = pendingFolder[0].Settings_Value;
+    processedFolder         = processedFolder[0].Settings_Value;
+    xmlsFolder              = xmlsFolder[0].Settings_Value;
+    pdfsFolder              = pdfsFolder[0].Settings_Value;
+    errorsFolder            = errorsFolder[0].Settings_Value;
+  
+    const response = {
+      data: {
+        rootFolder:           rootFolder,
+        pendingFolder:        pendingFolder,
+        processedFolder:      processedFolder,
+        xmlsFolder:           xmlsFolder,
+        pdfsFolder:           pdfsFolder,
+        errorsFolder:         errorsFolder
+      }
+    }
+  
+    res.json( response );
+
+  } catch (error) {
+
+    const errorResponse = {
+      error: {
+        message: 'No se pudieron recuperar los datos de configuración de la aplicación.'
+      }
+    }
+
+    res.json( errorResponse );
+
+  }
+
+}
 
 async function timbrar(req, res){
 
@@ -150,15 +217,11 @@ async function timbrar(req, res){
   /* Retrieve data to process */
   const xmls = req.body.XMLs;
 
-  //console.log("XMLS Array: ", xmls);
-
   /******  Aquí debe iniciar a barrer cada XML recibido en el Array ******/
 
   const cfdis = await procesarXMLs(xmls, idApplication, tempPath);
 
-  console.log('CFDIS: ', cfdis);
-
-  res.json( cfdis );
+  res.json( { data: cfdis } );
 
 }
 
@@ -169,20 +232,14 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
     for(let i = 0; i < xmls.length; i++){
 
       const fileName        = xmls[i].fileName;
-  
-  
-      //console.log(fileName);
     
       /* Serialize received Base 64 XML */
-    
-      //let xmlDoc = await serializeXML(xmls[0].xmlBase64);
+
       let xmlDoc = await serializeXML(xmls[i].xmlBase64);
     
       /* Retrieve RFCEmisor to resolve Id Customer for Timbrado Configuration */
     
       const rfcEmisor = xmlDoc.getElementsByTagName('cfdi:Emisor')[0].getAttribute('Rfc');
-    
-      //console.log('RFC Emisor: ', rfcEmisor);
     
       let idCustomer = await getCustomers( { pvOptionCRUD: 'R' } );
     
@@ -193,10 +250,6 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
       });
     
       idCustomer = idCustomer[0].Id_Customer;
-    
-      //console.log('Customers: ', idCustomer);
-    
-      //const idApplication = decode.timbradoApplication;
     
       /* Recuperar datos de configuración del Portal GTC */
     
@@ -254,8 +307,6 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
     
       /* Obtener Certificado y NoCertificado */
     
-      //console.log('Cer Path: ', cerFilePath);
-    
       const serialNumber = certificar(cerFilePath);
     
       const cer = fs.readFileSync(cerFilePath, 'base64');
@@ -286,7 +337,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
     
       xml = fs.readFileSync(`${tempPath}${fileName}`, 'utf8');
     
-      xmlDoc = new DOMParser().parseFromString(xml);
+      xmlDoc = new DOMParser().parseFromString(xml);//
     
       xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].setAttribute('Sello', sello);
     
@@ -301,14 +352,10 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
       xml = fs.readFileSync(`${tempPath}${fileName}`, 'utf8');
     
       const xmlBase64 = Buffer.from(xml).toString('base64');
-  
-      //console.log('Aquí: ', xmlBase64, fileName);
     
       const timbradoResponse = await timbrarFactura(xmlBase64, urlWS, wsUser, wsPassword, fileName);
     
       fs.unlinkSync(`${tempPath}${fileName}`);
-    
-      //console.log(fileName);
     
       /* Regresar respuesta */
     
@@ -324,16 +371,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
           }
         }
     
-        //cfdi.status = timbradoResponse.status
-    /* 
-        cfdi.cfdiData = {
-          uuid: timbradoResponse.uuid,
-          cfdiTimbrado: timbradoResponse.cfdiTimbrado
-        } */
-    
         const pdfResponse = await obtenerPDFTimbrado(urlPDF, timbradoResponse.uuid, wsUser, wsPassword);
-    
-        //console.log('PDF Responde fuera: ', pdfResponse);
     
         if(pdfResponse.status === 200) {
           
@@ -356,14 +394,8 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
         }
     
         cfdis = [...cfdis, cfdiData];
-        //return cfdiData;
-        //res.json({ cfdi });
     
       } else {
-    
-        //console.log(fileName);
-    
-        //console.log(timbradoResponse);
     
         let cfdiData = {
           file: fileName,
@@ -376,39 +408,12 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
             }
           }
         }
-  
-        //console.log(cfdiData);
-        
-        //console.log(cfdis);
-    
-        //console.log(cfdiData);
     
         cfdis = [...cfdis, cfdiData];
-        
-        //console.log(cfdis);
-        //return cfdiData;
-    
-        //console.log('cfdis: ', cfdis);
-    
-    /*     cfdi.status = timbradoResponse.status
-    
-        cfdi.error = {
-          mensaje: timbradoResponse.mensaje
-        } */
-    
-        //res.json({ cfdi });
     
       }
-  
-      //return cfdis;
 
     }
-
-    //console.log('Por Procesar: ', xml);
-
-    //const fileName      = xmls[0].fileName;
-
-  console.log('CFDIS 1: ', cfdis);
 
   return cfdis;
 
@@ -416,5 +421,6 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
 
 module.exports = {
     login,
-    timbrar
+    timbrar,
+    getClientSettings
 }
