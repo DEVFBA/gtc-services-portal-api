@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const auth = require('./auth');
+// Para el logger
+const logger = require('../utils/logger');
 
 const dbcustomerapplications = require('../controllers/customer-applications')
 
@@ -23,6 +25,7 @@ router.route('/:id').get(auth, (request, response)=>{
 //Ruta para crear un registro para los customer applications
 router.route('/create-customer-application').post(auth, (request, response)=>{
     let catRegister = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/create-customer-application - POST -")
     dbcustomerapplications.insertCustomerApplication(catRegister).then(result => {
         response.json(result[0]);
     })
@@ -31,6 +34,7 @@ router.route('/create-customer-application').post(auth, (request, response)=>{
 //Ruta para actualizar un registro para los customer applications
 router.route('/update-customer-application').put(auth, (request, response)=>{
     let catRegister = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/update-customer-application - POST -")
     dbcustomerapplications.updateCustomerApplication(catRegister).then(result => {
         response.json(result[0]);
     })

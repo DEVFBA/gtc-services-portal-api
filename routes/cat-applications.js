@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const auth = require('./auth');
+// Para el logger
+const logger = require('../utils/logger');
 
 const dbcatapplications = require('../controllers/cat-applications')
 
@@ -23,6 +25,7 @@ router.route('/:id').get(auth, (request, response)=>{
 //Ruta para crear una aplicación
 router.route('/create-application').post(auth, (request, response)=>{
     let catRegister = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/create-application - POST -")
     dbcatapplications.insertCatRegisterApplication(catRegister).then(result => {
         response.json(result[0]);
     })
@@ -31,6 +34,7 @@ router.route('/create-application').post(auth, (request, response)=>{
 //Ruta para actualizar una aplicación
 router.route('/update-application').put(auth, (request, response)=>{
     let catRegister = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/update-application - POST -")
     dbcatapplications.updateCatRegisterApplication(catRegister).then(result => {
         response.json(result[0]);
     })

@@ -1,6 +1,10 @@
 var router = require('express').Router();
 
+// Para el logger
+const logger = require('../utils/logger');
+
 router.get('/', (req, res)=>{
+  logger.info("welcome to GTC Portal Services API");
   res.send('welcome to GTC Portal Services API');
 });
 

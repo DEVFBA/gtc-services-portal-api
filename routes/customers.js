@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const auth = require('./auth');
 const dbcustomers = require('../controllers/customers')
+// Para el logger
+const logger = require('../utils/logger');
 
 //Ruta para obtener todos los Customers
 router.route('/').get(auth, (request, response)=>{
@@ -16,6 +18,7 @@ router.route('/').get(auth, (request, response)=>{
 router.route('/create-customer').post(auth, (request, response)=>{
     response.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     let userRegister = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/create-customer - POST -")
     dbcustomers.insertCustomerRegister(userRegister).then(result => {
         response.json(result[0]);
     })
@@ -25,6 +28,7 @@ router.route('/create-customer').post(auth, (request, response)=>{
 router.route('/update-customer').put((request, response)=>{
     response.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     let userRegister = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/update-customer - PUT -")
     dbcustomers.updateCustomerRegister(userRegister).then(result => {
         response.json(result[0]);
     })

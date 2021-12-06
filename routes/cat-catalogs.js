@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const auth = require('./auth');
+// Para el logger
+const logger = require('../utils/logger');
 
 const dbcatcatalogs = require('../controllers/cat-catalogs')
 
@@ -28,6 +30,7 @@ router.route('/catalog').get(auth, (request, response)=>{
 //Ruta para crear un registro para los catalogos del Portal
 router.route('/create-portal').post(auth, (request, response)=>{
     let catRegister = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/create-portal - POST -")
     dbcatcatalogs.insertCatRegisterPortal(catRegister).then(result => {
         response.json(result[0]);
     })
@@ -36,6 +39,7 @@ router.route('/create-portal').post(auth, (request, response)=>{
 //Ruta para actualizar un registro para los catalogos del Portal
 router.route('/update-portal').put(auth, (request, response)=>{
     let catRegister = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/update-portal - PUT -")
     dbcatcatalogs.updateCatRegisterPortal(catRegister).then(result => {
         response.json(result[0]);
     })
@@ -44,6 +48,7 @@ router.route('/update-portal').put(auth, (request, response)=>{
 //Ruta para crear un registro para los catalogos del SAT
 router.route('/create-sat').post(auth, (request, response)=>{
     let catRegister = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/create-sat - POST -")
     dbcatcatalogs.insertCatRegisterSAT(catRegister).then(result => {
         response.json(result[0]);
     })
@@ -52,6 +57,7 @@ router.route('/create-sat').post(auth, (request, response)=>{
 //Ruta para crear un registro para los catalogos del SAT Assumptions, tiene un campo más
 router.route('/create-sat-assumptions').post(auth, (request, response)=>{
     let catRegister = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/create-sat-assumptions - POST -")
     dbcatcatalogs.insertCatRegisterSATAssumptions(catRegister).then(result => {
         response.json(result[0]);
     })
@@ -60,6 +66,7 @@ router.route('/create-sat-assumptions').post(auth, (request, response)=>{
 //Ruta para actualizar un registro para los catalogos del SAT
 router.route('/update-sat').put(auth, (request, response)=>{
     let catRegister = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/update-sat - PUT -")
     dbcatcatalogs.updateCatRegisterSAT(catRegister).then(result => {
         response.json(result[0]);
     })
@@ -68,6 +75,7 @@ router.route('/update-sat').put(auth, (request, response)=>{
 //Ruta para actualizar un registro para los catalogos del SAT Assumptions, tiene un campo más
 router.route('/update-sat-assumptions').put(auth, (request, response)=>{
     let catRegister = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/update-sat-assumptions - PUT -")
     dbcatcatalogs.updateCatRegisterSATAssumptions(catRegister).then(result => {
         response.json(result[0]);
     })

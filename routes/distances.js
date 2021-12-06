@@ -2,12 +2,15 @@ const router = require('express').Router();
 const auth = require('./auth');
 const authDistances = require('./authDistances');
 var config2 = require('../configs/config');
+// Para el logger
+const logger = require('../utils/logger');
 
 const dbdistances = require('../controllers/distances')
 
 //Ruta para iniciar sesion
 router.route('/login').post((request, response)=>{
     let userRegister = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/login - POST -")
     dbdistances.login(userRegister, response).then(result => {
        
         if(result[0].error !== undefined)
@@ -21,6 +24,7 @@ router.route('/login').post((request, response)=>{
 //Ruta para obtener distancias
 router.route('/').post(authDistances, (request, response)=>{
     let distances = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/ - POST -")
     dbdistances.getDistance(distances, response).then(result => {
         if(result.error!== undefined)
         {
@@ -33,6 +37,7 @@ router.route('/').post(authDistances, (request, response)=>{
 //Ruta para obtener distancias sin token
 router.route('/WT/').post((request, response)=>{
     let distances = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/WT/ - POST -")
     dbdistances.getDistanceWT(distances, response).then(result => {
         if(result.error!== undefined)
         {

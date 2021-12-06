@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const auth = require('./auth');
+// Para el logger
+const logger = require('../utils/logger');
 
 const dbapplicationsettings = require('../controllers/applications-settings')
 
@@ -19,6 +21,7 @@ router.route('/').get(auth, (request, response)=>{
 //Ruta para actualizar una configuracion
 router.route('/update-settings').put(auth, (request, response)=>{
     let settingRegister = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/update-settings - PUT -")
     dbapplicationsettings.updateSettings(settingRegister).then(result => {
         response.json(result[0]);
     })

@@ -3,6 +3,8 @@ const auth = require('./auth');
 const auth69 = require('./auth69');
 
 const dbarticulo69 = require('../controllers/article-69')
+// Para el logger
+const logger = require('../utils/logger');
 
 //Ruta para obtener los datos del Articulo 69
 router.route('/69').get(auth, (request, response)=>{
@@ -48,6 +50,7 @@ router.route('/69-B').get(auth, (request, response)=>{
 //Ruta para crear un registro para los catalogos del Portal
 router.route('/create-article-69').post(auth, (request, response)=>{
     let catRegister = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/create-article-69 - POST -")
     dbarticulo69.insertArticle69(catRegister).then(result => {
         response.json(result[0]);
     })
@@ -56,6 +59,7 @@ router.route('/create-article-69').post(auth, (request, response)=>{
 //Ruta para actualizar un registro para los catalogos del Portal
 router.route('/create-article-69-B').post(auth, (request, response)=>{
     let catRegister = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/create-article-69-B - POST -")
     dbarticulo69.insertArticle69B(catRegister).then(result => {
         response.json(result[0]);
     })
@@ -64,6 +68,7 @@ router.route('/create-article-69-B').post(auth, (request, response)=>{
 //Ruta para iniciar sesion
 router.route('/login').post((request, response)=>{
     let userRegister = {...request.body}
+    logger.info(JSON.stringify({...request.body}) + "/login - POST -")
     dbarticulo69.login(userRegister, response).then(result => {
         //console.log(response.status)
        
