@@ -123,5 +123,10 @@ module.exports = {
     getExpirationDistances : getExpirationDistances,
     getGoogleApiKey : getGoogleApiKey,
     getExpirationTimbrado: getExpirationTimbrado,
-    getSecretTimbrado: getSecretTimbrado
+    getSecretTimbrado: getSecretTimbrado,
+    DB_USER: process.env.DB_USER || 'sa',
+    DB_PASSWORD: process.env.DB_PASSWORD || 'GTC-Q4T*',
+    DB_SERVER: process.env.DB_SERVER || '129.159.99.152',
+    DB_PORT: process.env.DB_PORT || 1434,
+    DB_DATABASE: process.env.DB_DATABASE || 'PortalGTC',
 }
