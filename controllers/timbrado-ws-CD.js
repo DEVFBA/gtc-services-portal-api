@@ -244,7 +244,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
 
     /* Retrieve Addenda Data to resolve Email To */
 
-    const emailTo = xmlDoc.getElementsByTagName('cfdi:Addenda')[0].getElementsByTagName('DatosAdicionales')[0].getAttribute('EMAL');
+    const emailTo = xmlDoc.getElementsByTagName('cfdi:Addenda')[0].getElementsByTagName('DatosAdicionales')[0].getAttribute('EMAIL');
   
     /* Retrieve RFCEmisor to resolve Id Customer for Timbrado Configuration */
   
