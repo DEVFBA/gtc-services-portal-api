@@ -412,6 +412,9 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
           path: `${ tempPath }${ path.basename( fileName, '.xml' ) }.pdf`,
           filename: `${path.basename( fileName, '.xml' )}.pdf`
         }
+
+        fs.unlinkSync(`${ tempPath }${ fileName }`);
+        fs.unlinkSync(`${ tempPath }${ path.basename( fileName, '.xml' ) }.pdf`);
   
       } else {
   
@@ -446,9 +449,6 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
       cfdis = [...cfdis, cfdiData];
   
     }
-
-    fs.unlinkSync(`${ tempPath }${ fileName }`);
-    fs.unlinkSync(`${ tempPath }${ path.basename( fileName, '.xml' ) }.pdf`);
 
   }
 
