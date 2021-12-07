@@ -36,7 +36,15 @@ async function insertCustomerRegister(userRegister){
         const base64Data = userRegister.pvLogo.replace(regex, "");
         const rand = Math.ceil(Math.random()*1000);
         //Random photo name with timeStamp so it will not overide previous images.
-        filename = `${userRegister.pvIdCountry}${userRegister.pvTaxId}.${ext}`;
+        var date = new Date();
+        var day = date.getDate()
+        var month = date.getMonth() + 1
+        var year = date.getFullYear()
+        var hour = date.getHours()
+        var minutes = date.getMinutes()
+        var seconds = date.getSeconds()
+        var name = userRegister.pvIdCountry + userRegister.pvTaxId + day  + month + year + hour + minutes + seconds
+        filename =  `${name}.${ext}`;
         
         //Check that if directory is present or not.
         if(!fs.existsSync(`${uploadPath}`)) {
@@ -124,7 +132,15 @@ async function updateCustomerRegister(userRegister){
         const base64Data = userRegister.pvLogo.replace(regex, "");
         const rand = Math.ceil(Math.random()*1000);
         //Random photo name with timeStamp so it will not overide previous images.
-        filename = `${userRegister.pvIdCountry}${userRegister.pvTaxId}.${ext}`;
+        var date = new Date();
+        var day = date.getDate()
+        var month = date.getMonth() + 1
+        var year = date.getFullYear()
+        var hour = date.getHours()
+        var minutes = date.getMinutes()
+        var seconds = date.getSeconds()
+        var name = userRegister.pvIdCountry + userRegister.pvTaxId + day  + month + year + hour + minutes + seconds
+        filename =  `${name}.${ext}`;
         
         //Check that if directory is present or not.
         if(!fs.existsSync(`${uploadPath}`)) {

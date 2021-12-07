@@ -72,7 +72,15 @@ async function insertUserRegister(userRegister){
         const base64Data = userRegister.pvProfilePicPath.replace(regex, "");
         const rand = Math.ceil(Math.random()*1000);
         //Random photo name with timeStamp so it will not overide previous images.
-        filename = `${userRegister.pvIdUser}.${ext}`;
+        var date = new Date();
+        var day = date.getDate()
+        var month = date.getMonth() + 1
+        var year = date.getFullYear()
+        var hour = date.getHours()
+        var minutes = date.getMinutes()
+        var seconds = date.getSeconds()
+        var name = userRegister.pvIdUser + day  + month + year + hour + minutes + seconds
+        filename =  `${name}.${ext}`;
         
         //Check that if directory is present or not.
         if(!fs.existsSync(`${uploadPath}`)) {
@@ -153,7 +161,15 @@ async function updateUserRegister(userRegister){
         const base64Data = userRegister.pvProfilePicPath.replace(regex, "");
         const rand = Math.ceil(Math.random()*1000);
         //Random photo name with timeStamp so it will not overide previous images.
-        filename =  `${userRegister.pvIdUser}.${ext}`;
+        var date = new Date();
+        var day = date.getDate()
+        var month = date.getMonth() + 1
+        var year = date.getFullYear()
+        var hour = date.getHours()
+        var minutes = date.getMinutes()
+        var seconds = date.getSeconds()
+        var name = userRegister.pvIdUser + day  + month + year + hour + minutes + seconds
+        filename =  `${name}.${ext}`;
         
         //Check that if directory is present or not.
         if(!fs.existsSync(`${uploadPath}`)) {
@@ -231,7 +247,15 @@ async function updateUserRegisterWP(userRegister){
         const base64Data = userRegister.pvProfilePicPath.replace(regex, "");
         const rand = Math.ceil(Math.random()*1000);
         //Random photo name with timeStamp so it will not overide previous images.
-        filename =  `${userRegister.pvIdUser}.${ext}`;
+        var date = new Date();
+        var day = date.getDate()
+        var month = date.getMonth() + 1
+        var year = date.getFullYear()
+        var hour = date.getHours()
+        var minutes = date.getMinutes()
+        var seconds = date.getSeconds()
+        var name = userRegister.pvIdUser + day  + month + year + hour + minutes + seconds
+        filename =  `${name}.${ext}`;
         //Check that if directory is present or not.
         if(!fs.existsSync(`${uploadPath}`)) {
             fs.mkdirSync(`${uploadPath}`);
