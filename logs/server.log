@@ -70,3 +70,51 @@ info: Dec-07-2021 14:53:43: 	Categoría API iniciando en el puerto: 9000
 info: Dec-07-2021 14:54:44: 	Categoría API iniciando en el puerto: 9000
 error: Dec-07-2021 14:54:47: 	Unhandled Rejection at: [object Promise] reason: Error: ENOENT: no such file or directory, unlink 'C:\GTC\DEV\Temp\CDM760124C85_XAXX010101000_TR89.xml'
 info: Dec-07-2021 15:01:11: 	Categoría API iniciando en el puerto: 9000
+info: Dec-07-2021 15:16:09: 	Categoría API iniciando en el puerto: 9000
+error: Dec-07-2021 15:16:46: 	Unhandled Rejection at: [object Promise] reason: Error: ENOENT: no such file or directory, open 'C:\GTC\QA\Temp\CDM760124C85_XAXX010101000_TR89.xml'
+info: Dec-07-2021 17:22:54: 	Categoría API iniciando en el puerto: 9000
+info: Dec-07-2021 17:23:04: 	Categoría API iniciando en el puerto: 9000
+error: Dec-07-2021 17:36:32: 	Unhandled Rejection at: [object Promise] reason: ReferenceError: Config is not defined
+error: Dec-07-2021 17:40:48: 	Unhandled Rejection at: [object Promise] reason: ReferenceError: Config is not defined
+info: Dec-07-2021 17:43:05: 	Categoría API iniciando en el puerto: 9000
+info: Dec-07-2021 17:43:55: 	Categoría API iniciando en el puerto: 9000
+error: Dec-07-2021 17:44:14: 	Unhandled Rejection at: [object Promise] reason: Error [ERR_CRYPTO_SIGN_KEY_REQUIRED]: No key provided to sign
+info: Dec-07-2021 17:45:33: 	Categoría API iniciando en el puerto: 9000
+error: Dec-07-2021 17:45:38: 	Unhandled Rejection at: [object Promise] reason: Error [ERR_CRYPTO_SIGN_KEY_REQUIRED]: No key provided to sign
+error: Dec-07-2021 17:50:55: 	Unhandled Rejection at: [object Promise] reason: Error [ERR_CRYPTO_SIGN_KEY_REQUIRED]: No key provided to sign
+info: Dec-07-2021 17:51:32: 	Categoría API iniciando en el puerto: 9000
+error: Dec-07-2021 17:51:35: 	Unhandled Rejection at: [object Promise] reason: Error [ERR_CRYPTO_SIGN_KEY_REQUIRED]: No key provided to sign
+error: Dec-07-2021 17:52:24: 	Unhandled Rejection at: [object Promise] reason: Error [ERR_CRYPTO_SIGN_KEY_REQUIRED]: No key provided to sign
+error: Dec-07-2021 17:52:24: 	Unhandled Rejection at: [object Promise] reason: Error [ERR_CRYPTO_SIGN_KEY_REQUIRED]: No key provided to sign
+error: Dec-07-2021 17:57:46: 	Unhandled Rejection at: [object Promise] reason: Error [ERR_CRYPTO_SIGN_KEY_REQUIRED]: No key provided to sign
+info: Dec-07-2021 17:58:08: 	Categoría API iniciando en el puerto: 9000
+info: Dec-07-2021 18:03:18: 	Categoría API iniciando en el puerto: 9000
+info: Dec-07-2021 18:05:39: 	Categoría API iniciando en el puerto: 9000
+error: Dec-07-2021 18:05:45: 	Unhandled Rejection at: [object Promise] reason: TypeError: Cannot read properties of undefined (reading 'error')
+info: Dec-07-2021 18:07:01: 	Categoría API iniciando en el puerto: 9000
+error: Dec-07-2021 18:08:53: 	Unhandled Rejection at: [object Promise] reason: TypeError: Cannot read properties of undefined (reading 'error')
+info: Dec-07-2021 18:09:42: 	Categoría API iniciando en el puerto: 9000
+info: Dec-07-2021 18:09:49: 	Categoría API iniciando en el puerto: 9000
+info: Dec-07-2021 18:10:08: 	Categoría API iniciando en el puerto: 9000
+error: Dec-07-2021 18:10:12: 	Unhandled Rejection at: [object Promise] reason: TypeError [ERR_INVALID_ARG_TYPE]: The "key.key" property must be of type string or an instance of ArrayBuffer, Buffer, TypedArray, DataView, KeyObject, or CryptoKey. Received undefined
+info: Dec-07-2021 18:10:41: 	Categoría API iniciando en el puerto: 9000
+info: Dec-07-2021 18:10:49: 	Categoría API iniciando en el puerto: 9000
+error: Dec-07-2021 18:32:37: 	Unhandled Rejection at: [object Promise] reason: Error: ENOENT: no such file or directory, unlink 'C:\GTC\QA\Temp\CDM760124C85__TR98.pdf'
+info: Dec-07-2021 18:33:25: 	Categoría API iniciando en el puerto: 9000
+error: Dec-07-2021 18:34:49: 	Unhandled Rejection at: [object Promise] reason: Error: ENOENT: no such file or directory, unlink 'C:\GTC\QA\Temp\CDM760124C85__TR99.pdf'
+info: Dec-07-2021 18:52:29: 	Categoría API iniciando en el puerto: 9000
+info: Dec-07-2021 18:54:04: 	Categoría API iniciando en el puerto: 9000
+info: Dec-07-2021 18:55:58: 	Categoría API iniciando en el puerto: 9000
+info: Dec-08-2021 11:07:29: 	Categoría API iniciando en el puerto: 9000
+info: Dec-08-2021 11:07:39: 	Categoría API iniciando en el puerto: 9000
+info: Dec-08-2021 11:16:52: 	Categoría API iniciando en el puerto: 9000
+info: Dec-08-2021 11:17:30: 	Categoría API iniciando en el puerto: 9000
+info: Dec-08-2021 11:18:02: 	Categoría API iniciando en el puerto: 9000
+info: Dec-08-2021 11:18:53: 	Categoría API iniciando en el puerto: 9000
+info: Dec-08-2021 11:23:30: 	Categoría API iniciando en el puerto: 9000
+info: Dec-08-2021 11:26:39: 	Categoría API iniciando en el puerto: 9000
+info: Dec-08-2021 11:29:46: 	Categoría API iniciando en el puerto: 9000
+info: Dec-08-2021 11:33:53: 	Categoría API iniciando en el puerto: 9000
+info: Dec-08-2021 11:35:10: 	Categoría API iniciando en el puerto: 9000
+error: Dec-08-2021 11:36:57: 	Unhandled Rejection at: [object Promise] reason: ReferenceError: fs is not defined
+info: Dec-08-2021 11:37:32: 	Categoría API iniciando en el puerto: 9000

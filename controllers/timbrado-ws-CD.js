@@ -45,6 +45,10 @@ const {
   sendMail 
 } = require('../utils/mail');
 
+const {
+  createPDFFromBase64
+} = require('../utils/general')
+
 async function login(req, res) {
 
     const data = {
@@ -380,7 +384,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
         }
       }
       
-      let buff = Buffer.from( timbradoResponse.cfdiTimbrado );
+      let buff = Buffer.from( timbradoResponse.cfdiTimbrado, 'base64' );
       let xmlToSend = buff.toString('utf-8');
 
       fs.writeFileSync( `${tempPath}${fileName}`, xmlToSend );
@@ -400,21 +404,14 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
           pdf: pdfResponse.pdf
         }
 
-        fs.writeFile( `${ tempPath }${ path.basename( fileName, '.xml' ) }.pdf` , pdfResponse.pdf, 'base64', error => {
-          if (error) {
-              throw error;
-          } else {
-              console.log('base64 saved!');
-          }
-        });
+        await createPDFFromBase64 ( `${ tempPath }${ path.basename( fileName, '.xml' ) }.pdf`, pdfResponse.pdf );
+
+        //fs.writeFileSync( `${ tempPath }${ path.basename( fileName, '.xml' ) }.pdf` , pdfResponse.pdf);
 
         mailAttachments[1] = {
           path: `${ tempPath }${ path.basename( fileName, '.xml' ) }.pdf`,
           filename: `${path.basename( fileName, '.xml' )}.pdf`
         }
-
-        fs.unlinkSync(`${ tempPath }${ fileName }`);
-        fs.unlinkSync(`${ tempPath }${ path.basename( fileName, '.xml' ) }.pdf`);
   
       } else {
   
@@ -431,6 +428,10 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
       cfdis = [...cfdis, cfdiData];
 
       await sendMail( emailTo, mailAttachments, idCustomer, idApplication );
+
+      /* Revisar si no se generó el pdf puede tronar */
+      fs.unlinkSync(`${ tempPath }${ fileName }`);
+      fs.unlinkSync(`${ tempPath }${ path.basename( fileName, '.xml' ) }.pdf`);
   
     } else {
   

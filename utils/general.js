@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 /* Define Temp Files Names as Date */
 
 const padString = (string, length, character) => {
@@ -26,9 +28,22 @@ const getTemporalFileName = () => {
 
 }
 
+async function createPDFFromBase64 ( filePath, base64PDF ) {
+
+    fs.writeFile( filePath , base64PDF, 'base64', error => {
+        if (error) {
+            throw error;
+        } else {
+            console.log('base64 saved!');
+        }
+      });
+
+}
+
 module.exports = {
     padString,
-    getTemporalFileName
+    getTemporalFileName,
+    createPDFFromBase64
 }
 
 
