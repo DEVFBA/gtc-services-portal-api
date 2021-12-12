@@ -223,7 +223,7 @@ async function timbrar(req, res){
   
 
   /* Retrieve data to process */
-  const xmls = req.body.XMLs;
+  const xmls = req.body.xmls;
 
   /******  Aquí debe iniciar a barrer cada XML recibido en el Array ******/
 
@@ -247,6 +247,8 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
     let xmlDoc = await serializeXML( xmls[i].xmlBase64 );
 
     /* Retrieve Addenda Data to resolve Email To */
+
+    // Si no tiene addenda debe seguir
 
     const emailTo = xmlDoc.getElementsByTagName('cfdi:Addenda')[0].getElementsByTagName('DatosAdicionales')[0].getAttribute('EMAIL');
   
@@ -371,18 +373,28 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
     fs.unlinkSync(`${tempPath}${fileName}`);
   
     /* Regresar respuesta */
+
+    let cfdiData = new Object ({
+      error: 0,
+      message: '',
+      timbrado: {
+        file: '',
+        statusCFDI: 0,
+        uuid: '',
+        cfdiTimbrado: '',
+        statusPDF: 0,
+        pdf: ''
+      }
+    })
+
+    console.log(cfdiData);
   
     if(timbradoResponse.status === 200){
-  
-      let cfdiData = {
-        file: fileName,
-        cfdi: {
-          status: timbradoResponse.status,
-          message: timbradoResponse.message,
-          uuid: timbradoResponse.uuid,
-          cfdiTimbrado: timbradoResponse.cfdiTimbrado
-        }
-      }
+
+      cfdiData.timbrado.file = fileName;
+      cfdiData.statusCFDI = timbradoResponse.status;
+      cfdiData.uuid = timbradoResponse.uuid;
+      cfdiData.cfdiTimbrado = timbradoResponse.cfdiTimbrado;
       
       let buff = Buffer.from( timbradoResponse.cfdiTimbrado, 'base64' );
       let xmlToSend = buff.toString('utf-8');
@@ -397,16 +409,11 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
       const pdfResponse = await obtenerPDFTimbrado(urlPDF, timbradoResponse.uuid, wsUser, wsPassword);
   
       if(pdfResponse.status === 200) {
-        
-        cfdiData.pdf = {
-          status: pdfResponse.status,
-          message: pdfResponse.mensaje,
-          pdf: pdfResponse.pdf
-        }
+
+        cfdiData.timbrado.statusPDF = pdfResponse.status;
+        cfdiData.timbrado.pdf = pdfResponse.pdf;
 
         await createPDFFromBase64 ( `${ tempPath }${ path.basename( fileName, '.xml' ) }.pdf`, pdfResponse.pdf );
-
-        //fs.writeFileSync( `${ tempPath }${ path.basename( fileName, '.xml' ) }.pdf` , pdfResponse.pdf);
 
         mailAttachments[1] = {
           path: `${ tempPath }${ path.basename( fileName, '.xml' ) }.pdf`,
@@ -414,14 +421,10 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
         }
   
       } else {
-  
-        cfdiData.pdf = {
-          error: {
-            status: pdfResponse.status,
-            message: pdfResponse.mensaje,
-            pdf: pdfResponse.pdf
-          }
-        }
+
+        cfdiData.error = 2;
+        cfdiData.message = pdfResponse.mensaje;
+        cfdiTimbrado.statusPDF = pdfResponse.status;
   
       }
   
@@ -434,18 +437,11 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
       fs.unlinkSync(`${ tempPath }${ path.basename( fileName, '.xml' ) }.pdf`);
   
     } else {
-  
-      let cfdiData = {
-        file: fileName,
-        cfdi: {
-          error: {
-            status: timbradoResponse.status,
-            message: timbradoResponse.mensaje,
-            uuid: timbradoResponse.uuid,
-            cfdiTimbrado: timbradoResponse.cfdiTimbrado
-          }
-        }
-      }
+
+      cfdiData.error = 1;
+      cfdiData.message = timbradoResponse.mensaje;
+      cfdiData.timbrado.file = fileName;
+      cfdiData.timbrado.statusCFDI = timbradoResponse.status;
   
       cfdis = [...cfdis, cfdiData];
   
