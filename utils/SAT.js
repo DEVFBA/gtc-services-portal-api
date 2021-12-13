@@ -41,7 +41,11 @@ async function getCadena(stylesheetDir, originXML) {
 
     } catch(error){
 
-      fs.writeFileSync(path.resolve(Config.files.logs, 'Error.txt'), error);
+      console.log('Error en Get Cadena; ', error);
+
+      return error;
+
+      //fs.writeFileSync(path.resolve(Config.files.logs, 'Error.txt'), error);
 
     }
 
@@ -65,8 +69,10 @@ async function getSello(keyFile, password) {
 
   } catch (error) {
 
-    console.log(error);
-    fs.writeFileSync(path.resolve(Config.files.errors, 'errors.txt'), error);
+    console.log('Error en Get Sello: ', error);
+
+    return error;
+    //fs.writeFileSync(path.resolve(Config.files.errors, 'errors.txt'), error);
 
   }
 

@@ -7,7 +7,7 @@ const express           = require('express');
     sendMail
   } = require('./mail.js'); */
 
-async function timbrarFactura(xmlBase64, url, user, password, fileName) {
+async function timbrarFactura(xmlBase64, url, user, password) {
 
   const args = {
       usuario: user,
@@ -16,9 +16,7 @@ async function timbrarFactura(xmlBase64, url, user, password, fileName) {
       zip: false
   }
 
-  const response = await soap.createClientAsync(url).then(async (client) => {
-
-    //console.log('Timbrado Client: ', client);
+  const response = await soap.createClientAsync(url).then( async (client) => {
 
     return client.timbrarAsync(args)
 
@@ -51,13 +49,9 @@ async function obtenerPDFTimbrado(url, uuid, user, password) {
 
   const response = await soap.createClientAsync(url).then(async (client) => {
 
-    //console.log('PDF Client: ', client);
-
     return client.obtenerPDFAsync(argsPDF)
 
   }).then(async (result) => {
-
-    //console.log('Result: ', result);
 
     if (result[0].return.status === 200) {
 
