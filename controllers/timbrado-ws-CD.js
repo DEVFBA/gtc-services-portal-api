@@ -283,6 +283,22 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
     
     for(let i = 0; i < xmls.length; i++){
 
+      cfdiData = new Object ({
+        error: 0,
+        message: '',
+        timbrado: {
+          file: '',
+          serie: '',
+          folio: '',
+          statusCFDI: 0,
+          uuid: '',
+          cfdiTimbrado: '',
+          statusPDF: 0,
+          pdf: '',
+          emailTo: ''
+        }
+      });
+
       if ( !xmls[i].fileName || xmls[i].fileName === "" ) { // Si llega el fileName vacío o incorrecto
 
         cfdiData.error = 1;
@@ -487,9 +503,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
         /* Regresar respuesta */
       
         if( timbradoResponse.status === 200 ){
-    
-          cfdiData.error = 0;
-          cfdiData.message = '';
+
           cfdiData.timbrado.file            = fileName;
           cfdiData.timbrado.statusCFDI      = timbradoResponse.status;
           cfdiData.timbrado.uuid            = timbradoResponse.uuid;
