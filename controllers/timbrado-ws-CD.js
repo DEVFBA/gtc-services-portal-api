@@ -214,11 +214,14 @@ let cfdiData = new Object ({
   message: '',
   timbrado: {
     file: '',
+    serie: '',
+    folio: '',
     statusCFDI: 0,
     uuid: '',
     cfdiTimbrado: '',
     statusPDF: 0,
-    pdf: ''
+    pdf: '',
+    emailTo: ''
   }
 })
 
@@ -309,11 +312,44 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
     
         let xmlDoc = await serializeXML( xmls[i].xmlBase64 );
     
+        /* Retrieve Serie and Folio for Response */
+
+        let serie = '';
+        let folio = '';
+
+        if( !xmlDoc.getElementsByTagName('cfdi:Comprobante')[0] || !xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].getAttribute('Serie') ) {
+
+          serie = '';
+
+        } else {
+
+          serie = xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].getAttribute('Serie');
+
+        }
+
+        if( !xmlDoc.getElementsByTagName('cfdi:Comprobante')[0] || !xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].getAttribute('Folio') ) {
+
+          folio = '';
+
+        } else {
+
+          folio = xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].getAttribute('Folio');
+
+        }
+        
         /* Retrieve Addenda Data to resolve Email To */
     
-        // Si no tiene addenda debe seguir
-    
-        //const emailTo = xmlDoc.getElementsByTagName('cfdi:Addenda')[0].getElementsByTagName('DatosAdicionales')[0].getAttribute('EMAIL');
+        let emailTo = '';
+
+        if( !xmlDoc.getElementsByTagName('cfdi:Addenda')[0] || !xmlDoc.getElementsByTagName('DatosAdicionales')[0] || !xmlDoc.getElementsByTagName('cfdi:Addenda')[0].getElementsByTagName('DatosAdicionales')[0].getAttribute('EMAIL') ) {
+
+          emailTo = '';
+
+        } else {
+
+          emailTo = xmlDoc.getElementsByTagName('cfdi:Addenda')[0].getElementsByTagName('DatosAdicionales')[0].getAttribute('EMAIL');
+
+        }
       
         /* Retrieve RFCEmisor to resolve Id Customer for Timbrado Configuration */
 
@@ -452,10 +488,15 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
       
         if( timbradoResponse.status === 200 ){
     
+          cfdiData.error = 0;
+          cfdiData.message = '';
           cfdiData.timbrado.file            = fileName;
           cfdiData.timbrado.statusCFDI      = timbradoResponse.status;
           cfdiData.timbrado.uuid            = timbradoResponse.uuid;
           cfdiData.timbrado.cfdiTimbrado    = timbradoResponse.cfdiTimbrado;
+          cfdiData.timbrado.serie           = serie;
+          cfdiData.timbrado.folio           = folio;
+          cfdiData.timbrado.emailTo         = emailTo;
           
     /*       let buff = Buffer.from( timbradoResponse.cfdiTimbrado, 'base64' );
           let xmlToSend = buff.toString('utf-8');
