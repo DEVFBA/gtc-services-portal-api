@@ -2,7 +2,6 @@ const sql = require('mssql');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
-const path = require('path');
 const crypto = require('crypto');
 
 const { DOMParser, XMLSerializer } = require('@xmldom/xmldom');
@@ -41,13 +40,23 @@ const {
   serializeXML
 } = require('../utils/xml');
 
-const { 
-  sendMail 
-} = require('../utils/mail');
+let cfdis                   = [];
 
-const {
-  createPDFFromBase64
-} = require('../utils/general')
+let cfdiData = new Object ({
+  error: 0,
+  message: '',
+  timbrado: {
+    file: '',
+    serie: '',
+    folio: '',
+    statusCFDI: 0,
+    uuid: '',
+    cfdiTimbrado: '',
+    statusPDF: 0,
+    pdf: '',
+    emailTo: ''
+  }
+});
 
 async function login(req, res) {
 
@@ -84,7 +93,6 @@ async function login(req, res) {
             message: userLogin.recordsets[0][0].Code_Message_User
           }
         }
-        //const response = [regreso]
 
         res.status(401).json(response);
 
@@ -207,29 +215,12 @@ async function getClientSettings(req, res, next){
 
 }
 
-let cfdis                   = [];
-
-let cfdiData = new Object ({
-  error: 0,
-  message: '',
-  timbrado: {
-    file: '',
-    serie: '',
-    folio: '',
-    statusCFDI: 0,
-    uuid: '',
-    cfdiTimbrado: '',
-    statusPDF: 0,
-    pdf: '',
-    emailTo: ''
-  }
-})
-
 async function timbrar(req, res){
 
   cfdis = [];
 
   /* Retrieve General Configuration */
+
   const decode        = jwt.decode(req.headers.authorization.split(' ')[1]);
   const idApplication = decode.timbradoApplication;
   
@@ -242,7 +233,8 @@ async function timbrar(req, res){
   */
 
   /* Retrieve data to process */
-  if ( Object.entries(req.body).length === 0 ) { // Si se envía un body vacío
+
+  if ( Object.entries(req.body).length === 0 ) { // If body is empty
 
     cfdiData.error = 1;
     cfdiData.message = 'Request Body incorrecto - Se está enviando vacío el Body del Request';
@@ -251,7 +243,7 @@ async function timbrar(req, res){
 
     res.json( { data: cfdis } );
     
-  } else if( !req.body.xmls || req.body.xmls.length === 0 ){ // Si se envía mal o vacío el array xmls
+  } else if( !req.body.xmls || req.body.xmls.length === 0 ){ // If xmls Array is empty or null
 
     cfdiData.error = 1;
     cfdiData.message = 'Request Body incorrecto - Se está enviando el array xmls vacío o no se está enviando correctamente';
@@ -264,8 +256,6 @@ async function timbrar(req, res){
 
     const xmls = req.body.xmls;
   
-    /******  Aquí debe iniciar a barrer cada XML recibido en el Array ******/
-  
     const cfdis = await procesarXMLs( xmls, idApplication, tempPath );
   
     res.json( { data: cfdis } );
@@ -275,9 +265,6 @@ async function timbrar(req, res){
 }
 
 async function procesarXMLs(xmls, idApplication, tempPath) {
-
-  //let cfdis                   = [];
-  //let mailAttachments         = [];
 
   try {
     
@@ -299,7 +286,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
         }
       });
 
-      if ( !xmls[i].fileName || xmls[i].fileName === "" ) { // Si llega el fileName vacío o incorrecto
+      if ( !xmls[i].fileName || xmls[i].fileName === "" ) { // If fileName is empty or null
 
         cfdiData.error = 1;
         cfdiData.message = 'Request Body incorrecto - Se está enviando el atributo fileName de xmls vacío, o no se está enviando correctamente';
@@ -307,10 +294,8 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
         cfdis = [...cfdis, cfdiData];
 
         return cfdis;
-    
-        //res.json( { data: cfdis } );
         
-      } else if( !xmls[i].xmlBase64 || xmls[i].xmlBase64 === "" ) { // Si llega el xmlBase64 vacío o incorrecto
+      } else if( !xmls[i].xmlBase64 || xmls[i].xmlBase64 === "" ) { // If xmlBase64 is empty or null
 
         cfdiData.error = 1;
         cfdiData.message = 'Request Body incorrecto - Se está enviando el atributo xmlBase64 de xmls vacío, o no se está enviando correctamente';
@@ -352,20 +337,6 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
           folio = xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].getAttribute('Folio');
 
         }
-        
-        /* Retrieve Addenda Data to resolve Email To */
-    
-        let emailTo = '';
-
-        if( !xmlDoc.getElementsByTagName('cfdi:Addenda')[0] || !xmlDoc.getElementsByTagName('DatosAdicionales')[0] || !xmlDoc.getElementsByTagName('cfdi:Addenda')[0].getElementsByTagName('DatosAdicionales')[0].getAttribute('EMAIL') ) {
-
-          emailTo = '';
-
-        } else {
-
-          emailTo = xmlDoc.getElementsByTagName('cfdi:Addenda')[0].getElementsByTagName('DatosAdicionales')[0].getAttribute('EMAIL');
-
-        }
       
         /* Retrieve RFCEmisor to resolve Id Customer for Timbrado Configuration */
 
@@ -394,7 +365,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
       
         idCustomer = idCustomer[0].Id_Customer;
       
-        /* Recuperar datos de configuración del Portal GTC */
+        /* Retrieve Portal GTC Configuration for Timbrado by Customer RFC */
       
         const appConfig = await getApplicationsSettings( { pvOptionCRUD: 'R', piIdCustomer: idCustomer, piIdApplication: idApplication } );
       
@@ -439,34 +410,81 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
           return data.Settings_Key === 'TimbradoWSPassword';
       
         });
+
+        let defaultEmail = appConfig[0].filter( (data) => {
       
-        cerFilePath   = cerFilePath[0].Settings_Value;
-        keyFilePath   = keyFilePath[0].Settings_Value;
-        keyPassword   = keyPassword[0].Settings_Value;
-        urlWS         = urlWS[0].Settings_Value;
-        urlPDF        = urlPDF[0].Settings_Value;
-        wsUser        = wsUser[0].Settings_Value;
-        wsPassword    = wsPassword[0].Settings_Value;
+          return data.Settings_Key === 'DefaultEmail';
       
-        /* Obtener Certificado y NoCertificado */
+        });
+
+        let deleteAddenda = appConfig[0].filter( (data) => {
+      
+          return data.Settings_Key === 'DeleteAddenda';
+      
+        });
+
+        //DeleteDatosAdicionales
+      
+        cerFilePath                 = cerFilePath[0].Settings_Value;
+        keyFilePath                 = keyFilePath[0].Settings_Value;
+        keyPassword                 = keyPassword[0].Settings_Value;
+        urlWS                       = urlWS[0].Settings_Value;
+        urlPDF                      = urlPDF[0].Settings_Value;
+        wsUser                      = wsUser[0].Settings_Value;
+        wsPassword                  = wsPassword[0].Settings_Value;
+        defaultEmail                = defaultEmail[0].Settings_Value;
+        deleteAddenda               = deleteAddenda[0].Settings_Value;
+
+        /* 
+
+          Retrieve Addenda Data to resolve Email To
+          If there's no Addenda Tag, it will default eMailTo attribute to DefaultEmail Setting Value in Portal GTC
+
+          DeleteAddenda Configuration will define if this Tag will be deleted or not
+
+        */
+
+        let emailTo = '';
+
+        if( !xmlDoc.getElementsByTagName('cfdi:Addenda')[0] || !xmlDoc.getElementsByTagName('DatosAdicionales')[0] || !xmlDoc.getElementsByTagName('cfdi:Addenda')[0].getElementsByTagName('DatosAdicionales')[0].getAttribute('EMAIL') ) {
+
+          emailTo = defaultEmail;
+
+          console.log(emailTo);
+
+        } else {
+
+          emailTo = xmlDoc.getElementsByTagName('cfdi:Addenda')[0].getElementsByTagName('DatosAdicionales')[0].getAttribute('EMAIL');
+
+          if( parseInt(deleteAddenda) ){
+
+            const addenda = xmlDoc.getElementsByTagName('cfdi:Addenda')[0];
+
+            addenda.parentNode.removeChild(addenda);
+
+          }
+
+        }
+      
+        /* Get Certificado y NoCertificado */
       
         const serialNumber = certificar(cerFilePath);
       
         const cer = fs.readFileSync(cerFilePath, 'base64');
       
-        /* Certificar Factura */
+        /* Certificate Invoice */
       
         xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].setAttribute('NoCertificado', serialNumber);
       
         xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].setAttribute('Certificado', cer);
       
-        /* Generar XML Certificado */
+        /* Generate Certificated Invoice XML */
       
         let stringXML = new XMLSerializer().serializeToString(xmlDoc);
       
         fs.writeFileSync(`${tempPath}${fileName}`, stringXML);
       
-        /* Sellar XML */
+        /* Seal XML */
       
         const cadena = await getCadena('./resources/XSLT/cadenaoriginal_3_3.xslt', `${tempPath}${fileName}`);
       
@@ -490,7 +508,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
       
         fs.writeFileSync(`${tempPath}${fileName}`, stringXML);
       
-        /* Convertir a Base 64 y timbrar */
+        /* Get Base 64 and Stamp */
       
         xml = fs.readFileSync(`${tempPath}${fileName}`, 'utf8');
       
@@ -500,7 +518,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
       
         fs.unlinkSync(`${tempPath}${fileName}`);
       
-        /* Regresar respuesta */
+        /* Get Response */
       
         if( timbradoResponse.status === 200 ){
 
@@ -511,16 +529,6 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
           cfdiData.timbrado.serie           = serie;
           cfdiData.timbrado.folio           = folio;
           cfdiData.timbrado.emailTo         = emailTo;
-          
-    /*       let buff = Buffer.from( timbradoResponse.cfdiTimbrado, 'base64' );
-          let xmlToSend = buff.toString('utf-8');
-    
-          fs.writeFileSync( `${tempPath}${fileName}`, xmlToSend );
-    
-          mailAttachments[0] = {
-            path: `${tempPath}${fileName}`,
-            filename: fileName
-          } */
     
           const pdfResponse = await obtenerPDFTimbrado( urlPDF, timbradoResponse.uuid, wsUser, wsPassword );
       
@@ -528,13 +536,6 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
     
             cfdiData.timbrado.statusPDF   = pdfResponse.status;
             cfdiData.timbrado.pdf         = pdfResponse.pdf;
-    
-            //await createPDFFromBase64 ( `${ tempPath }${ path.basename( fileName, '.xml' ) }.pdf`, pdfResponse.pdf );
-    
-    /*         mailAttachments[1] = {
-              path: `${ tempPath }${ path.basename( fileName, '.xml' ) }.pdf`,
-              filename: `${path.basename( fileName, '.xml' )}.pdf`
-            } */
       
           } else {
     
@@ -545,12 +546,6 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
           }
       
           cfdis = [...cfdis, cfdiData];
-    
-          //await sendMail( emailTo, mailAttachments, idCustomer, idApplication );
-    
-          /* Revisar si no se generó el pdf puede tronar */
-          //fs.unlinkSync(`${ tempPath }${ fileName }`);
-          //fs.unlinkSync(`${ tempPath }${ path.basename( fileName, '.xml' ) }.pdf`);
       
         } else {
     
@@ -570,13 +565,11 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
     return cfdis;
 
   } catch (error) {
-    
-    console.log('Error en Procesado: ',error);
 
     cfdiData.error          = 1;
     cfdiData.message        = error;
 
-    return error;
+    return cfdis;
 
   }
 
