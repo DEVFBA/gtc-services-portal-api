@@ -3,6 +3,7 @@ const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const crypto = require('crypto');
+const logger = require('../utils/logger');
 
 const { DOMParser, XMLSerializer } = require('@xmldom/xmldom');
 
@@ -128,9 +129,8 @@ async function login(req, res) {
       pool.close();
       
   } catch (error) {
-
+      logger.error(error + "/timbrado-ws-CD/login - POST -")
       console.log(error);
-      
   }
     
 }   
@@ -202,7 +202,7 @@ async function getClientSettings(req, res, next){
     res.json( response );
 
   } catch (error) {
-
+    logger.error(error + "/timbrado-ws-CD/get-client-settings - GET -")
     const errorResponse = {
       error: {
         message: 'No se pudieron recuperar los datos de configuración de la aplicación.'
@@ -565,7 +565,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
     return cfdis;
 
   } catch (error) {
-
+    logger.error(error + "/timbrado-ws-CD/timbrado - POST -")
     cfdiData.error          = 1;
     cfdiData.message        = error;
 
