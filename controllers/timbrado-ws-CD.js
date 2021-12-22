@@ -73,16 +73,6 @@ async function login(req, res) {
         timbradoApplication: req.body.timbradoApplication
     }
 
-    const params = {
-      pvOptionCRUD: 'R',
-      table: 'SAT_Cat_Countries',
-      pvIdCatalog: 'ME'
-    }
-
-    const test = await getCatalogIdDescription( params );
-
-    console.log( test );
-
     try {
       
       let encRes = await axios.post('http://129.159.99.152/GTC_DEV/api/Hash/EncryptMD5', {text: data.password});
