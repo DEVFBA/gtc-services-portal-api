@@ -28,6 +28,35 @@ async function getCatalog(params){
     }
 }
 
+//Para obtener la descripción de un Código de cualquier catálogo SAT
+async function getCatalogIdDescription( params ){
+
+    try{
+
+        let description = '';
+
+        let pSpCatalog = 'sp' + params.table + '_CRUD_Records';
+
+        let pool = await sql.connect( config );
+
+        let data = await pool.request()
+            .input( 'pvOptionCRUD', sql.VarChar, params.pvOptionCRUD )
+            .input( 'pvIdCatalog', sql.VarChar, params.pvIdCatalog )
+            .execute( pSpCatalog );
+
+        data.recordsets[0][0]? description = data.recordsets[0][0].Short_Desc:description = 'Code Not Found!';
+
+        return description;
+
+    }catch( error ){
+
+        console.log( error );
+        return 'Get Description Error!';
+
+    }
+
+}
+
 //Crear un registro de los catalogos del Portal
 async function insertCatRegisterPortal(catRegister){
     try{
@@ -158,5 +187,6 @@ module.exports = {
     insertCatRegisterSATAssumptions:insertCatRegisterSATAssumptions,
     updateCatRegisterPortal: updateCatRegisterPortal,
     updateCatRegisterSAT: updateCatRegisterSAT,
-    updateCatRegisterSATAssumptions: updateCatRegisterSATAssumptions
+    updateCatRegisterSATAssumptions: updateCatRegisterSATAssumptions,
+    getCatalogIdDescription
 }

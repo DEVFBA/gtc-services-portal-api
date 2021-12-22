@@ -5,6 +5,10 @@ const fs = require('fs');
 const crypto = require('crypto');
 const logger = require('../utils/logger');
 
+const {
+  getCatalogIdDescription
+} = require('./cat-catalogs');
+
 const { DOMParser, XMLSerializer } = require('@xmldom/xmldom');
 
 const config = require('../dbconfig');
@@ -68,6 +72,16 @@ async function login(req, res) {
         idApplication: req.body.idApplication,
         timbradoApplication: req.body.timbradoApplication
     }
+
+    const params = {
+      pvOptionCRUD: 'R',
+      table: 'SAT_Cat_Countries',
+      pvIdCatalog: 'ME'
+    }
+
+    const test = await getCatalogIdDescription( params );
+
+    console.log( test );
 
     try {
       
