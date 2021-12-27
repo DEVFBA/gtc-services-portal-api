@@ -5,6 +5,10 @@ const fs = require('fs');
 const crypto = require('crypto');
 const logger = require('../utils/logger');
 
+const {
+  getCatalogIdDescription
+} = require('./cat-catalogs');
+
 const { DOMParser, XMLSerializer } = require('@xmldom/xmldom');
 
 const config = require('../dbconfig');
