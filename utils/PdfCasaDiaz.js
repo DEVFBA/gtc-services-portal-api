@@ -22,7 +22,7 @@ var xml642 = "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPGNmZGk6Q29tcH
 
 async function getPDFCasaDiaz(docBase64, pathLogo, nameFile)
 {
-    var xmlString = await xml.serializeXML(xml642)
+    var xmlString = await xml.serializeXML(docBase64)
 
     var options = {compact: false, ignoreComment: true, spaces: 4};
     const jsonString = convert.xml2json(xmlString, options);
@@ -76,7 +76,7 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile)
             [
                 {text: "\n", style: 'espacios'},
                 {text: "\n", style: 'espacios'},
-                { image: "images/Logo1.png", width: 140, height: 60, alignment: 'center'},
+                { image: pathLogo, width: 140, height: 60, alignment: 'center'},
                 {text: "\n", style: 'espacios'},
             ],
             [
@@ -1225,10 +1225,21 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile)
             }
         }   
     };
-
+    var nameF = nameFile + ".pdf"
     var pdfDoc = printer.createPdfKitDocument(docDefinition);
-    pdfDoc.pipe(fs.createWriteStream('document.pdf'));
+    pdfDoc.pipe(fs.createWriteStream(temporalFilesPath + nameF));
     pdfDoc.end();
+
+    try {
+        fs.unlinkSync(temporalFilesPath + imageQR)
+        //file removed
+    } catch(err) {
+        console.error(err)
+    }
 }
 
-getPDFCasaDiaz()
+//getPDFCasaDiaz()
+
+module.exports = {
+    getPDFCasaDiaz : getPDFCasaDiaz
+}
