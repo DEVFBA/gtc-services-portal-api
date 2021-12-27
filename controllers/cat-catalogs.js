@@ -28,6 +28,35 @@ async function getCatalog(params){
     }
 }
 
+//Para obtener la descripción de un Código de cualquier catálogo SAT
+async function getCatalogIdDescription( params ){
+
+    try{
+
+        let description = '';
+
+        let pSpCatalog = 'sp' + params.table + '_CRUD_Records';
+
+        let pool = await sql.connect( config );
+
+        let data = await pool.request()
+            .input( 'pvOptionCRUD', sql.VarChar, params.pvOptionCRUD )
+            .input( 'pvIdCatalog', sql.VarChar, params.pvIdCatalog )
+            .execute( pSpCatalog );
+
+        data.recordsets[0][0]? description = data.recordsets[0][0].Short_Desc:description = 'Code Not Found!';
+
+        return description;
+
+    }catch( error ){
+
+        console.log( error );
+        return 'Get Description Error!';
+
+    }
+
+}
+
 //Crear un registro de los catalogos del Portal
 async function insertCatRegisterPortal(catRegister){
     try{
@@ -150,6 +179,36 @@ async function updateCatRegisterSATAssumptions(catRegister){
     }
 }
 
+//Para obtener ubicaciones de acuerdo al codigo postal - Catalogo Zip Codes
+async function getUbicZipCode(params){
+    try{
+        let pool = await sql.connect(config);
+        let zipcodes = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, "R")
+            .input('pvZip_Code', sql.VarChar, params.pvZip_Code)
+            .execute('spSAT_Cat_Zip_Codes_Counties_CRUD_Records')
+        return zipcodes.recordsets
+    }catch(error){
+        console.log(error)
+    }
+}
+
+//Para obtener ubicaciones de acuerdo al codigo postal - Catalogo Zip Codes
+async function getUbicZipCodeCounty(params){
+    //console.log(params)
+    try{
+        let pool = await sql.connect(config);
+        let zipcodes = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, "R")
+            .input('pvIdState', sql.VarChar, params.pvIdState)
+            .input('pvIdCounty', sql.VarChar, params.pvIdCounty)
+            .execute('spSAT_Cat_Zip_Codes_Counties_CRUD_Records')
+        return zipcodes.recordsets
+    }catch(error){
+        console.log(error)
+    }
+}
+
 module.exports = {
     getCatalogs : getCatalogs,
     getCatalog : getCatalog,
@@ -158,5 +217,8 @@ module.exports = {
     insertCatRegisterSATAssumptions:insertCatRegisterSATAssumptions,
     updateCatRegisterPortal: updateCatRegisterPortal,
     updateCatRegisterSAT: updateCatRegisterSAT,
-    updateCatRegisterSATAssumptions: updateCatRegisterSATAssumptions
+    updateCatRegisterSATAssumptions: updateCatRegisterSATAssumptions,
+    getUbicZipCode : getUbicZipCode,
+    getUbicZipCodeCounty : getUbicZipCodeCounty,
+    getCatalogIdDescription: getCatalogIdDescription
 }

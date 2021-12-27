@@ -1,8 +1,8 @@
 const config = {
     user: "sa",
-    password: "GTC-Q4T*",
+    password: "GTC-D3v*",
     server: "129.159.99.152",
-    port: 1434,
+    port: 1433,
     //server: "172.16.0.220",
     database: "PortalGTC",
     options: {

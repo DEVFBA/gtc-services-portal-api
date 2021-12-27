@@ -81,4 +81,25 @@ router.route('/update-sat-assumptions').put(auth, (request, response)=>{
     })
 })
 
+//Ruta para obtener los ubicaciones de acuerdo al Codigo Postal
+router.route('/zip-codes').get(auth, (request, response)=>{
+    const params = {
+        pvZip_Code : request.query.pvZip_Code,
+    };
+    dbcatcatalogs.getUbicZipCode(params).then(result => {
+        response.json(result[0]);
+    })
+})
+
+//Ruta para obtener una ubicación de acuerdo al Codigo Postal para pintar el nombre de su colonia
+router.route('/zip-code-county').get((request, response)=>{
+    const params = {
+        pvIdState : request.query.pvIdState,
+        pvIdCounty : request.query.pvIdCounty,
+    };
+    dbcatcatalogs.getUbicZipCodeCounty(params).then(result => {
+        response.json(result[0]);
+    })
+})
+
 module.exports = router;
