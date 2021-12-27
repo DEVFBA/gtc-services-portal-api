@@ -150,6 +150,36 @@ async function updateCatRegisterSATAssumptions(catRegister){
     }
 }
 
+//Para obtener ubicaciones de acuerdo al codigo postal - Catalogo Zip Codes
+async function getUbicZipCode(params){
+    try{
+        let pool = await sql.connect(config);
+        let zipcodes = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, "R")
+            .input('pvZip_Code', sql.VarChar, params.pvZip_Code)
+            .execute('spSAT_Cat_Zip_Codes_Counties_CRUD_Records')
+        return zipcodes.recordsets
+    }catch(error){
+        console.log(error)
+    }
+}
+
+//Para obtener ubicaciones de acuerdo al codigo postal - Catalogo Zip Codes
+async function getUbicZipCodeCounty(params){
+    //console.log(params)
+    try{
+        let pool = await sql.connect(config);
+        let zipcodes = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, "R")
+            .input('pvIdState', sql.VarChar, params.pvIdState)
+            .input('pvIdCounty', sql.VarChar, params.pvIdCounty)
+            .execute('spSAT_Cat_Zip_Codes_Counties_CRUD_Records')
+        return zipcodes.recordsets
+    }catch(error){
+        console.log(error)
+    }
+}
+
 module.exports = {
     getCatalogs : getCatalogs,
     getCatalog : getCatalog,
@@ -158,5 +188,7 @@ module.exports = {
     insertCatRegisterSATAssumptions:insertCatRegisterSATAssumptions,
     updateCatRegisterPortal: updateCatRegisterPortal,
     updateCatRegisterSAT: updateCatRegisterSAT,
-    updateCatRegisterSATAssumptions: updateCatRegisterSATAssumptions
+    updateCatRegisterSATAssumptions: updateCatRegisterSATAssumptions,
+    getUbicZipCode : getUbicZipCode,
+    getUbicZipCodeCounty : getUbicZipCodeCounty
 }
