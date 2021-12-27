@@ -5,10 +5,6 @@ const fs = require('fs');
 const crypto = require('crypto');
 const logger = require('../utils/logger');
 
-const {
-  getCatalogIdDescription
-} = require('./cat-catalogs');
-
 const { DOMParser, XMLSerializer } = require('@xmldom/xmldom');
 
 const config = require('../dbconfig');
@@ -454,8 +450,6 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
 
           emailTo = defaultEmail;
 
-          console.log(emailTo);
-
         } else {
 
           emailTo = xmlDoc.getElementsByTagName('cfdi:Addenda')[0].getElementsByTagName('DatosAdicionales')[0].getAttribute('EMAIL');
@@ -491,7 +485,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
         /* Seal XML */
       
         const cadena = await getCadena('./resources/XSLT/cadenaoriginal_3_3.xslt', `${tempPath}${fileName}`);
-      
+
         const prm = await getSello(keyFilePath, keyPassword);
       
         const sign = crypto.createSign('RSA-SHA256');
