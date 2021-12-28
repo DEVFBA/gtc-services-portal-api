@@ -45,6 +45,10 @@ const {
   getPDFCasaDiaz
 } = require('../utils/PdfCasaDiaz');
 
+const {
+  pdfToBase64
+} = require('../utils/pdf');
+
 let cfdis                   = [];
 
 let cfdiData = new Object ({
@@ -548,7 +552,15 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
           cfdiData.timbrado.folio           = folio;
           cfdiData.timbrado.emailTo         = emailTo;
 
-          await getPDFCasaDiaz(timbradoResponse.cfdiTimbrado, pdfLogo, timbradoResponse.uuid);
+          const test = await getPDFCasaDiaz(timbradoResponse.cfdiTimbrado, pdfLogo, timbradoResponse.uuid);
+
+          console.log(test);
+
+          const pdfBase64 = await pdfToBase64(`${tempPath}${timbradoResponse.uuid}.pdf`);
+
+          console.log(pdfBase64);
+
+          //Convert PDF to Base 64 Function
     
 /*           const pdfResponse = await obtenerPDFTimbrado( urlPDF, timbradoResponse.uuid, wsUser, wsPassword );
       
