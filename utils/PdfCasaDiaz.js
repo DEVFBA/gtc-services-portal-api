@@ -1,7 +1,7 @@
 var fonts = {
     Roboto: {
-      normal: 'https://fonts.gstatic.com/s/montserrat/v18/JTUSjIg1_i6t8kCHKm459WRhyyTh89ZNpQ.woff2',
-      bold: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap',
+      normal: 'C:/Users/aenri/OneDrive/GTC/GTC_Projects/Source/gtc-services-portal-api/utils/fonts/Montserrat-Regular.ttf',
+      bold: 'C:/Users/aenri/OneDrive/GTC/GTC_Projects/Source/gtc-services-portal-api/utils/fonts/Montserrat-Bold.ttf',
       italics: './fonts/Montserrat-Italic.ttf',
       bolditalics: './fonts/Montserrat-BoldItalic.ttf'
     }
