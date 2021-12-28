@@ -34,8 +34,7 @@ const {
 } = require('./cat-general-parameters');
 
 const {
-  timbrarFactura,
-  obtenerPDFTimbrado
+  timbrarFactura
 } = require('../utils/SolucionFactible');
 
 const {
@@ -66,76 +65,85 @@ let cfdiData = new Object ({
 
 async function login(req, res) {
 
-    const data = {
-        user: req.body.user,
-        password: req.body.password,
-        idCustomer: req.body.idCustomer,
-        idApplication: req.body.idApplication,
-        timbradoApplication: req.body.timbradoApplication
-    }
+/*   logger.info('Login User Recibido: ' + req.body.user);
+  logger.info('Login idCustomer Recibido: ' + req.body.idCustomer);
+  logger.info('Login idApplication Recibido: ' + req.body.idApplication);
+  logger.info('Login timbradoApplication Recibido: ' + req.body.timbradoApplication); */
 
-    try {
+  const data = {
+      user: req.body.user,
+      password: req.body.password,
+      idCustomer: req.body.idCustomer,
+      idApplication: req.body.idApplication,
+      timbradoApplication: req.body.timbradoApplication
+  }
+
+  try {
       
-      let encRes = await axios.post('http://129.159.99.152/GTC_DEV/api/Hash/EncryptMD5', {text: data.password});
-  
-      let encryptedPassword = encRes.data;
+    let encRes = await axios.post('http://129.159.99.152/GTC_DEV/api/Hash/EncryptMD5', {text: data.password});
 
-      const pool = await sql.connect(config);
+    let encryptedPassword = encRes.data;
 
-      const userLogin = await pool.request()
-        .input('pvOptionCRUD', sql.VarChar, 'VA')
-        .input('piIdCustomer', sql.Int, data.idCustomer)
-        .input('pIdApplication', sql.SmallInt, data.idApplication)
-        .input('pvIdUser', sql.VarChar, data.user)
-        .input('pvPassword', sql.VarChar, encryptedPassword)
-        .execute('spCustomer_Application_Users_CRUD_Records');
+/*     logger.info('Password recibido: ' + encryptedPassword); */
 
-      if(userLogin.recordset[0].Code_Type === 'Error')
-      {
-        const response = {
-          error: {
-            code: userLogin.recordsets[0][0].Code,
-            idTransacLog: userLogin.recordsets[0][0].IdTransacLog,
-            message: userLogin.recordsets[0][0].Code_Message_User
+    const pool = await sql.connect(config);
+
+    const userLogin = await pool.request()
+      .input('pvOptionCRUD', sql.VarChar, 'VA')
+      .input('piIdCustomer', sql.Int, data.idCustomer)
+      .input('pIdApplication', sql.SmallInt, data.idApplication)
+      .input('pvIdUser', sql.VarChar, data.user)
+      .input('pvPassword', sql.VarChar, encryptedPassword)
+      .execute('spCustomer_Application_Users_CRUD_Records');
+
+    if(userLogin.recordset[0].Code_Type === 'Error')
+    {
+      const response = {
+        error: {
+          code: userLogin.recordsets[0][0].Code,
+          idTransacLog: userLogin.recordsets[0][0].IdTransacLog,
+          message: userLogin.recordsets[0][0].Code_Message_User
+        }
+      }
+
+      res.status(401).json(response);
+
+    } else {
+
+      let expiration = await getExpirationTimbrado();
+
+      let secret = await getSecretTimbrado();
+
+      const today = new Date();
+      const exp = new Date(today);
+      exp.setDate(today.getDate() + parseInt(expiration, 10)); // 1 día antes de expirar
+      const token = jwt.sign({
+        userName:             data.user,
+        idCustomer:           data.idCustomer,
+        idApplication:        data.idApplication,
+        timbradoApplication:  data.timbradoApplication,
+        exp:                  parseInt(exp.getTime() / 1000)
+      }, secret);
+
+      const response = {
+          data: {
+              message: userLogin.recordsets[0][0].Code_Message_User,
+              token: token,
+              exp: exp
           }
         }
 
-        res.status(401).json(response);
+      res.json(response);
 
-      } else {
+    }
 
-        let expiration = await getExpirationTimbrado();
-
-        let secret = await getSecretTimbrado();
-
-        const today = new Date();
-        const exp = new Date(today);
-        exp.setDate(today.getDate() + parseInt(expiration, 10)); // 1 día antes de expirar
-        const token = jwt.sign({
-          userName:             data.user,
-          idCustomer:           data.idCustomer,
-          idApplication:        data.idApplication,
-          timbradoApplication:  data.timbradoApplication,
-          exp:                  parseInt(exp.getTime() / 1000)
-        }, secret);
-
-        const response = {
-            data: {
-                message: userLogin.recordsets[0][0].Code_Message_User,
-                token: token,
-                exp: exp
-            }
-          }
-
-        res.json(response);
-
-      }
-
-      pool.close();
+    pool.close();
       
   } catch (error) {
-      logger.error(error + '/timbrado-ws-CD/login - POST -')
-      console.log(error);
+
+    logger.error(error + '/timbrado-ws-CD/login - POST -')
+    console.log(error);
+
   }
     
 }   
@@ -221,6 +229,8 @@ async function getClientSettings(req, res, next){
 }
 
 async function timbrar(req, res){
+
+  logger.info('Body timbrar: ' + JSON.stringify(req.body));
 
   cfdis = [];
 

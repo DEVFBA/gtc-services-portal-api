@@ -1,7 +1,7 @@
 /*var fonts = {
     Roboto: {
-      normal: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Montserrat-Regular.ttf',
-      bold: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Montserrat-Bold.ttf',
+      normal: 'C:/Users/aenri/OneDrive/GTC/GTC_Projects/Source/gtc-services-portal-api/utils/fonts/Montserrat-Regular.ttf',
+      bold: 'C:/Users/aenri/OneDrive/GTC/GTC_Projects/Source/gtc-services-portal-api/utils/fonts/Montserrat-Bold.ttf',
       italics: './fonts/Montserrat-Italic.ttf',
       bolditalics: './fonts/Montserrat-BoldItalic.ttf'
     }
@@ -9,10 +9,10 @@
 
 var fonts = {
     Roboto: {
-      normal: 'C:\GTC\Fonts\Montserrat-Regular.ttf',
-      bold: 'C:\GTC\Fonts\Montserrat-Bold.ttf',
-      italics: 'C:\GTC\Fonts\Montserrat-Italic.ttf',
-      bolditalics: 'C:\GTC\Fonts\Montserrat-BoldItalic.ttf'
+      normal: 'C:/GTC/Fonts/Montserrat-Regular.ttf',
+      bold: 'C:/GTC/Fonts/Montserrat-Bold.ttf',
+      italics: 'C:/GTC/Fonts/Montserrat-Italic.ttf',
+      bolditalics: 'C:/GTC/Fonts/Montserrat-BoldItalic.ttf'
     }
 };
 
