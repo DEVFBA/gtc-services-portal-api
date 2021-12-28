@@ -41,6 +41,10 @@ const {
   serializeXML
 } = require('../utils/xml');
 
+const {
+  getPDFCasaDiaz
+} = require('../utils/PdfCasaDiaz');
+
 let cfdis                   = [];
 
 let cfdiData = new Object ({
@@ -129,7 +133,7 @@ async function login(req, res) {
       pool.close();
       
   } catch (error) {
-      logger.error(error + "/timbrado-ws-CD/login - POST -")
+      logger.error(error + '/timbrado-ws-CD/login - POST -')
       console.log(error);
   }
     
@@ -202,7 +206,7 @@ async function getClientSettings(req, res, next){
     res.json( response );
 
   } catch (error) {
-    logger.error(error + "/timbrado-ws-CD/get-client-settings - GET -")
+    logger.error(error + '/timbrado-ws-CD/get-client-settings - GET -')
     const errorResponse = {
       error: {
         message: 'No se pudieron recuperar los datos de configuración de la aplicación.'
@@ -286,7 +290,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
         }
       });
 
-      if ( !xmls[i].fileName || xmls[i].fileName === "" ) { // If fileName is empty or null
+      if ( !xmls[i].fileName || xmls[i].fileName === '' ) { // If fileName is empty or null
 
         cfdiData.error = 1;
         cfdiData.message = 'Request Body incorrecto - Se está enviando el atributo fileName de xmls vacío, o no se está enviando correctamente';
@@ -295,7 +299,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
 
         return cfdis;
         
-      } else if( !xmls[i].xmlBase64 || xmls[i].xmlBase64 === "" ) { // If xmlBase64 is empty or null
+      } else if( !xmls[i].xmlBase64 || xmls[i].xmlBase64 === '' ) { // If xmlBase64 is empty or null
 
         cfdiData.error = 1;
         cfdiData.message = 'Request Body incorrecto - Se está enviando el atributo xmlBase64 de xmls vacío, o no se está enviando correctamente';
@@ -423,7 +427,11 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
       
         });
 
-        //DeleteDatosAdicionales
+        let pdfLogo = appConfig[0].filter( (data) => {
+      
+          return data.Settings_Key === 'PDFLogo';
+      
+        });
       
         cerFilePath                 = cerFilePath[0].Settings_Value;
         keyFilePath                 = keyFilePath[0].Settings_Value;
@@ -434,6 +442,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
         wsPassword                  = wsPassword[0].Settings_Value;
         defaultEmail                = defaultEmail[0].Settings_Value;
         deleteAddenda               = deleteAddenda[0].Settings_Value;
+        pdfLogo                     = pdfLogo[0].Settings_Value;
 
         /* 
 
@@ -527,8 +536,10 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
           cfdiData.timbrado.serie           = serie;
           cfdiData.timbrado.folio           = folio;
           cfdiData.timbrado.emailTo         = emailTo;
+
+          await getPDFCasaDiaz(timbradoResponse.cfdiTimbrado, pdfLogo, timbradoResponse.uuid);
     
-          const pdfResponse = await obtenerPDFTimbrado( urlPDF, timbradoResponse.uuid, wsUser, wsPassword );
+/*           const pdfResponse = await obtenerPDFTimbrado( urlPDF, timbradoResponse.uuid, wsUser, wsPassword );
       
           if( pdfResponse.status === 200 ) {
     
@@ -541,7 +552,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
             cfdiData.message              = pdfResponse.mensaje;
             cfdiData.timbrado.statusPDF   = pdfResponse.status;
       
-          }
+          } */
       
           cfdis = [...cfdis, cfdiData];
       
@@ -563,7 +574,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
     return cfdis;
 
   } catch (error) {
-    logger.error(error + "/timbrado-ws-CD/timbrado - POST -")
+    logger.error(error + '/timbrado-ws-CD/timbrado - POST -')
     cfdiData.error          = 1;
     cfdiData.message        = error;
 
