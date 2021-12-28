@@ -41,19 +41,15 @@ async function getCadena(stylesheetDir, originXML) {
 
     } catch(error){
 
-      console.log('Error en Get Cadena; ', error);
+      console.log('Error en Get Cadena: ', error);
 
       return error;
-
-      //fs.writeFileSync(path.resolve(Config.files.logs, 'Error.txt'), error);
 
     }
 
 }
 
 async function getSello(keyFile, password) {
-
-  //fs.writeFileSync(path.resolve(Config.files.logs, 'getSello.txt'), 'Entra al sello');
 
   const openssl_path = path.join(path.resolve(__dirname, '../'), 'lib', 'win','openssl');
 
@@ -72,7 +68,6 @@ async function getSello(keyFile, password) {
     console.log('Error en Get Sello: ', error);
 
     return error;
-    //fs.writeFileSync(path.resolve(Config.files.errors, 'errors.txt'), error);
 
   }
 
