@@ -516,7 +516,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
       
         xml = fs.readFileSync(`${tempPath}${fileName}`, 'utf8');
       
-        xmlDoc = new DOMParser().parseFromString(xml);//
+        xmlDoc = new DOMParser().parseFromString(xml);
       
         xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].setAttribute('Sello', sello);
       

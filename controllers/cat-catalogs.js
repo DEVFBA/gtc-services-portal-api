@@ -44,7 +44,7 @@ async function getCatalogIdDescription( params ){
             .input( 'pvIdCatalog', sql.VarChar, params.pvIdCatalog )
             .execute( pSpCatalog );
 
-        data.recordsets[0][0]? description = data.recordsets[0][0].Short_Desc:description = 'Code Not Found!';
+        data.recordsets[0][0]? description = data.recordsets[0][0].Long_Desc:description = 'Code Not Found!';
 
         return description;
 
