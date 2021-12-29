@@ -540,8 +540,8 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
       
         if( timbradoResponse.status === 200 ){
 
-          //cfdiData.timbrado.file            = path.basename(fileName, '.xml');
-          cfdiData.timbrado.file            = fileName;
+          cfdiData.timbrado.file            = path.basename(fileName, '.xml');
+          //cfdiData.timbrado.file            = fileName;
           cfdiData.timbrado.statusCFDI      = timbradoResponse.status;
           cfdiData.timbrado.uuid            = timbradoResponse.uuid;
           cfdiData.timbrado.cfdiTimbrado    = timbradoResponse.cfdiTimbrado;
@@ -585,8 +585,8 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
     
           cfdiData.error                    = 1;
           cfdiData.message                  = timbradoResponse.mensaje;
-          //cfdiData.timbrado.file            = path.basename(fileName, '.xml');
-          cfdiData.timbrado.file            = fileName;
+          cfdiData.timbrado.file            = path.basename(fileName, '.xml');
+          //cfdiData.timbrado.file            = fileName;
           cfdiData.timbrado.statusCFDI      = timbradoResponse.status;
       
           cfdis = [...cfdis, cfdiData];
