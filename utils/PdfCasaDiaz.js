@@ -1057,10 +1057,12 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile, domicilioFiscal)
                         var materialPeligroso = mercanciasAux[i].attributes.MaterialPeligroso
                         var claveMaterialPeligroso = mercanciasAux[i].attributes.CveMaterialPeligroso
                         var embalaje = mercanciasAux[i].attributes.Embalaje
+                        var descripcionEmbalaje = mercanciasAux[i].attributes.DescripEmbalaje
 
                         var eMaterialPeligroso;
                         var eClaveMaterialPeligroso;
                         var eEmbalaje;
+                        var eDescripcionEmbalaje;
 
                         if(materialPeligroso === undefined)
                         {
@@ -1086,7 +1088,16 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile, domicilioFiscal)
                             eEmbalaje = ""
                         }
                         else {
+                            embalaje = embalaje + "\n"
                             eEmbalaje = "EMBALAJE: "
+                        }
+                        if(descripcionEmbalaje === undefined)
+                        {
+                            descripcionEmbalaje = ""
+                            eDescripcionEmbalaje = ""
+                        }
+                        else {
+                            eDescripcionEmbalaje = "DESCRIPCIÓN EMBALAJE: "
                         }
         
 
@@ -1100,6 +1111,8 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile, domicilioFiscal)
                                     {text: claveMaterialPeligroso, style: "ubicacionesTexto"},
                                     {text: eEmbalaje, style: "textotablabold" },
                                     {text: embalaje, style: "ubicacionesTexto"},
+                                    {text: eDescripcionEmbalaje, style: "textotablabold" },
+                                    {text: descripcionEmbalaje, style: "ubicacionesTexto"},
                                 ], 
                                 alignment: 'left', 
                                 colSpan: 7
@@ -1208,10 +1221,12 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile, domicilioFiscal)
                         var materialPeligroso = mercanciasAux[i].attributes.MaterialPeligroso
                         var claveMaterialPeligroso = mercanciasAux[i].attributes.CveMaterialPeligroso
                         var embalaje = mercanciasAux[i].attributes.Embalaje
+                        var descripcionEmbalaje = mercanciasAux[i].attributes.DescripEmbalaje
 
                         var eMaterialPeligroso;
                         var eClaveMaterialPeligroso;
                         var eEmbalaje;
+                        var eDescripcionEmbalaje;
 
                         if(materialPeligroso === undefined)
                         {
@@ -1238,6 +1253,14 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile, domicilioFiscal)
                         }
                         else {
                             eEmbalaje = "EMBALAJE: "
+                        }
+                        if(descripcionEmbalaje === undefined)
+                        {
+                            descripcionEmbalaje = ""
+                            eDescripcionEmbalaje = ""
+                        }
+                        else {
+                            eDescripcionEmbalaje = "DESCRIPCIÓN EMBALAJE: "
                         }
         
 
