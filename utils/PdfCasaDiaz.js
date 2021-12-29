@@ -1,12 +1,3 @@
-/*var fonts = {
-    Roboto: {
-      normal: 'C:/Users/aenri/OneDrive/GTC/GTC_Projects/Source/gtc-services-portal-api/utils/fonts/Montserrat-Regular.ttf',
-      bold: 'C:/Users/aenri/OneDrive/GTC/GTC_Projects/Source/gtc-services-portal-api/utils/fonts/Montserrat-Bold.ttf',
-      italics: './fonts/Montserrat-Italic.ttf',
-      bolditalics: './fonts/Montserrat-BoldItalic.ttf'
-    }
-};*/
-
 var fonts = {
     Roboto: {
       normal: 'C:/GTC/Fonts/Montserrat-Regular.ttf',
@@ -22,6 +13,7 @@ var printer = new PdfPrinter(fonts);
 const { AwesomeQR } = require("awesome-qr");
 const fs = require("fs");
 const xml = require('./xml.js')
+const pdf2base64 = require('pdf-to-base64');
 
 const dbcatcatalogs = require('../controllers/cat-catalogs')
 const dbcatgeneralparameters = require('../controllers/cat-general-parameters')
@@ -34,6 +26,7 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile)
 {
 
     try {
+
         var xmlString = await xml.serializeXML(docBase64)
 
         var options = {compact: false, ignoreComment: true, spaces: 4};
@@ -1262,20 +1255,48 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile)
                 }
             }   
         };
-        var nameF = nameFile + ".pdf"
-        var pdfDoc = printer.createPdfKitDocument(docDefinition);
-        pdfDoc.pipe(fs.createWriteStream(temporalFilesPath + nameF));
-        pdfDoc.end();
+
+        return new Promise( ( resolve, reject ) => {
+
+            var pdfDoc = printer.createPdfKitDocument(docDefinition);
+            fs.unlinkSync(temporalFilesPath + imageQR)
+
+            var chunks = [];
+            var result;
+            var base64 = '';
+
+            pdfDoc.on('data', function (chunk) {
+                chunks.push(chunk);
+            });
+            
+            pdfDoc.on('end', function () {
+
+                result = Buffer.concat(chunks);
+
+                base64 = result.toString('base64');
+
+                resolve(base64);
+
+            });
+
+            pdfDoc.on('error', (error) => {
+                
+                console.log(error);
+                
+                reject('')
+
+            });
+
+            pdfDoc.end();
+
+        });
+
     } catch (err) {
-        console.error(err)
+
+        console.error('Error: ', err)
+
     }
     
-    try {
-        fs.unlinkSync(temporalFilesPath + imageQR)
-        //file removed
-    } catch(err) {
-        console.error(err)
-    }
 }
 
 //getPDFCasaDiaz(xml642, "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/images/Logo1.png", "./Documento" )

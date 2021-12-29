@@ -45,10 +45,6 @@ const {
   getPDFCasaDiaz
 } = require('../utils/PdfCasaDiaz');
 
-const {
-  pdfToBase64
-} = require('../utils/pdf');
-
 let cfdis                   = [];
 
 let cfdiData = new Object ({
@@ -544,7 +540,8 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
       
         if( timbradoResponse.status === 200 ){
 
-          cfdiData.timbrado.file            = path.basename(fileName, '.xml');
+          //cfdiData.timbrado.file            = path.basename(fileName, '.xml');
+          cfdiData.timbrado.file            = fileName;
           cfdiData.timbrado.statusCFDI      = timbradoResponse.status;
           cfdiData.timbrado.uuid            = timbradoResponse.uuid;
           cfdiData.timbrado.cfdiTimbrado    = timbradoResponse.cfdiTimbrado;
@@ -552,16 +549,21 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
           cfdiData.timbrado.folio           = folio;
           cfdiData.timbrado.emailTo         = emailTo;
 
-          const test = await getPDFCasaDiaz(timbradoResponse.cfdiTimbrado, pdfLogo, timbradoResponse.uuid);
+          const base64 = await getPDFCasaDiaz(timbradoResponse.cfdiTimbrado, pdfLogo, timbradoResponse.uuid);
 
-          console.log(test);
-
-          const pdfBase64 = await pdfToBase64(`${tempPath}${timbradoResponse.uuid}.pdf`);
-
-          console.log(pdfBase64);
-
-          //Convert PDF to Base 64 Function
+          if( base64 ) {
     
+            cfdiData.timbrado.statusPDF   = 200;
+            cfdiData.timbrado.pdf         = base64;
+      
+          } else {
+    
+            cfdiData.error                = 2;
+            cfdiData.message              = 'No se pudo generar el PDF';
+            cfdiData.timbrado.statusPDF   = 500;
+      
+          }
+
 /*           const pdfResponse = await obtenerPDFTimbrado( urlPDF, timbradoResponse.uuid, wsUser, wsPassword );
       
           if( pdfResponse.status === 200 ) {
@@ -583,7 +585,8 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
     
           cfdiData.error                    = 1;
           cfdiData.message                  = timbradoResponse.mensaje;
-          cfdiData.timbrado.file            = path.basename(fileName, '.xml');
+          //cfdiData.timbrado.file            = path.basename(fileName, '.xml');
+          cfdiData.timbrado.file            = fileName;
           cfdiData.timbrado.statusCFDI      = timbradoResponse.status;
       
           cfdis = [...cfdis, cfdiData];
