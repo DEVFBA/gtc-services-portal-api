@@ -15,6 +15,44 @@ async function getCustomers(params){
     }
 }
 
+async function getFullAddress(idCustomer){
+
+    try{
+
+        let pool = await sql.connect(config);
+
+        let customerData = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, 'R')
+            .input('piIdCustomer', sql.VarChar, idCustomer)
+            .execute('spCustomers_CRUD_Records');
+
+            if( customerData.recordsets[0][0] ){
+
+                const street            = customerData.recordsets[0][0].Street;
+                const extNumber         = customerData.recordsets[0][0].Ext_Number;
+                const intNumber         = customerData.recordsets[0][0].Int_Number;
+                const city              = customerData.recordsets[0][0].City;
+                const zipCode           = customerData.recordsets[0][0].Zip_Code;
+                const country           = customerData.recordsets[0][0].Id_Country;
+
+                const fullAddress       = `${street} ${extNumber} ${intNumber} ${city} C.P: ${zipCode}, ${country}`
+
+                return fullAddress;
+
+            } else {
+
+                return 'Customer Not Found!';
+
+            }
+
+    } catch( error ){
+
+        console.log(error);
+
+    }
+
+} 
+
 //Crear un cliente
 async function insertCustomerRegister(userRegister){
     var localPath=""
@@ -215,5 +253,6 @@ async function updateCustomerRegister(userRegister){
 module.exports = {
     getCustomers : getCustomers,
     insertCustomerRegister : insertCustomerRegister,
-    updateCustomerRegister : updateCustomerRegister
+    updateCustomerRegister : updateCustomerRegister,
+    getFullAddress: getFullAddress
 }
