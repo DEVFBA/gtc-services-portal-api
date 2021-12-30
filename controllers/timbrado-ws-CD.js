@@ -21,7 +21,8 @@ const {
 
 const {
   getCustomers,
-  getFullAddress
+  getFullAddress,
+  getCustomerName
 } = require('./customers');
 
 const {
@@ -381,9 +382,10 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
       
         idCustomer = idCustomer[0].Id_Customer;
 
-        /* Retrieve Customer Full Address */
+        /* Retrieve Customer Data */
 
-        const address = await getFullAddress(idCustomer);
+        const address           = await getFullAddress(idCustomer);
+        const businessName      = await getCustomerName(idCustomer);
       
         /* Retrieve Portal GTC Configuration for Timbrado by Customer RFC */
       
@@ -553,9 +555,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
           cfdiData.timbrado.folio           = folio;
           cfdiData.timbrado.emailTo         = emailTo;
 
-          const razonSocial = '';
-
-          const base64 = await getPDFCasaDiaz( timbradoResponse.cfdiTimbrado, pdfLogo, timbradoResponse.uuid, address, razonSocial );
+          const base64 = await getPDFCasaDiaz( timbradoResponse.cfdiTimbrado, pdfLogo, timbradoResponse.uuid, address, businessName );
 
           if( base64 ) {
     
