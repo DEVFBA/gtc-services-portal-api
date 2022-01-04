@@ -463,6 +463,7 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile, domicilioFiscal, no
         }).draw();
 
         var temporalFilesPath = (resTemporalFiles[0])[0].Value
+        //console.log(temporalFilesPath)
         
         fs.writeFileSync(temporalFilesPath + imageQR, buffer);
         
@@ -1141,7 +1142,7 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile, domicilioFiscal, no
                                     pECount++
                                 }
                             }
-                            console.log(pedimentosAux)
+                            //console.log(pedimentosAux)
 
                             //console.log(pedimentos)
                             if(pedimentosAux.length > 0)
@@ -1185,7 +1186,7 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile, domicilioFiscal, no
                                     cTECount++
                                 }
                             }
-                            console.log(cantidadTransportaAux)
+                            //console.log(cantidadTransportaAux)
 
                             if(cantidadTransportaAux.length > 0)
                             {
@@ -1363,7 +1364,7 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile, domicilioFiscal, no
                         var mercanciasElements = mercanciasAux[i].elements
                         if(mercanciasElements !== undefined)
                         {
-                            console.log(mercanciasElements)
+                            //console.log(mercanciasElements)
                             var cantidadTransportaAux = []
                             var cTECount = 0
                             for(var cTE = 0; cTE< mercanciasElements.length; cTE++)
@@ -1374,7 +1375,7 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile, domicilioFiscal, no
                                     cTECount++
                                 }
                             }
-                            console.log(cantidadTransportaAux)
+                            //console.log(cantidadTransportaAux)
 
                             if(cantidadTransportaAux.length > 0)
                             {
@@ -1478,7 +1479,7 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile, domicilioFiscal, no
                     var mercanciasElements = mercanciasAux[i].elements
                     if(mercanciasElements !== undefined)
                     {
-                        console.log(mercanciasElements)
+                        //console.log(mercanciasElements)
                         var cantidadTransportaAux = []
                         var cTECount = 0
                         for(var cTE = 0; cTE< mercanciasElements.length; cTE++)
@@ -1489,7 +1490,7 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile, domicilioFiscal, no
                                 cTECount++
                             }
                         }
-                        console.log(cantidadTransportaAux)
+                        //console.log(cantidadTransportaAux)
 
                         if(cantidadTransportaAux.length > 0)
                         {
@@ -1708,6 +1709,50 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile, domicilioFiscal, no
                     },
                 }	
             }
+
+            var figuraTransporteCP = cartaP.elements.find( o => o.name === "cartaporte20:FiguraTransporte")
+            console.log(figuraTransporteCP)
+
+            var figuraTransporte = {
+                table: {
+                    headerRows: 3,
+                    widths: [80, 80, 80, "*"],
+                    body: [
+                        [
+                            {border: [false, false, false, false], fillColor: '#eaa01b', text: 'FIGURA TRANSPORTE', alignment: 'center', style: 'textoTablaTrasladoHeader', colSpan: 4},
+                            {},
+                            {},
+                            {}
+                        ],
+                        [
+                            {text: 'TIPO FIGURA', alignment: 'center', style: 'textoTablaClienteBoldblack2'},
+                            {text: "RFC FIGURA", alignment: 'center', style: 'textoTablaClienteBoldblack2'},
+                            {text: "NÚMERO DE LICENCIA", alignment: 'center', style: 'textoTablaClienteBoldblack2'},
+                            {text: "NOMBRE FIGURA", alignment: 'center', style: 'textoTablaClienteBoldblack2'}
+                        ],
+                        [
+                            {text: figuraTransporteCP.elements[0].attributes.TipoFigura, alignment: 'center', style: 'textoTablaCliente'},
+                            {text: figuraTransporteCP.elements[0].attributes.RFCFigura, alignment: 'center', style: 'textoTablaCliente'},
+                            {text: figuraTransporteCP.elements[0].attributes.NumLicencia, alignment: 'center', style: 'textoTablaCliente'},
+                            {text: figuraTransporteCP.elements[0].attributes.NombreFigura, alignment: 'center', style: 'textoTablaCliente'}
+                        ]
+                    ]
+                },
+                layout: {
+                    hLineWidth: function () {
+                        return  0.7;
+                    },
+                    vLineWidth: function () {
+                        return 0.7;
+                    },
+                    hLineColor: function () {
+                        return 'gray';
+                    },
+                    vLineColor: function () {
+                        return 'gray';
+                    },
+                }	
+            }
         }
 
         var docDefinition = {
@@ -1747,7 +1792,9 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile, domicilioFiscal, no
                 {text: "\n", style: "textotabla"},
                 autotransporte,
                 identificacionVehicular,
-                seguros
+                seguros,
+                "\n",
+                figuraTransporte
                 
             ],
             pageBreakBefore: function(currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
@@ -1886,7 +1933,7 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile, domicilioFiscal, no
 
         /*var nameF = nameFile + ".pdf"
         var pdfDoc = printer.createPdfKitDocument(docDefinition);
-        pdfDoc.pipe(fs.createWriteStream(/*temporalFilesPath + nameF));
+        pdfDoc.pipe(fs.createWriteStream(/*temporalFilesPath  "Documento.pdf"));
         pdfDoc.end();*/
 
 
