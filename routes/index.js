@@ -70,4 +70,14 @@ router.use('/applications-settings', require('./applications-settings.js'));
 
 router.use('/timbrado-ws-CD', require('./timbrado-ws-CD.js'));
 
+/**
+ * * Invoice One Stamping Routes 
+ */
+router.use('/timbrado', require('./timbrado-Invoice-One.js'));
+
+/**
+ * * External Applications Route
+ */
+ router.use('/external-applications', require('./external-applications.js'));
+
 module.exports = router;
