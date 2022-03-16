@@ -7,10 +7,16 @@ const forge = require('node-forge');
 const pki = forge.pki;
 const openssl = require('../utils/openssl.js');
 
+const logger = require('../utils/logger');
+
 //const { Config } = require('../config.js');
 
 const certificar = (certificado) => {
 
+  try {
+
+    logger.info('Obteniendo Certificado...');
+    
     const cer = fs.readFileSync(certificado, 'base64');
     const pem = '-----BEGIN CERTIFICATE-----\n' + cer + '\n-----END CERTIFICATE-----';
     const serialNumber = pki
@@ -21,11 +27,23 @@ const certificar = (certificado) => {
     })
     .join('');
 
+    logger.info('Obtención de Certificado Exitosa.');
+  
     return serialNumber;
+
+  } catch (error) {
+
+    console.log('ERROR: Error al Certificar: ', error);
+    logger.error('ERROR: Error al Certificar: ' + JSON.stringify(error));
+
+  }
+
 
   }
 
 async function getCadena(stylesheetDir, originXML) {
+
+    logger.info('Obteniendo cadena...');
 
     const libxmlDir = path.join(path.resolve(__dirname, '../'), 'lib', 'win','libxml');
 
@@ -37,11 +55,14 @@ async function getCadena(stylesheetDir, originXML) {
 
       //fs.writeFileSync(path.resolve(Config.files.logs, 'Cadena.txt'), cadena);
 
+      logger.info('Cadena obtenida con éxito.');
+
       return cadena.result;
 
     } catch(error){
 
       console.log('Error en Get Cadena: ', error);
+      logger.error('ERROR: Error al obtener cadena: ' + JSON.stringify(error));
 
       return error;
 
@@ -50,6 +71,8 @@ async function getCadena(stylesheetDir, originXML) {
 }
 
 async function getSello(keyFile, password) {
+
+  logger.info('Obteniendo Sello...');
 
   const openssl_path = path.join(path.resolve(__dirname, '../'), 'lib', 'win','openssl');
 
@@ -61,11 +84,14 @@ async function getSello(keyFile, password) {
                                     }
                                     );
 
+    logger.info('Sello generado con éxito.');
+
     return prm;
 
   } catch (error) {
 
     console.log('Error en Get Sello: ', error);
+    logger.error('ERROR: Error al obtener el Sello: ' + JSON.stringify(error));
 
     return error;
 

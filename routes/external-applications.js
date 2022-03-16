@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const auth = require('./auth-external-applications');
 const dbExternalApplication = require('../controllers/external-applications.js');
+const jwt = require('jsonwebtoken');
 
 const logger = require('../utils/logger');
 
@@ -22,13 +23,17 @@ const logger = require('../utils/logger');
 /**
  * * Get Client Application Settings Route
  */
-router.route('/application-setting/:id').get(auth, async(request, response) => {
+router.route('/application-settings').get(auth, async(request, response) => {
 
     try {
 
-        logger.info('Se solicitó los Settings de la Aplicación Externa: ' + request.params.id);
+        const decode = jwt.decode(request.headers.authorization.split(' ')[1]);
+        const idApplication = decode.idApplication;
+        const idCustomer = decode.idCustomer;
 
-        const result = await dbExternalApplication.getApplicationSettings(request.params.id);
+        logger.info('Se solicitó los Settings de la Aplicación Externa: ' + idApplication + ' para el Customer: ' + idCustomer);
+
+        const result = await dbExternalApplication.getApplicationSettings(idApplication, idCustomer);
 
         response.json(result);
         

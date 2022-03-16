@@ -99,7 +99,7 @@ async function login(req) {
     
 }
 
-async function getApplicationSettings(idApplication) {
+async function getApplicationSettings(idApplication, idCustomer) {
 
     let response = {
         data: {
@@ -148,6 +148,11 @@ async function getApplicationSettings(idApplication) {
                 name: 'piIdApplication',
                 type: sql.Int,
                 value: idApplication
+            },
+            {
+                name: 'piIdCustomer',
+                type: sql.Int,
+                value: idCustomer
             }
         ]
 
@@ -156,8 +161,6 @@ async function getApplicationSettings(idApplication) {
         let applicationSettings = await execStoredProcedure( 'spApplication_Settings_CRUD_Records', sqlParams );
 
         applicationSettings = applicationSettings[0];
-
-        console.log(applicationSettings);
 
         /**
          * * Validate if Application has configured settings
@@ -194,6 +197,8 @@ async function getApplicationSettings(idApplication) {
 
         logger.info('Configuraciones recuperadas correctamente.');
         logger.info('Saliendo de getApplicationSettings y regresando el Response.');
+
+        response.data.success = 1;
 
         return response;
         

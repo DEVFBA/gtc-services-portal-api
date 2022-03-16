@@ -1,6 +1,8 @@
 const logger = require('../utils/logger');
-
 const jwt = require('jsonwebtoken');
+
+const fs = require('fs');
+const crypto = require('crypto');
 
 const {
     getTempFilesPath
@@ -9,6 +11,22 @@ const {
 const {
     serializeXML
 } = require('../utils/xml');
+
+const {
+    getApplicationSettings
+} = require('./external-applications');
+
+const {
+    certificar,
+    getCadena,
+    getSello
+} = require('../utils/SAT');
+
+const { DOMParser, XMLSerializer } = require('@xmldom/xmldom');
+
+const { 
+    timbrarFactura 
+} = require('../utils/InvoiceOne');
 
 async function timbrar(req) {
 
@@ -30,8 +48,29 @@ async function timbrar(req) {
         const decode = jwt.decode(req.headers.authorization.split(' ')[1]);
         const idApplication = decode.serverApplication;
         const idCustomer = decode.idCustomer;
-             
+
         const tempFilesPath = await getTempFilesPath();
+
+        /**
+         * * Retrieve Timbrado Settings
+         */
+        logger.info('Recuperando las configuraciones del Timbrado.');
+
+        let timbradoSettings = await getApplicationSettings(idApplication, idCustomer);
+
+        if( timbradoSettings.data.success === 0 ) {
+
+            response.data.success = timbradoSettings.data.success;
+            response.data.message = timbradoSettings.data.message;
+
+            logger.error('ERROR: No se pudieron recuperar las configuraciones de la Aplicación de Timbrado: ' + idApplication + ' para el Cliente: ' + idCustomer);
+            logger.info('Saliendo de Timbrar y regresando el Response.');
+
+            return response;
+
+        }
+
+        timbradoSettings = timbradoSettings.data.configuration;
 
         /**
          * * Validate Data to Process
@@ -64,7 +103,7 @@ async function timbrar(req) {
          */
         const xmls = body.xmls;
 
-        const cfdis = await procesarXMLs( xmls, idApplication, idCustomer, tempFilesPath );
+        const cfdis = await procesarXMLs( xmls, timbradoSettings, tempFilesPath );
     
         return response;
 
@@ -77,13 +116,20 @@ async function timbrar(req) {
 
 }
 
-async function procesarXMLs( xmls, idApplication, idCustomer, tempPath ) {
+async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
 
     try {
 
         let cfdis = [];
 
         logger.info('Comienza procesarXMLs');
+
+        const cerFile           = timbradoSettings.CerFile;
+        const keyFile           = timbradoSettings.KeyFile;
+        const keyPassword       = timbradoSettings.KeyPassword;
+        const timbradoPassword  = timbradoSettings.TimbradoWSPassword;
+        const timbradoWSURL     = timbradoSettings.TimbradoWSURL;
+        const timbradoWSUser    = timbradoSettings.TimbradoWSUser;
 
         const xmlsLength = xmls.length;
 
@@ -135,6 +181,59 @@ async function procesarXMLs( xmls, idApplication, idCustomer, tempPath ) {
             let xmlDoc = await serializeXML( xmls[i].xmlBase64 );
 
             logger.info('XML a Procesar: ' + xmlDoc);
+
+            /**
+             * * Get Certificado and NoCertificado
+             */
+            const serialNumber = certificar(cerFile);
+            const cer = fs.readFileSync(cerFile, 'base64');
+
+            /**
+             * * Certificate Invoice
+             */
+            logger.info('Certificando Factura, asignación de NoCertificado y Certificado.');
+            
+            xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].setAttribute('NoCertificado', serialNumber);
+      
+            xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].setAttribute('Certificado', cer);
+
+            /**
+             * * Generate Certificated XML Invoice
+             */
+            let stringXML = new XMLSerializer().serializeToString(xmlDoc);
+            
+            logger.info('Guardando archivo Temporal de Factura Certificada: ' + `${tempPath}${fileName}`);
+
+            fs.writeFileSync(`${tempPath}${fileName}`, stringXML);
+
+            /**
+             * * Seal XML
+             */
+            logger.info('Sellando XML.');
+
+            const cadena = await getCadena('./resources/XSLT/cadenaoriginal_3_3.xslt', `${tempPath}${fileName}`);
+
+            const prm = await getSello(keyFile, keyPassword);
+        
+            const sign = crypto.createSign('RSA-SHA256');
+        
+            sign.update(cadena);
+        
+            const sello = sign.sign(prm, 'base64');
+        
+            const xml = fs.readFileSync(`${tempPath}${fileName}`, 'utf8');
+        
+            xmlDoc = new DOMParser().parseFromString(xml);//
+        
+            xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].setAttribute('Sello', sello);
+        
+            stringXML = new XMLSerializer().serializeToString(xmlDoc);
+        
+            fs.unlinkSync(`${tempPath}${fileName}`);
+        
+            logger.info('Guardando XML Sellado: ' + `${tempPath}${fileName}`);
+
+            const timbradoResponse = await timbrarFactura(stringXML, timbradoWSURL, timbradoWSUser, timbradoPassword);
 
         }
         
