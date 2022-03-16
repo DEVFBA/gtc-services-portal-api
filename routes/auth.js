@@ -17,6 +17,7 @@ auth.use(async (req, res, next) => {
             }
           } ); 
         } else {
+          console.log(decoded)
           const pool = await sql.connect(configDataBase);
           const validUser = await pool.request()
             .input('pvOptionCRUD', sql.VarChar, 'R')

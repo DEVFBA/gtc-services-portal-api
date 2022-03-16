@@ -20,7 +20,9 @@ const {
 } = require('./applications-settings');
 
 const {
-  getCustomers
+  getCustomers,
+  getFullAddress,
+  getCustomerName
 } = require('./customers');
 
 const {
@@ -379,6 +381,11 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
         });
       
         idCustomer = idCustomer[0].Id_Customer;
+
+        /* Retrieve Customer Data */
+
+        const address           = await getFullAddress(idCustomer);
+        const businessName      = await getCustomerName(idCustomer);
       
         /* Retrieve Portal GTC Configuration for Timbrado by Customer RFC */
       
@@ -516,7 +523,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
       
         xml = fs.readFileSync(`${tempPath}${fileName}`, 'utf8');
       
-        xmlDoc = new DOMParser().parseFromString(xml);//
+        xmlDoc = new DOMParser().parseFromString(xml);
       
         xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].setAttribute('Sello', sello);
       
@@ -541,7 +548,6 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
         if( timbradoResponse.status === 200 ){
 
           cfdiData.timbrado.file            = path.basename(fileName, '.xml');
-          //cfdiData.timbrado.file            = fileName;
           cfdiData.timbrado.statusCFDI      = timbradoResponse.status;
           cfdiData.timbrado.uuid            = timbradoResponse.uuid;
           cfdiData.timbrado.cfdiTimbrado    = timbradoResponse.cfdiTimbrado;
@@ -549,7 +555,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
           cfdiData.timbrado.folio           = folio;
           cfdiData.timbrado.emailTo         = emailTo;
 
-          const base64 = await getPDFCasaDiaz(timbradoResponse.cfdiTimbrado, pdfLogo, timbradoResponse.uuid);
+          const base64 = await getPDFCasaDiaz( timbradoResponse.cfdiTimbrado, pdfLogo, timbradoResponse.uuid, address, businessName );
 
           if( base64 ) {
     
@@ -563,21 +569,6 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
             cfdiData.timbrado.statusPDF   = 500;
       
           }
-
-/*           const pdfResponse = await obtenerPDFTimbrado( urlPDF, timbradoResponse.uuid, wsUser, wsPassword );
-      
-          if( pdfResponse.status === 200 ) {
-    
-            cfdiData.timbrado.statusPDF   = pdfResponse.status;
-            cfdiData.timbrado.pdf         = pdfResponse.pdf;
-      
-          } else {
-    
-            cfdiData.error                = 2;
-            cfdiData.message              = pdfResponse.mensaje;
-            cfdiData.timbrado.statusPDF   = pdfResponse.status;
-      
-          } */
       
           cfdis = [...cfdis, cfdiData];
       
@@ -586,7 +577,6 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
           cfdiData.error                    = 1;
           cfdiData.message                  = timbradoResponse.mensaje;
           cfdiData.timbrado.file            = path.basename(fileName, '.xml');
-          //cfdiData.timbrado.file            = fileName;
           cfdiData.timbrado.statusCFDI      = timbradoResponse.status;
       
           cfdis = [...cfdis, cfdiData];

@@ -28,8 +28,37 @@ async function getCatalog(params){
     }
 }
 
-//Para obtener la descripción de un Código de cualquier catálogo SAT
+//Para obtener la descripción larga de un Código de cualquier catálogo SAT
 async function getCatalogIdDescription( params ){
+
+    try{
+
+        let description = '';
+
+        let pSpCatalog = 'sp' + params.table + '_CRUD_Records';
+
+        let pool = await sql.connect( config );
+
+        let data = await pool.request()
+            .input( 'pvOptionCRUD', sql.VarChar, params.pvOptionCRUD )
+            .input( 'pvIdCatalog', sql.VarChar, params.pvIdCatalog )
+            .execute( pSpCatalog );
+
+        data.recordsets[0][0]? description = data.recordsets[0][0].Long_Desc:description = 'Code Not Found!';
+
+        return description;
+
+    }catch( error ){
+
+        console.log( error );
+        return 'Get Description Error!';
+
+    }
+
+}
+
+//Para obtener la descripción Corta de un Código de cualquier catálogo SAT
+async function getCatalogIdShortDescription( params ){
 
     try{
 
@@ -220,5 +249,6 @@ module.exports = {
     updateCatRegisterSATAssumptions: updateCatRegisterSATAssumptions,
     getUbicZipCode : getUbicZipCode,
     getUbicZipCodeCounty : getUbicZipCodeCounty,
-    getCatalogIdDescription: getCatalogIdDescription
+    getCatalogIdDescription: getCatalogIdDescription,
+    getCatalogIdShortDescription : getCatalogIdShortDescription
 }
