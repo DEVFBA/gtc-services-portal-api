@@ -14,7 +14,7 @@ async function timbrarFactura( stringXML, timbradoWSURL, timbradoWSUser, timbrad
     try {
 
         let timbradoResponse = {
-            error: 0,
+            error: false,
             errorMessage: '',
             errorCode: null,
             uuid: '',
@@ -37,12 +37,12 @@ async function timbrarFactura( stringXML, timbradoWSURL, timbradoWSUser, timbrad
 
         logger.info('Respuesta de Invoice One: ' + responseXML);
 
-        if( response.success === 0 ) {
+        if( !response.success ) {
 
             const errorMessage                  = responseXML.getElementsByTagName('MensajeError')[0].textContent;
             const errorCode                     = responseXML.getElementsByTagName('CodigoError')[0].textContent;
             
-            timbradoResponse.error              = 1;
+            timbradoResponse.error              = true;
             timbradoResponse.errorMessage       = errorMessage;
             timbradoResponse.errorCode          = errorCode;
 
@@ -98,7 +98,6 @@ async function getTimbradoResponse( timbradoWSURL, args, environment ) {
 
                 if(err){
 
-                    console.log('Err en createClient: ', err);
                     logger.error('ERROR: Error en createClient: ', + JSON.stringify(err, getCircularReplacer()));
 
                 }
@@ -113,23 +112,22 @@ async function getTimbradoResponse( timbradoWSURL, args, environment ) {
                         logger.info('Timbrando en Producción.');
     
                         let response = {
-                            success: 0,
+                            success: false,
                             data: ''
                         }
     
                         if(err) {
     
-                            console.log('Err en ObtenerCFDI:' , err);
                             logger.info('WARNING: ObtenerCFDI regresó error de Timbrado: ' + JSON.stringify(err, getCircularReplacer()));
     
-                            response.success = 0;
+                            response.success = false;
                             response.data = result.data;
     
                             resolve(response);
     
                         } else {
     
-                            response.success = 1;
+                            response.success = true;
                             response.data    = result.ObtenerCFDIPruebaResult.Xml;
                         
                             resolve(response);
@@ -145,23 +143,22 @@ async function getTimbradoResponse( timbradoWSURL, args, environment ) {
                         logger.info('Timbrando en Pruebas.');
     
                         let response = {
-                            success: 0,
+                            success: false,
                             data: ''
                         }
     
                         if(err) {
     
-                            console.log('Err en ObtenerCFDIPrueba:' , err);
                             logger.info('WARNING: ObtenerCFDIPrueba regresó error de Timbrado: ' + JSON.stringify(err, getCircularReplacer()));
     
-                            response.success = 0;
+                            response.success = false;
                             response.data = result.data;
     
                             resolve(response);
     
                         } else {
     
-                            response.success = 1;
+                            response.success = true;
                             response.data    = result.ObtenerCFDIPruebaResult.Xml;
                         
                             resolve(response);

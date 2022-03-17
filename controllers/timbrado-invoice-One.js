@@ -60,7 +60,7 @@ async function timbrar(req) {
 
         let timbradoSettings = await getApplicationSettings(idApplication, idCustomer);
 
-        if( timbradoSettings.data.success === 0 ) {
+        if( !timbradoSettings.data.success ) {
 
             response.data.success = timbradoSettings.data.success;
             response.data.message = timbradoSettings.data.message;
@@ -80,7 +80,7 @@ async function timbrar(req) {
          */
         if ( Object.entries(body).length === 0 ) { // If body is empty
 
-            response.data.success = 0;
+            response.data.success = false;
             response.data.message = 'Request Body incorrecto - Se está enviando vacío el Body del Request';
 
             logger.info('Se está enviando vacío el Body del Request');
@@ -90,7 +90,7 @@ async function timbrar(req) {
         
         } else if( !body.xmls || body.xmls.length === 0 ){ // If xmls Array is empty or null
     
-            response.data.success = 0;
+            response.data.success = false;
             response.data.message = 'Request Body incorrecto - Se está enviando el array xmls vacío o no se está enviando correctamente';
 
             logger.info('Se está enviando el array xmls vacío o no se está enviando correctamente');
@@ -107,7 +107,7 @@ async function timbrar(req) {
 
         const cfdis = await procesarXMLs( xmls, timbradoSettings, tempFilesPath );
 
-        response.data.success = 1;
+        response.data.success = true;
         response.data.cfdis = cfdis;
     
         return response;
@@ -141,7 +141,7 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
         for( let i = 0; i < xmlsLength; i++ ) {
 
             let cfdiData = {
-                error: 0,
+                error: false,
                 message: '',
                 timbrado: {
                   file: '',
@@ -151,8 +151,7 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
                   uuid: '',
                   cfdiTimbrado: '',
                   statusPDF: 0,
-                  pdf: '',
-                  emailTo: ''
+                  pdf: ''
                 }
             };
 
@@ -165,7 +164,7 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
 
             if( !xmls[i].fileName || xmls[i].fileName === '' ) {
                 
-                cfdiData.error = 1;
+                cfdiData.error = true;
                 cfdiData.message = 'Request Body incorrecto - Se está enviando el atributo fileName de xmls vacío, o no se está enviando correctamente';
 
                 logger.info('Se está enviando el atributo fileName de xmls vacío, o no se está enviando correctamente.');
@@ -246,7 +245,7 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
 
             logger.info('Respuesta de Timbrado: ' + timbradoResponse);
 
-            if( timbradoResponse.error === 1 ) {
+            if( timbradoResponse.error ) {
 
                 logger.info('El CFDI no fue timbrado exitosamente.');
 
