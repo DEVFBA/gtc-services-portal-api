@@ -1,20 +1,20 @@
-/*var fonts = {
+var fonts = {
     Roboto: {
       normal: 'C:/GTC/Fonts/Roboto-Regular.ttf',
       bold: 'C:/GTC/Fonts/Roboto-Bold.ttf',
       italics: 'C:/GTC/Fonts/Montserrat-Italic.ttf',
       bolditalics: 'C:/GTC/Fonts/Montserrat-BoldItalic.ttf'
     }
-};*/
+};
 
-var fonts = {
+/*var fonts = {
     Roboto: {
       normal: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Roboto-Regular.ttf',
       bold: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Roboto-Bold.ttf',
       italics: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Montserrat-Italic.ttf',
       bolditalics: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Montserrat-BoldItalic.ttf'
     }
-};
+};*/
 
 var convert = require('xml-js');
 var PdfPrinter = require('pdfmake');
@@ -30,7 +30,7 @@ const e = require('connect-timeout');
 
 var xml64 = "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPGNmZGk6Q29tcHJvYmFudGUgeG1sbnM6Y2ZkaT0iaHR0cDovL3d3dy5zYXQuZ29iLm14L2NmZC8zIiB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIiB4c2k6c2NoZW1hTG9jYXRpb249Imh0dHA6Ly93d3cuc2F0LmdvYi5teC9jZmQvMyBodHRwOi8vd3d3LnNhdC5nb2IubXgvc2l0aW9faW50ZXJuZXQvY2ZkLzMvY2ZkdjMzLnhzZCIgVmVyc2lvbj0iMy4zIiBTZXJpZT0iUkkiIEZvbGlvPSI5MDA3MSIgRmVjaGE9IjIwMjItMDMtMDhUMTc6MDQ6MTgiIFNlbGxvPSIiIEZvcm1hUGFnbz0iOTkiIE5vQ2VydGlmaWNhZG89IiIgQ2VydGlmaWNhZG89IiIgQ29uZGljaW9uZXNEZVBhZ289IjYwIERJQVMgTkVUT1MiIFN1YlRvdGFsPSI1MDU1NCIgTW9uZWRhPSJNWE4iIFRpcG9DYW1iaW89IjEiIFRvdGFsPSI1ODY0Mi42NCIgVGlwb0RlQ29tcHJvYmFudGU9IkkiIE1ldG9kb1BhZ289IlBQRCIgTHVnYXJFeHBlZGljaW9uPSI3NjI0NiI+Cgk8Y2ZkaTpFbWlzb3IgUmZjPSJJUE02MjAzMjI2QjQiIE5vbWJyZT0iSVRXIFBvbHltZXggUyBERSBSTCBERSBDViIgUmVnaW1lbkZpc2NhbD0iNjAxIi8+Cgk8Y2ZkaTpSZWNlcHRvciBSZmM9IkRNQTk4MDcyNTJWQSIgTm9tYnJlPSJESVNUUklCVUlET1JBIE1BUlBWRUwgREUgQVVUT1BBUlRFUyBTQSAgREUgQ1YiIFVzb0NGREk9IkcwMSIvPgoJPGNmZGk6Q29uY2VwdG9zPgoJCTxjZmRpOkNvbmNlcHRvIENsYXZlUHJvZFNlcnY9IjMxMjAxNjMxIiBOb0lkZW50aWZpY2FjaW9uPSIxMDMtQSIgQ2FudGlkYWQ9IjEwIiBDbGF2ZVVuaWRhZD0iWDRHIiBVbmlkYWQ9IkNBIiBEZXNjcmlwY2lvbj0iSU5GTEEtTExBTlRBUyBRVEYgMzQxRyIgVmFsb3JVbml0YXJpbz0iNzgzLjMwMDAiIEltcG9ydGU9Ijc4MzMuMDAiID4KCQkJPGNmZGk6SW1wdWVzdG9zPgoJCQk8Y2ZkaTpUcmFzbGFkb3M+CgkJCQk8Y2ZkaTpUcmFzbGFkbyBCYXNlPSI3ODMzLjAwIiBJbXB1ZXN0bz0iMDAyIiBUaXBvRmFjdG9yPSJUYXNhIiBUYXNhT0N1b3RhPSIwLjE2MDAwMCIgSW1wb3J0ZT0iMTI1My4yOCIgLz4KCQkJPC9jZmRpOlRyYXNsYWRvcz4KCQkJPC9jZmRpOkltcHVlc3Rvcz4KCQk8L2NmZGk6Q29uY2VwdG8+CgkJPGNmZGk6Q29uY2VwdG8gQ2xhdmVQcm9kU2Vydj0iMzEyMDE2MjciIE5vSWRlbnRpZmljYWNpb249IjE0LUEiIENhbnRpZGFkPSIxMCIgQ2xhdmVVbmlkYWQ9Ilg0RyIgVW5pZGFkPSJDQSIgRGVzY3JpcGNpb249IkZJSkFET1IgVEYgMjQ1IEFaVUwgNk1MIiBWYWxvclVuaXRhcmlvPSIxOTAxLjIwMDAiIEltcG9ydGU9IjE5MDEyLjAwIiA+CgkJCTxjZmRpOkltcHVlc3Rvcz4KCQkJPGNmZGk6VHJhc2xhZG9zPgoJCQkJPGNmZGk6VHJhc2xhZG8gQmFzZT0iMTkwMTIuMDAiIEltcHVlc3RvPSIwMDIiIFRpcG9GYWN0b3I9IlRhc2EiIFRhc2FPQ3VvdGE9IjAuMTYwMDAwIiBJbXBvcnRlPSIzMDQxLjkyIiAvPgoJCQk8L2NmZGk6VHJhc2xhZG9zPgoJCQk8L2NmZGk6SW1wdWVzdG9zPgoJCTwvY2ZkaTpDb25jZXB0bz4KCQk8Y2ZkaTpDb25jZXB0byBDbGF2ZVByb2RTZXJ2PSIzMTIwMTYwMCIgTm9JZGVudGlmaWNhY2lvbj0iMjItQyIgQ2FudGlkYWQ9IjEwIiBDbGF2ZVVuaWRhZD0iWDRHIiBVbmlkYWQ9IkNBIiBEZXNjcmlwY2lvbj0iU0VMTEEgRlVHQVMgUkFESUFET1IgMzU1TUwiIFZhbG9yVW5pdGFyaW89IjQwMS44MDAwIiBJbXBvcnRlPSI0MDE4LjAwIiA+CgkJCTxjZmRpOkltcHVlc3Rvcz4KCQkJPGNmZGk6VHJhc2xhZG9zPgoJCQkJPGNmZGk6VHJhc2xhZG8gQmFzZT0iNDAxOC4wMCIgSW1wdWVzdG89IjAwMiIgVGlwb0ZhY3Rvcj0iVGFzYSIgVGFzYU9DdW90YT0iMC4xNjAwMDAiIEltcG9ydGU9IjY0Mi44OCIgLz4KCQkJPC9jZmRpOlRyYXNsYWRvcz4KCQkJPC9jZmRpOkltcHVlc3Rvcz4KCQk8L2NmZGk6Q29uY2VwdG8+CgkJPGNmZGk6Q29uY2VwdG8gQ2xhdmVQcm9kU2Vydj0iNDcxMzE4MjEiIE5vSWRlbnRpZmljYWNpb249IjI1MTA4IiBDYW50aWRhZD0iMTAiIENsYXZlVW5pZGFkPSJYNEciIFVuaWRhZD0iQ0EiIERlc2NyaXBjaW9uPSJGQVNUIE9SQU5HRSBMSU1QSUFET1IgTUFOT1MgNy4iIFZhbG9yVW5pdGFyaW89IjYyNy4yMDAwIiBJbXBvcnRlPSI2MjcyLjAwIiA+CgkJCTxjZmRpOkltcHVlc3Rvcz4KCQkJPGNmZGk6VHJhc2xhZG9zPgoJCQkJPGNmZGk6VHJhc2xhZG8gQmFzZT0iNjI3Mi4wMCIgSW1wdWVzdG89IjAwMiIgVGlwb0ZhY3Rvcj0iVGFzYSIgVGFzYU9DdW90YT0iMC4xNjAwMDAiIEltcG9ydGU9IjEwMDMuNTIiIC8+CgkJCTwvY2ZkaTpUcmFzbGFkb3M+CgkJCTwvY2ZkaTpJbXB1ZXN0b3M+CgkJPC9jZmRpOkNvbmNlcHRvPgoJCTxjZmRpOkNvbmNlcHRvIENsYXZlUHJvZFNlcnY9IjMxMjAxNjAwIiBOb0lkZW50aWZpY2FjaW9uPSI2MS1BIiBDYW50aWRhZD0iMTAiIENsYXZlVW5pZGFkPSJYNEciIFVuaWRhZD0iQ0EiIERlc2NyaXBjaW9uPSJTT0xEQURVUkEgRU4gRlJJTyBUIDcwRyIgVmFsb3JVbml0YXJpbz0iMTM0MS45MDAwIiBJbXBvcnRlPSIxMzQxOS4wMCIgPgoJCQk8Y2ZkaTpJbXB1ZXN0b3M+CgkJCTxjZmRpOlRyYXNsYWRvcz4KCQkJCTxjZmRpOlRyYXNsYWRvIEJhc2U9IjEzNDE5LjAwIiBJbXB1ZXN0bz0iMDAyIiBUaXBvRmFjdG9yPSJUYXNhIiBUYXNhT0N1b3RhPSIwLjE2MDAwMCIgSW1wb3J0ZT0iMjE0Ny4wNCIgLz4KCQkJPC9jZmRpOlRyYXNsYWRvcz4KCQkJPC9jZmRpOkltcHVlc3Rvcz4KCQk8L2NmZGk6Q29uY2VwdG8+Cgk8L2NmZGk6Q29uY2VwdG9zPgoJPGNmZGk6SW1wdWVzdG9zIFRvdGFsSW1wdWVzdG9zVHJhc2xhZGFkb3M9IjgwODguNjQiPgoJCTxjZmRpOlRyYXNsYWRvcz4KCQkJPGNmZGk6VHJhc2xhZG8gSW1wdWVzdG89IjAwMiIgVGlwb0ZhY3Rvcj0iVGFzYSIgVGFzYU9DdW90YT0iMC4xNjAwMDAiIEltcG9ydGU9IjgwODguNjQiIC8+CgkJPC9jZmRpOlRyYXNsYWRvcz4KCTwvY2ZkaTpJbXB1ZXN0b3M+Cgk8Y2ZkaTpDb21wbGVtZW50bz4KCQk8bGV5ZW5kYXNGaXNjOkxleWVuZGFzRmlzY2FsZXMgVmVyc2lvbj0iMS4wIiB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOmxleWVuZGFzRmlzYz0iaHR0cDovL3d3dy5zYXQuZ29iLm14L2xleWVuZGFzRmlzY2FsZXMiIHRhcmdldE5hbWVzcGFjZT0iaHR0cDovL3d3dy5zYXQuZ29iLm14L2xleWVuZGFzRmlzY2FsZXMiPgoJCQk8bGV5ZW5kYXNGaXNjOkxleWVuZGEgZGlzcG9zaWNpb25GaXNjYWw9IlJHQ0UiIG5vcm1hPSI1LjIuNi4iIHRleHRvTGV5ZW5kYT0iRGUgY29uZm9ybWlkYWQgYWwgYXJ0w61jdWxvIDI5LCBmcmFjY2nDs24gSSBkZSBsYSBMZXkgZGVsIElWQSB5IGxhIHJlZ2xhIDUuMi41LiwgZnJhY2Npw7NuIElJLCBkZSBsYXMgUmVnbGFzIEdlbmVyYWxlcyBkZSBDb21lcmNpbyBFeHRlcmlvciBwYXJhIDIwMjIgc2UgcmVhbGl6YSBsYSBwcmVzZW50ZSBvcGVyYWNpw7NuIGN1bXBsaWVuZG8gY29uIGxvIGVzdGFibGVjaWRvIGVuIGxhcyByZWdsYXMgNC4zLjIxLiB5IDUuMi42LiBTZSB0cmFuc2ZpZXJlIGxhIG1lcmNhbmPDrWEgYSBERUxNRVggREUgSlVBUkVaIFMgREUgUkwgREUgQ1YgcXVpZW4gY3VlbnRhIGNvbiBuw7ptZXJvIGRlIHJlZ2lzdHJvIElNTUVYIDcwMi0yMDA2LiIvPgoJCTwvbGV5ZW5kYXNGaXNjOkxleWVuZGFzRmlzY2FsZXM+Cgk8L2NmZGk6Q29tcGxlbWVudG8+CjwvY2ZkaTpDb21wcm9iYW50ZT4="
 
-async function getPDFPolymex(docBase64, pathLogo, nameFile, domicilioFiscal, nombreEmisor)
+async function getPDFPolymex(docBase64, pathTxt)
 {
 
     try {
@@ -845,13 +845,12 @@ async function getPDFPolymex(docBase64, pathLogo, nameFile, domicilioFiscal, nom
             }   
         };
 
-        var nameF = nameFile + ".pdf"
         var pdfDoc = printer.createPdfKitDocument(docDefinition);
         pdfDoc.pipe(fs.createWriteStream("Documento.pdf"));
         pdfDoc.end();
 
         
-        /*return new Promise( ( resolve, reject ) => {
+        return new Promise( ( resolve, reject ) => {
 
             var pdfDoc = printer.createPdfKitDocument(docDefinition);
             fs.unlinkSync(temporalFilesPath + imageQR)
@@ -884,7 +883,7 @@ async function getPDFPolymex(docBase64, pathLogo, nameFile, domicilioFiscal, nom
 
             pdfDoc.end();
 
-        });*/
+        });
 
     } catch (err) {
 
@@ -894,8 +893,7 @@ async function getPDFPolymex(docBase64, pathLogo, nameFile, domicilioFiscal, nom
     
 }
 
-//getPDFCasaDiaz(xml646, "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/images/Logo_Casa_Diaz.jpg", "./Documento" , "DOMICILIO DEL CLIENTE", "CASA DÍAZ MÁQUINAS DE COSER S.A. DE C.V.")
-getPDFPolymex(xml64, "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/images/Logo_Polymex.png", "./Documento" , "DOMICILIO DEL CLIENTE", "CASA DÍAZ MÁQUINAS DE COSER S.A. DE C.V.")
+//getPDFPolymex(xml64, "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/images/Logo_Polymex.png")
 
 var numeroALetras = (function() {
     
