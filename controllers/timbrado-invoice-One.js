@@ -5,7 +5,8 @@ const fs = require('fs');
 const crypto = require('crypto');
 
 const {
-    getTempFilesPath
+    getTempFilesPath,
+    getEnvironment
 } = require('./cat-general-parameters');
 
 const {
@@ -27,6 +28,7 @@ const { DOMParser, XMLSerializer } = require('@xmldom/xmldom');
 const { 
     timbrarFactura 
 } = require('../utils/InvoiceOne');
+const path = require('path');
 
 async function timbrar(req) {
 
@@ -104,13 +106,16 @@ async function timbrar(req) {
         const xmls = body.xmls;
 
         const cfdis = await procesarXMLs( xmls, timbradoSettings, tempFilesPath );
+
+        response.data.success = 1;
+        response.data.cfdis = cfdis;
     
         return response;
 
     } catch (error) {
 
         console.log('Error en Timbrar: ', error);
-        logger.error('Error en Timbrar: ' + JSON.stringify(error));
+        logger.error('Error en Timbrar: ' + error);
 
     }
 
@@ -133,9 +138,9 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
 
         const xmlsLength = xmls.length;
 
-        for( let i = 0; i < xmlsLength; i++ ){
+        for( let i = 0; i < xmlsLength; i++ ) {
 
-            cfdiData = new Object ({
+            let cfdiData = {
                 error: 0,
                 message: '',
                 timbrado: {
@@ -149,7 +154,7 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
                   pdf: '',
                   emailTo: ''
                 }
-            });
+            };
 
             logger.info('Procesando el XML: ' + JSON.stringify(xmls[i]));
 
@@ -228,19 +233,63 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
             xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].setAttribute('Sello', sello);
         
             stringXML = new XMLSerializer().serializeToString(xmlDoc);
+
+            logger.info('Borrando archivo Temporal ' + `${tempPath}${fileName}`);
         
             fs.unlinkSync(`${tempPath}${fileName}`);
         
-            logger.info('Guardando XML Sellado: ' + `${tempPath}${fileName}`);
+            logger.info('Enviando a Timbrar a Invoice One el archivo: ' + stringXML);
 
-            const timbradoResponse = await timbrarFactura(stringXML, timbradoWSURL, timbradoWSUser, timbradoPassword);
+            const environment = await getEnvironment();
+
+            const timbradoResponse = await timbrarFactura(stringXML, timbradoWSURL, timbradoWSUser, timbradoPassword, environment);
+
+            logger.info('Respuesta de Timbrado: ' + timbradoResponse);
+
+            if( timbradoResponse.error === 1 ) {
+
+                logger.info('El CFDI no fue timbrado exitosamente.');
+
+                cfdiData.error                      = timbradoResponse.error;
+                cfdiData.message                    = timbradoResponse.errorMessage;
+                cfdiData.timbrado.statusCFDI        = timbradoResponse.errorCode;
+                cfdiData.timbrado.file              = path.basename(fileName, '.xml');
+
+                cfdis = [...cfdis, cfdiData];
+
+            } else {
+
+                logger.info('El CFDI fue timbrado exitosamente.');
+
+                const xmlBase64                     = Buffer.from(timbradoResponse.cfdiTimbrado.toString()).toString('base64');
+
+                cfdiData.error                      = timbradoResponse.error;
+                cfdiData.message                    = timbradoResponse.errorMessage;
+                cfdiData.timbrado.statusCFDI        = 200;
+                cfdiData.timbrado.uuid              = timbradoResponse.uuid;
+                cfdiData.timbrado.cfdiTimbrado      = xmlBase64;
+                cfdiData.timbrado.serie             = timbradoResponse.serie;
+                cfdiData.timbrado.folio             = timbradoResponse.folio;
+                cfdiData.timbrado.file              = path.basename(fileName, '.xml'); 
+
+                /**
+                 * TODO: Get PDF and Return it
+                 */
+                cfdiData.timbrado.statusPDF         = 200;
+                cfdiData.timbrado.pdf               = ''
+
+                cfdis = [...cfdis, cfdiData];
+
+            }
 
         }
+
+        return cfdis;
         
     } catch (error) {
 
         console.log('Error en Procesar XMLs: ', error);
-        logger.error('Error en Procesar XMLs: ' + JSON.stringify(error));
+        logger.error('Error en Procesar XMLs: ' + error);
 
     }
 

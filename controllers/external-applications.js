@@ -156,7 +156,7 @@ async function getApplicationSettings(idApplication, idCustomer) {
             }
         ]
 
-        logger.info('Recuperando las configuraciones de la Aplicación Id: ' + idApplication );
+        logger.info('Recuperando las configuraciones de la Aplicación Id: ' + idApplication + ' para el Customer: ' + idCustomer);
 
         let applicationSettings = await execStoredProcedure( 'spApplication_Settings_CRUD_Records', sqlParams );
 
@@ -167,7 +167,7 @@ async function getApplicationSettings(idApplication, idCustomer) {
          */
         if( applicationSettings.length === 0 ) {
 
-            logger.info('Aplicación Id: ' + idApplication + ' no tiene configuraciones en Portal.');
+            logger.info('Aplicación Id: ' + idApplication + ' para el Customer: ' + idCustomer + ' no tiene configuraciones en Portal.');
 
             response.data.success = 0;
             response.data.message = 'Aplicación sin configuraciones en Portal.';

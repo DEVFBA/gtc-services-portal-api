@@ -70,6 +70,24 @@ async function getParameterById(parameterId) {
 
 }
 
+async function getEnvironment() {
+
+    try {
+
+        const record = await getParameterById(19);
+
+        const environment = record.Value;
+        
+        return environment;
+        
+    } catch (error) {
+
+        console.log('Error en getEnvironment: ' + JSON.stringify(error));
+
+    }
+
+}
+
 async function getTempFilesPath() {
 
     try {
@@ -91,5 +109,6 @@ async function getTempFilesPath() {
 module.exports = {
     getGeneralParameters : getGeneralParameters,
     getGeneralParametersbyID: getGeneralParametersbyID,
+    getEnvironment : getEnvironment,
     getTempFilesPath : getTempFilesPath
 }
