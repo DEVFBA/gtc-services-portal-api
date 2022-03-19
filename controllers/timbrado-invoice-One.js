@@ -275,7 +275,7 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer ) {
 
             const timbradoResponse = await timbrarFactura(stringXML, timbradoWSURL, timbradoWSUser, timbradoPassword, environment);
 
-            logger.info('Respuesta de Timbrado: ' + timbradoResponse);
+            logger.info('Respuesta de Timbrado: ' + JSON.stringify(timbradoResponse));
 
             if( timbradoResponse.error ) {
 
