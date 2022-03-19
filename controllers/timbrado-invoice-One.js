@@ -181,13 +181,34 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer ) {
 
                 cfdis = [...cfdis, cfdiData];
 
-                return cfdis;
+                continue;
 
             }
 
             const fileName        = xmls[i].fileName;
 
             logger.info('Nombre del Archivo: ' + fileName);
+
+            /**
+             * * Validate xml File Base 64 content
+             * * Validation of no Empty xml Base 64
+            */
+            logger.info('Validando el atributo xmlBase64.');
+
+            if( !xmls[i].xmlBase64 || xmls[i].xmlBase64 === '' ) {
+
+                cfdiData.error = true;
+                cfdiData.message = 'Request Body incorrecto - Se está enviando el atributo xmlBase64 de xmls vacío, o no se está enviando correctamente';
+
+                logger.info('Se está enviando el atributo xmlBase64 de xmls vacío, o no se está enviando correctamente.');
+
+                cfdis = [...cfdis, cfdiData];
+
+                continue;
+
+            }
+
+            logger.info('Atributo xmlBase64 correcto.');
 
             /**
              * * Serialize XML
