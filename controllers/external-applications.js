@@ -42,8 +42,6 @@ async function login(req) {
 
         let encryptedPassword = encPassword.data;
 
-        console.log(encryptedPassword);
-
         const applicationLoginPool = await sql.connect(config);
         
         const loginResult = await applicationLoginPool.request()
@@ -53,8 +51,6 @@ async function login(req) {
         .input('pvIdUser', sql.VarChar, user)
         .input('pvPassword', sql.VarChar, encryptedPassword)
         .execute('spCustomer_Application_Users_CRUD_Records');
-
-        console.log(loginResult);
 
         if( loginResult.recordset[0].Code_Type === 'Error' ) {
 
