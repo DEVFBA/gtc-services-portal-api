@@ -1,5 +1,5 @@
 const soap              = require('soap');
-const logger            = require('./logger');
+const logger            = require('../logger');
 
 const { 
     DOMParser
@@ -7,7 +7,7 @@ const {
 
 const {
     getCircularReplacer
-}                       = require('../utils/JSONHelper');
+}                       = require('../JSONHelper');
 
 async function timbrarFactura( stringXML, timbradoWSURL, timbradoWSUser, timbradoPassword, environment ) {
 

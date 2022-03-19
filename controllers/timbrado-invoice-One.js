@@ -23,11 +23,20 @@ const {
     getSello
 } = require('../utils/SAT');
 
+const {
+    getBase64String
+} = require('../utils/base64');
+
 const { DOMParser, XMLSerializer } = require('@xmldom/xmldom');
 
 const { 
     timbrarFactura 
-} = require('../utils/InvoiceOne');
+} = require('../utils/Timbrado/InvoiceOne');
+
+const {
+    getInvoicePDF
+} = require('../utils/Timbrado/PDF_Generation/pdf-orchestrator');
+
 const path = require('path');
 
 async function timbrar(req) {
@@ -105,7 +114,7 @@ async function timbrar(req) {
          */
         const xmls = body.xmls;
 
-        const cfdis = await procesarXMLs( xmls, timbradoSettings, tempFilesPath );
+        const cfdis = await procesarXMLs( xmls, timbradoSettings, tempFilesPath, idCustomer );
 
         response.data.success = true;
         response.data.cfdis = cfdis;
@@ -114,14 +123,13 @@ async function timbrar(req) {
 
     } catch (error) {
 
-        console.log('Error en Timbrar: ', error);
         logger.error('Error en Timbrar: ' + error);
 
     }
 
 }
 
-async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
+async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer ) {
 
     try {
 
@@ -135,6 +143,8 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
         const timbradoPassword  = timbradoSettings.TimbradoWSPassword;
         const timbradoWSURL     = timbradoSettings.TimbradoWSURL;
         const timbradoWSUser    = timbradoSettings.TimbradoWSUser;
+        const pdfLogo           = timbradoSettings.PDFLogo;
+        const pdfFunction       = timbradoSettings.PDFFunction;
 
         const xmlsLength = xmls.length;
 
@@ -182,7 +192,8 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
             /**
              * * Serialize XML
              */
-            let xmlDoc = await serializeXML( xmls[i].xmlBase64 );
+            const xmlBase64     = getBase64String(xmls[i].xmlBase64);
+            let xmlDoc = await serializeXML( xmlBase64 );
 
             logger.info('XML a Procesar: ' + xmlDoc);
 
@@ -269,13 +280,33 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
                 cfdiData.timbrado.cfdiTimbrado      = xmlBase64;
                 cfdiData.timbrado.serie             = timbradoResponse.serie;
                 cfdiData.timbrado.folio             = timbradoResponse.folio;
-                cfdiData.timbrado.file              = path.basename(fileName, '.xml'); 
+                cfdiData.timbrado.file              = path.basename(fileName, '.xml');
 
                 /**
-                 * TODO: Get PDF and Return it
+                 * * Generate PDF and get its Data (pdfBase64, emailTo and emailCC)
                  */
-                cfdiData.timbrado.statusPDF         = 200;
-                cfdiData.timbrado.pdf               = ''
+                const pdfOptions            = {
+                    pdfLogo: pdfLogo,
+                    pdfFunction: pdfFunction
+                }
+
+                const pdfData               = await getInvoicePDF( tempPath, xmlBase64, xmls[i].additionalFiles, pdfOptions );
+
+                const pdfBase64             = pdfData.pdfBase64;
+                const pdfEmailTo            = pdfData.emailTo;
+                const pdfEmailCC            = pdfData.emailCC;
+
+                if( pdfBase64.trim().length === 0 ) {
+
+                    cfdiData.timbrado.statusPDF         = 500;
+                    cfdiData.timbrado.pdf               = '';
+
+                } else {
+
+                    cfdiData.timbrado.statusPDF         = 200;
+                    cfdiData.timbrado.pdf               = pdfBase64;
+
+                }
 
                 cfdis = [...cfdis, cfdiData];
 
