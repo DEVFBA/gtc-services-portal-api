@@ -37,6 +37,10 @@ const {
     getInvoicePDF
 } = require('../utils/Timbrado/PDF_Generation/pdf-orchestrator');
 
+const {
+    getTemporalFileName
+} = require('../utils/general');
+
 const path = require('path');
 
 async function timbrar(req) {
@@ -145,6 +149,8 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer ) {
         const timbradoWSUser    = timbradoSettings.TimbradoWSUser;
         const pdfLogo           = timbradoSettings.PDFLogo;
         const pdfFunction       = timbradoSettings.PDFFunction;
+        const xmlPath           = timbradoSettings.XMLPath;
+        const pdfPath           = timbradoSettings.PDFPath;
 
         const xmlsLength = xmls.length;
 
@@ -275,8 +281,6 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer ) {
 
             const timbradoResponse = await timbrarFactura(stringXML, timbradoWSURL, timbradoWSUser, timbradoPassword, environment);
 
-            logger.info('Respuesta de Timbrado: ' + JSON.stringify(timbradoResponse));
-
             if( timbradoResponse.error ) {
 
                 logger.info('El CFDI no fue timbrado exitosamente.');
@@ -292,6 +296,37 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer ) {
 
                 logger.info('El CFDI fue timbrado exitosamente.');
 
+                /**
+                 * * Save Stamped XML File
+                 */
+                logger.info('Guardando XML del CFDI Timbrado.');
+
+                const stampedXMLFileExists = fs.existsSync(`${xmlPath}${fileName}`);
+
+                let temporalFileName = getTemporalFileName();
+
+                if( stampedXMLFileExists ) {
+
+                    logger.info('Ya existe un archivo previo: ' + fileName);
+                    logger.info('WARNING: Es posible que haya ocurrido un timbrado múltiple del mismo archivo.');
+
+                    temporalFileName = path.basename(fileName, '.xml') + '_' + temporalFileName;
+
+                    fs.writeFileSync(`${xmlPath}${temporalFileName}.xml`, timbradoResponse.cfdiTimbrado.toString(), {encoding: 'utf-8'});
+
+                    logger.info('Se ha guardado el archivo: ' + `${xmlPath}${temporalFileName}.xml`);
+
+                } else {
+
+                    fs.writeFileSync(`${xmlPath}${fileName}`, timbradoResponse.cfdiTimbrado.toString(), {encoding: 'utf-8'});
+
+                    logger.info('Se ha guardado el archivo: ' + `${xmlPath}${fileName}`);
+
+                }
+
+                /**
+                 * * Assign XML Data for cfdis Array
+                 */
                 const xmlBase64                     = Buffer.from(timbradoResponse.cfdiTimbrado.toString()).toString('base64');
 
                 cfdiData.error                      = timbradoResponse.error;
@@ -313,17 +348,42 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer ) {
 
                 const pdfData               = await getInvoicePDF( tempPath, xmlBase64, xmls[i].additionalFiles, pdfOptions );
 
-                const pdfBase64             = pdfData.pdfBase64;
+                const pdfBase64             = getBase64String(pdfData.pdfBase64);
                 const pdfEmailTo            = pdfData.emailTo;
                 const pdfEmailCC            = pdfData.emailCC;
 
                 if( pdfBase64.trim().length === 0 ) {
+
+                    logger.info('El PDF no se generó exitosamente.');
 
                     cfdiData.timbrado.statusPDF         = 500;
                     cfdiData.timbrado.pdf               = '';
 
                 } else {
 
+                    logger.info('El PDF se generó existosamente.');
+                    logger.info('Guardando PDF del CFDI Timbrado.');
+
+                    if( stampedXMLFileExists ) {
+
+                        logger.info('WARNING: Es posible que haya ocurrido un timbrado múltiple del mismo archivo.');
+                        logger.info('Guardando archivo PDF con el mismo nombre del posible duplicado: ' + temporalFileName);
+
+                        fs.writeFileSync(`${pdfPath}${temporalFileName}.pdf`, pdfBase64, 'base64');
+
+                        logger.info('Archivo PDF guardado: ' + `${pdfPath}${temporalFileName}.pdf`);
+
+                    } else {
+
+                        fs.writeFileSync(`${pdfPath}${path.basename(fileName, '.xml')}.pdf`, pdfBase64, 'base64');
+
+                        logger.info('Archivo PDF guardado: ' + `${pdfPath}${path.basename(fileName, '.xml')}.pdf`);
+
+                    }
+
+                    /**
+                     * * Assign PDF Data for cfdis Array
+                     */
                     cfdiData.timbrado.statusPDF         = 200;
                     cfdiData.timbrado.pdf               = pdfBase64;
 
