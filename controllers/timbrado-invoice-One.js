@@ -14,6 +14,10 @@ const {
 } = require('../utils/xml');
 
 const {
+    sendMail
+} = require('../utils/mail');
+
+const {
     getApplicationSettings
 } = require('./external-applications');
 
@@ -301,26 +305,30 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer ) {
                  */
                 logger.info('Guardando XML del CFDI Timbrado.');
 
-                const stampedXMLFileExists = fs.existsSync(`${xmlPath}${fileName}`);
+                const stampedXMLFileExists      = fs.existsSync(`${xmlPath}${fileName}`);
 
-                let temporalFileName = getTemporalFileName();
+                let temporalFileName            = getTemporalFileName();
+                let finalFileName               = path.basename(fileName, '.xml');
+                let possibleExtraStamped        = false;
 
                 if( stampedXMLFileExists ) {
 
                     logger.info('Ya existe un archivo previo: ' + fileName);
                     logger.info('WARNING: Es posible que haya ocurrido un timbrado múltiple del mismo archivo.');
 
-                    temporalFileName = path.basename(fileName, '.xml') + '_' + temporalFileName;
+                    possibleExtraStamped = true;
 
-                    fs.writeFileSync(`${xmlPath}${temporalFileName}.xml`, timbradoResponse.cfdiTimbrado.toString(), {encoding: 'utf-8'});
+                    finalFileName = finalFileName + '_' + temporalFileName;
 
-                    logger.info('Se ha guardado el archivo: ' + `${xmlPath}${temporalFileName}.xml`);
+                    fs.writeFileSync(`${xmlPath}${finalFileName}.xml`, timbradoResponse.cfdiTimbrado.toString(), {encoding: 'utf-8'});
+
+                    logger.info('Se ha guardado el archivo: ' + `${xmlPath}${finalFileName}.xml`);
 
                 } else {
 
-                    fs.writeFileSync(`${xmlPath}${fileName}`, timbradoResponse.cfdiTimbrado.toString(), {encoding: 'utf-8'});
+                    fs.writeFileSync(`${xmlPath}${finalFileName}.xml`, timbradoResponse.cfdiTimbrado.toString(), {encoding: 'utf-8'});
 
-                    logger.info('Se ha guardado el archivo: ' + `${xmlPath}${fileName}`);
+                    logger.info('Se ha guardado el archivo: ' + `${xmlPath}${finalFileName}`);
 
                 }
 
@@ -349,8 +357,15 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer ) {
                 const pdfData               = await getInvoicePDF( tempPath, xmlBase64, xmls[i].additionalFiles, pdfOptions );
 
                 const pdfBase64             = getBase64String(pdfData.pdfBase64);
-                const pdfEmailTo            = pdfData.emailTo;
-                const pdfEmailCC            = pdfData.emailCC;
+                const emailTo               = pdfData.emailTo;
+                const emailCC               = pdfData.emailCC;
+                const sendingMail           = timbradoSettings.SendMail;
+                const mailHost              = timbradoSettings.MailHost;
+                const mailPort              = timbradoSettings.MailPort;
+                const mailSubject           = timbradoSettings.MailSubject;
+                const mailUser              = timbradoSettings.MailUser;
+                const mailPassword          = timbradoSettings.MailPassword;
+                const mailTemplate          = timbradoSettings.MailHTML;
 
                 if( pdfBase64.trim().length === 0 ) {
 
@@ -364,22 +379,16 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer ) {
                     logger.info('El PDF se generó existosamente.');
                     logger.info('Guardando PDF del CFDI Timbrado.');
 
-                    if( stampedXMLFileExists ) {
+                    if( possibleExtraStamped ) {
 
                         logger.info('WARNING: Es posible que haya ocurrido un timbrado múltiple del mismo archivo.');
-                        logger.info('Guardando archivo PDF con el mismo nombre del posible duplicado: ' + temporalFileName);
-
-                        fs.writeFileSync(`${pdfPath}${temporalFileName}.pdf`, pdfBase64, 'base64');
-
-                        logger.info('Archivo PDF guardado: ' + `${pdfPath}${temporalFileName}.pdf`);
-
-                    } else {
-
-                        fs.writeFileSync(`${pdfPath}${path.basename(fileName, '.xml')}.pdf`, pdfBase64, 'base64');
-
-                        logger.info('Archivo PDF guardado: ' + `${pdfPath}${path.basename(fileName, '.xml')}.pdf`);
+                        logger.info('Guardando archivo PDF con el mismo nombre del posible duplicado: ' + finalFileName);
 
                     }
+
+                    fs.writeFileSync(`${pdfPath}${finalFileName}.pdf`, pdfBase64, 'base64');
+
+                    logger.info('Archivo PDF guardado: ' + `${pdfPath}${finalFileName}.pdf`);
 
                     /**
                      * * Assign PDF Data for cfdis Array
@@ -387,6 +396,62 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer ) {
                     cfdiData.timbrado.statusPDF         = 200;
                     cfdiData.timbrado.pdf               = pdfBase64;
 
+                }
+
+                /**
+                 * * Send Mail if sendMail setting is true
+                 */
+                if( sendingMail ) {
+
+                    logger.info('Se envía correo.');
+                    
+                    const emailOptions = {
+                        mailSettingsType: 1,
+                        mailManualSettings: {
+                            mailHost: mailHost,
+                            mailPort: mailPort,
+                            mailUser: mailUser,
+                            mailPassword: mailPassword,
+                            mailSubject: mailSubject,
+                            mailHTML: mailTemplate
+                        }                    
+                    }
+
+                    let emailAttachments = [];
+
+                    const invoiceXMLExists = fs.existsSync(`${xmlPath}${finalFileName}.xml`);
+                    const invoicePDFExists = fs.existsSync(`${pdfPath}${finalFileName}.pdf`);
+
+                    if( invoiceXMLExists ){
+
+                        logger.info('Archivo XML agregado a los attachments.');
+
+                        emailAttachments.push({path: `${xmlPath}${finalFileName}.xml`, filename: `${finalFileName}.xml`});
+
+                    }
+
+                    if( invoicePDFExists ) {
+
+                        logger.info('Archivo PDF agregado a los attachments.');
+
+                        emailAttachments.push({path: `${pdfPath}${finalFileName}.pdf`, filename: `${finalFileName}.pdf`});
+
+                    }
+
+                    const emailSent = await sendMail( emailTo, emailCC, emailAttachments, emailOptions );
+
+                    if( emailSent ){
+
+                        logger.info('Correo enviado correctamente.')
+
+                    } else {
+
+                        logger.info('WARNING: Correo no se envío correctamente.')
+
+                    }
+
+                } else {
+                    logger.info('La configuración del timbrado indica que no se debe enviar correo.');
                 }
 
                 cfdis = [...cfdis, cfdiData];
