@@ -171,7 +171,9 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer ) {
                   uuid: '',
                   cfdiTimbrado: '',
                   statusPDF: 0,
-                  pdf: ''
+                  pdf: '',
+                  emailTo: '',
+                  emailCC: ''
                 }
             };
 
@@ -397,6 +399,9 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer ) {
                     cfdiData.timbrado.pdf               = pdfBase64;
 
                 }
+
+                cfdiData.timbrado.emailTo = emailTo;
+                cfdiData.timbrado.emailCC = emailCC;
 
                 /**
                  * * Send Mail if sendMail setting is true
