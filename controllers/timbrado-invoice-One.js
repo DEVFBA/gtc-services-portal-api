@@ -566,7 +566,7 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user 
                 ip: '0.0.0.0'
             }
 
-            loggerinfo('Timbre Data: '+  JSON.stringify(timbreData));
+            logger.info('Timbre Data: '+  JSON.stringify(timbreData));
 
             const updateTimbresControl = await addCustomerStampingRecord(timbreData);
 
