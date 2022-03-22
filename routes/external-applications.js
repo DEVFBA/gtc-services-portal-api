@@ -15,7 +15,17 @@ const logger = require('../utils/logger');
     logger.info( '/login - POST -: ' + JSON.stringify( userData ));
 
     dbExternalApplication.login( userData, response).then( result => {
-        response.json( result );
+
+        if( !result.data.success ) {
+
+            response.status(401).json( result );
+
+        } else {
+
+            response.json( result );
+
+        }
+        
     });
 
 });

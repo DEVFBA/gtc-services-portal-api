@@ -20,11 +20,12 @@ async function login(req) {
     let response = {
         data: {
             success: 0,
-            message: 'Ya entró el login',
+            message: '',
             idTransacLog: 0,
             login: {
                 user: '',
-                token: ''
+                token: '', 
+                exp: ''
             }
         }
     }
@@ -41,8 +42,6 @@ async function login(req) {
 
         let encryptedPassword = encPassword.data;
 
-        console.log(encryptedPassword);
-
         const applicationLoginPool = await sql.connect(config);
         
         const loginResult = await applicationLoginPool.request()
@@ -53,11 +52,9 @@ async function login(req) {
         .input('pvPassword', sql.VarChar, encryptedPassword)
         .execute('spCustomer_Application_Users_CRUD_Records');
 
-        console.log(loginResult);
-
         if( loginResult.recordset[0].Code_Type === 'Error' ) {
 
-            response.data.success = 0;
+            response.data.success = loginResult.recordset[0].Code_Successful;
             response.data.message = loginResult.recordset[0].Code_Message_User;
             response.data.idTransacLog = loginResult.recordset[0].IdTransacLog;
 
@@ -81,10 +78,11 @@ async function login(req) {
                 exp:                  parseInt(exp.getTime() / 1000)
               }, secret);
 
-            response.data.success = 1;
-            response.data.message = loginResult.recordset[0].Code_Message_User;
-            response.data.login.user = user;
-            response.data.login.token = token;
+            response.data.success               = loginResult.recordset[0].Code_Successful;
+            response.data.message               = loginResult.recordset[0].Code_Message_User;
+            response.data.login.user            = user;
+            response.data.login.token           = token;
+            response.data.login.exp             = exp;
 
             return response;
 
@@ -103,7 +101,7 @@ async function getApplicationSettings(idApplication, idCustomer) {
 
     let response = {
         data: {
-            success: 0,
+            success: false,
             message: '',
             configuration: {}
         }
@@ -124,7 +122,7 @@ async function getApplicationSettings(idApplication, idCustomer) {
 
             logger.info('Aplicación Id: ' + idApplication + ' inexistente o inhabilitada en Portal.');
 
-            response.data.success = 0;
+            response.data.success = false;
             response.data.message = 'Aplicación inexistente o inhabilitada en Portal.';
 
             logger.info('Saliendo de getApplicationSettings y regresando el Response.');
@@ -169,7 +167,7 @@ async function getApplicationSettings(idApplication, idCustomer) {
 
             logger.info('Aplicación Id: ' + idApplication + ' para el Customer: ' + idCustomer + ' no tiene configuraciones en Portal.');
 
-            response.data.success = 0;
+            response.data.success = false;
             response.data.message = 'Aplicación sin configuraciones en Portal.';
 
             logger.info('Saliendo de getApplicationSettings y regresando el Response.');
@@ -198,7 +196,7 @@ async function getApplicationSettings(idApplication, idCustomer) {
         logger.info('Configuraciones recuperadas correctamente.');
         logger.info('Saliendo de getApplicationSettings y regresando el Response.');
 
-        response.data.success = 1;
+        response.data.success = true;
 
         return response;
         

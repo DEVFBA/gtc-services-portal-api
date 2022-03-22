@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const fs = require('fs');
 const crypto = require('crypto');
+const path = require('path');
 
 const {
     getTempFilesPath,
@@ -14,6 +15,10 @@ const {
 } = require('../utils/xml');
 
 const {
+    sendMail
+} = require('../utils/mail');
+
+const {
     getApplicationSettings
 } = require('./external-applications');
 
@@ -23,12 +28,31 @@ const {
     getSello
 } = require('../utils/SAT');
 
+const {
+    addCustomerStampingRecord
+} = require('./request-customer-stamping')
+
+const {
+    getBase64String
+} = require('../utils/base64');
+
 const { DOMParser, XMLSerializer } = require('@xmldom/xmldom');
 
 const { 
     timbrarFactura 
-} = require('../utils/InvoiceOne');
-const path = require('path');
+} = require('../utils/Timbrado/InvoiceOne');
+
+const {
+    getInvoicePDF
+} = require('../utils/Timbrado/PDF_Generation/pdf-orchestrator');
+
+const {
+    getTemporalFileName
+} = require('../utils/general');
+
+const { 
+    getAvailableStampings 
+} = require('./customer-stampings');
 
 async function timbrar(req) {
 
@@ -36,7 +60,7 @@ async function timbrar(req) {
 
     let response = {
         data: {
-            success: 0,
+            success: false,
             message: '',
             cfdis: []
         }
@@ -49,9 +73,25 @@ async function timbrar(req) {
          */
         const decode = jwt.decode(req.headers.authorization.split(' ')[1]);
         const idApplication = decode.serverApplication;
-        const idCustomer = decode.idCustomer;
+        const idCustomer    = decode.idCustomer;
+        const user          = decode.userName;
 
         const tempFilesPath = await getTempFilesPath();
+
+        /**
+         * * Validate if Customer has Available Stamps
+         */
+        logger.info('Validando si el Cliente tiene Timbres Disponibles.');
+        const availableStamps = await getAvailableStampings( idCustomer );
+
+        if( !availableStamps ) {
+
+            response.data.success = false;
+            response.data.message = 'El Cliente no cuenta con Timbres Disponibles o Vigentes.';
+
+            return response;
+
+        }
 
         /**
          * * Retrieve Timbrado Settings
@@ -60,7 +100,7 @@ async function timbrar(req) {
 
         let timbradoSettings = await getApplicationSettings(idApplication, idCustomer);
 
-        if( timbradoSettings.data.success === 0 ) {
+        if( !timbradoSettings.data.success ) {
 
             response.data.success = timbradoSettings.data.success;
             response.data.message = timbradoSettings.data.message;
@@ -80,7 +120,7 @@ async function timbrar(req) {
          */
         if ( Object.entries(body).length === 0 ) { // If body is empty
 
-            response.data.success = 0;
+            response.data.success = false;
             response.data.message = 'Request Body incorrecto - Se está enviando vacío el Body del Request';
 
             logger.info('Se está enviando vacío el Body del Request');
@@ -90,7 +130,7 @@ async function timbrar(req) {
         
         } else if( !body.xmls || body.xmls.length === 0 ){ // If xmls Array is empty or null
     
-            response.data.success = 0;
+            response.data.success = false;
             response.data.message = 'Request Body incorrecto - Se está enviando el array xmls vacío o no se está enviando correctamente';
 
             logger.info('Se está enviando el array xmls vacío o no se está enviando correctamente');
@@ -105,23 +145,22 @@ async function timbrar(req) {
          */
         const xmls = body.xmls;
 
-        const cfdis = await procesarXMLs( xmls, timbradoSettings, tempFilesPath );
+        const cfdis = await procesarXMLs( xmls, timbradoSettings, tempFilesPath, idCustomer, user );
 
-        response.data.success = 1;
+        response.data.success = true;
         response.data.cfdis = cfdis;
     
         return response;
 
     } catch (error) {
 
-        console.log('Error en Timbrar: ', error);
         logger.error('Error en Timbrar: ' + error);
 
     }
 
 }
 
-async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
+async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user ) {
 
     try {
 
@@ -135,13 +174,17 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
         const timbradoPassword  = timbradoSettings.TimbradoWSPassword;
         const timbradoWSURL     = timbradoSettings.TimbradoWSURL;
         const timbradoWSUser    = timbradoSettings.TimbradoWSUser;
+        const pdfLogo           = timbradoSettings.PDFLogo;
+        const pdfFunction       = timbradoSettings.PDFFunction;
+        const xmlPath           = timbradoSettings.XMLPath;
+        const pdfPath           = timbradoSettings.PDFPath;
 
         const xmlsLength = xmls.length;
 
         for( let i = 0; i < xmlsLength; i++ ) {
 
             let cfdiData = {
-                error: 0,
+                error: false,
                 message: '',
                 timbrado: {
                   file: '',
@@ -152,9 +195,29 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
                   cfdiTimbrado: '',
                   statusPDF: 0,
                   pdf: '',
-                  emailTo: ''
+                  emailTo: '',
+                  emailCC: ''
                 }
             };
+
+            /**
+             * * Validate if the XML still have available Stamp to use
+             */
+            logger.info('Validando si el XML aún tiene Timbre Disponible para Procesarse.');
+
+            const availableStampings = await getAvailableStampings( idCustomer );
+
+            if( !availableStampings ) {
+
+                cfdiData.error = true;
+                cfdiData.message = 'El Cliente ya no tiene timbres disponibles para procesar este archivo.';
+
+                cfdis = [...cfdis, cfdiData];
+
+                continue;
+
+            }
+
 
             logger.info('Procesando el XML: ' + JSON.stringify(xmls[i]));
 
@@ -165,14 +228,14 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
 
             if( !xmls[i].fileName || xmls[i].fileName === '' ) {
                 
-                cfdiData.error = 1;
+                cfdiData.error = true;
                 cfdiData.message = 'Request Body incorrecto - Se está enviando el atributo fileName de xmls vacío, o no se está enviando correctamente';
 
                 logger.info('Se está enviando el atributo fileName de xmls vacío, o no se está enviando correctamente.');
 
                 cfdis = [...cfdis, cfdiData];
 
-                return cfdis;
+                continue;
 
             }
 
@@ -181,9 +244,31 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
             logger.info('Nombre del Archivo: ' + fileName);
 
             /**
+             * * Validate xml File Base 64 content
+             * * Validation of no Empty xml Base 64
+            */
+            logger.info('Validando el atributo xmlBase64.');
+
+            if( !xmls[i].xmlBase64 || xmls[i].xmlBase64 === '' ) {
+
+                cfdiData.error = true;
+                cfdiData.message = 'Request Body incorrecto - Se está enviando el atributo xmlBase64 de xmls vacío, o no se está enviando correctamente';
+
+                logger.info('Se está enviando el atributo xmlBase64 de xmls vacío, o no se está enviando correctamente.');
+
+                cfdis = [...cfdis, cfdiData];
+
+                continue;
+
+            }
+
+            logger.info('Atributo xmlBase64 correcto.');
+
+            /**
              * * Serialize XML
              */
-            let xmlDoc = await serializeXML( xmls[i].xmlBase64 );
+            const xmlBase64     = getBase64String(xmls[i].xmlBase64);
+            let xmlDoc = await serializeXML( xmlBase64 );
 
             logger.info('XML a Procesar: ' + xmlDoc);
 
@@ -201,6 +286,37 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
             xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].setAttribute('NoCertificado', serialNumber);
       
             xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].setAttribute('Certificado', cer);
+
+            /**
+             * Get Serie and Folio
+             */
+            logger.info('Recuperando Serie y Folio.');
+            let serie = '';
+            let folio = '';
+
+            if( !xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].getAttribute('Serie') ) {
+
+                logger.info('El Documento XML recibido no tiene Serie');
+                serie = '';
+
+            } else {
+
+                logger.info('El Documento XML recibido contiene Serie');
+                serie = xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].getAttribute('Serie');
+
+            }
+
+            if( !xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].getAttribute('Folio') ) {
+
+                logger.info('El Documento XML recibido no tiene Folio');
+                folio = '';
+
+            } else {
+
+                logger.info('El Documento XML recibido contiene Folio');
+                folio = xmlDoc.getElementsByTagName('cfdi:Comprobante')[0].getAttribute('Folio');
+
+            }
 
             /**
              * * Generate Certificated XML Invoice
@@ -244,15 +360,21 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
 
             const timbradoResponse = await timbrarFactura(stringXML, timbradoWSURL, timbradoWSUser, timbradoPassword, environment);
 
-            logger.info('Respuesta de Timbrado: ' + timbradoResponse);
+            const request                       = timbradoResponse.request;
+            const response                      = timbradoResponse.response;
 
-            if( timbradoResponse.error === 1 ) {
+            let uuid                            = '';
+            let successTimbrado                 = false;
+
+            if( timbradoResponse.error ) {
 
                 logger.info('El CFDI no fue timbrado exitosamente.');
 
                 cfdiData.error                      = timbradoResponse.error;
                 cfdiData.message                    = timbradoResponse.errorMessage;
                 cfdiData.timbrado.statusCFDI        = timbradoResponse.errorCode;
+                cfdiData.timbrado.serie             = serie;
+                cfdiData.timbrado.folio             = folio;
                 cfdiData.timbrado.file              = path.basename(fileName, '.xml');
 
                 cfdis = [...cfdis, cfdiData];
@@ -261,24 +383,201 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath ) {
 
                 logger.info('El CFDI fue timbrado exitosamente.');
 
+                successTimbrado                 = true;
+                uuid                            = timbradoResponse.uuid;;
+
+                /**
+                 * * Save Stamped XML File
+                 */
+                logger.info('Guardando XML del CFDI Timbrado.');
+
+                const stampedXMLFileExists      = fs.existsSync(`${xmlPath}${fileName}`);
+
+                let temporalFileName            = getTemporalFileName();
+                let finalFileName               = path.basename(fileName, '.xml');
+                let possibleExtraStamped        = false;
+
+                if( stampedXMLFileExists ) {
+
+                    logger.info('Ya existe un archivo previo: ' + fileName);
+                    logger.info('WARNING: Es posible que haya ocurrido un timbrado múltiple del mismo archivo.');
+
+                    possibleExtraStamped = true;
+
+                    finalFileName = finalFileName + '_' + temporalFileName;
+
+                    fs.writeFileSync(`${xmlPath}${finalFileName}.xml`, timbradoResponse.cfdiTimbrado.toString(), {encoding: 'utf-8'});
+
+                    logger.info('Se ha guardado el archivo: ' + `${xmlPath}${finalFileName}.xml`);
+
+                } else {
+
+                    fs.writeFileSync(`${xmlPath}${finalFileName}.xml`, timbradoResponse.cfdiTimbrado.toString(), {encoding: 'utf-8'});
+
+                    logger.info('Se ha guardado el archivo: ' + `${xmlPath}${finalFileName}`);
+
+                }
+
+                /**
+                 * * Assign XML Data for cfdis Array
+                 */
                 const xmlBase64                     = Buffer.from(timbradoResponse.cfdiTimbrado.toString()).toString('base64');
 
                 cfdiData.error                      = timbradoResponse.error;
                 cfdiData.message                    = timbradoResponse.errorMessage;
                 cfdiData.timbrado.statusCFDI        = 200;
-                cfdiData.timbrado.uuid              = timbradoResponse.uuid;
+                cfdiData.timbrado.uuid              = uuid;
                 cfdiData.timbrado.cfdiTimbrado      = xmlBase64;
-                cfdiData.timbrado.serie             = timbradoResponse.serie;
-                cfdiData.timbrado.folio             = timbradoResponse.folio;
-                cfdiData.timbrado.file              = path.basename(fileName, '.xml'); 
+                cfdiData.timbrado.serie             = serie;
+                cfdiData.timbrado.folio             = folio;
+                cfdiData.timbrado.file              = path.basename(fileName, '.xml');
 
                 /**
-                 * TODO: Get PDF and Return it
+                 * * Generate PDF and get its Data (pdfBase64, emailTo and emailCC)
                  */
-                cfdiData.timbrado.statusPDF         = 200;
-                cfdiData.timbrado.pdf               = ''
+                const pdfOptions            = {
+                    pdfLogo: pdfLogo,
+                    pdfFunction: pdfFunction
+                }
+
+                const pdfData               = await getInvoicePDF( tempPath, xmlBase64, xmls[i].additionalFiles, pdfOptions );
+
+                const pdfBase64             = getBase64String(pdfData.pdfBase64);
+                const emailTo               = pdfData.emailTo;
+                const emailCC               = pdfData.emailCC;
+                const sendingMail           = timbradoSettings.SendMail;
+                const mailHost              = timbradoSettings.MailHost;
+                const mailPort              = timbradoSettings.MailPort;
+                const mailSubject           = timbradoSettings.MailSubject;
+                const mailUser              = timbradoSettings.MailUser;
+                const mailPassword          = timbradoSettings.MailPassword;
+                const mailTemplate          = timbradoSettings.MailHTML;
+
+                if( pdfBase64.trim().length === 0 ) {
+
+                    logger.info('El PDF no se generó exitosamente.');
+
+                    cfdiData.timbrado.statusPDF         = 500;
+                    cfdiData.timbrado.pdf               = '';
+
+                } else {
+
+                    logger.info('El PDF se generó existosamente.');
+                    logger.info('Guardando PDF del CFDI Timbrado.');
+
+                    if( possibleExtraStamped ) {
+
+                        logger.info('WARNING: Es posible que haya ocurrido un timbrado múltiple del mismo archivo.');
+                        logger.info('Guardando archivo PDF con el mismo nombre del posible duplicado: ' + finalFileName);
+
+                    }
+
+                    fs.writeFileSync(`${pdfPath}${finalFileName}.pdf`, pdfBase64, 'base64');
+
+                    logger.info('Archivo PDF guardado: ' + `${pdfPath}${finalFileName}.pdf`);
+
+                    /**
+                     * * Assign PDF Data for cfdis Array
+                     */
+                    cfdiData.timbrado.statusPDF         = 200;
+                    cfdiData.timbrado.pdf               = pdfBase64;
+
+                }
+
+                cfdiData.timbrado.emailTo = emailTo;
+                cfdiData.timbrado.emailCC = emailCC;
+
+                /**
+                 * * Send Mail if sendMail setting is true
+                 */
+                if( sendingMail ) {
+
+                    logger.info('Se envía correo.');
+                    
+                    const emailOptions = {
+                        mailSettingsType: 1,
+                        mailManualSettings: {
+                            mailHost: mailHost,
+                            mailPort: mailPort,
+                            mailUser: mailUser,
+                            mailPassword: mailPassword,
+                            mailSubject: mailSubject,
+                            mailHTML: mailTemplate
+                        }                    
+                    }
+
+                    let emailAttachments = [];
+
+                    const invoiceXMLExists = fs.existsSync(`${xmlPath}${finalFileName}.xml`);
+                    const invoicePDFExists = fs.existsSync(`${pdfPath}${finalFileName}.pdf`);
+
+                    if( invoiceXMLExists ){
+
+                        logger.info('Archivo XML agregado a los attachments.');
+
+                        emailAttachments.push({path: `${xmlPath}${finalFileName}.xml`, filename: `${finalFileName}.xml`});
+
+                    }
+
+                    if( invoicePDFExists ) {
+
+                        logger.info('Archivo PDF agregado a los attachments.');
+
+                        emailAttachments.push({path: `${pdfPath}${finalFileName}.pdf`, filename: `${finalFileName}.pdf`});
+
+                    }
+
+                    const emailSent = await sendMail( emailTo, emailCC, emailAttachments, emailOptions );
+
+                    if( emailSent ){
+
+                        logger.info('Correo enviado correctamente.')
+
+                    } else {
+
+                        logger.info('WARNING: Correo no se envío correctamente.')
+
+                    }
+
+                } else {
+                    logger.info('La configuración del timbrado indica que no se debe enviar correo.');
+                }
+
+
 
                 cfdis = [...cfdis, cfdiData];
+
+            }
+
+            /**
+             * Update Timbres Control
+             */
+            let timbreData = {
+                customer: idCustomer,
+                uuid: uuid,
+                response: response,
+                request: request,
+                fileName: fileName,
+                serie: serie,
+                folio: folio,
+                executionMessage: successTimbrado ? 'EXITOSO' : 'ERROR',
+                timbradoSuccess: successTimbrado,
+                user: user,
+                ip: '0.0.0.0'
+            }
+
+            loggerinfo('Timbre Data: '+  JSON.stringify(timbreData));
+
+            const updateTimbresControl = await addCustomerStampingRecord(timbreData);
+
+            if( updateTimbresControl.Code_Successful && updateTimbresControl.Code_Type === 'Success' ) {
+
+                logger.info('Registro de Timbrado insertado correctamente. Los timbres disponibles fueron actualizados para el Cliente: ' + idCustomer);
+
+            } else {
+
+                logger.info('WARNING: No se registró el Timbrado en el Log. Los timbres disponibles no fueron actualizados para el Cliente: ' + idCustomer);
+                logger.info('Mensaje de la Base de Datos: ' + updateTimbresControl.Code_Message_User );
 
             }
 
