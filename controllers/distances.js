@@ -431,7 +431,6 @@ async function getDistanceWT(req){
               json: true
           })
           //PASO 3: Guardamos latitud y longitud en destinosC
-          console.log(response.data.status)
           if(response.data.status === "ZERO_RESULTS")
           {
             destinosC[y] = {
@@ -476,17 +475,17 @@ async function getDistanceWT(req){
 
       /*DESPUES DE QUE TENGAMOS TODOS LOS DESTINOS HACEMOS LA LLAMADA A LA API DE DISTANCE MATRIX*/
     }
-    //console.log(urlDistances)
     destinosFC[i] = destinosC
     countDistancias++
     var urlDistancesMatrix = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${urlDistances}&key=${googleAPIKey}`
+    console.log(urlDistancesMatrix)
     try{
         let response = await axios({
             method: 'get',
             url: urlDistancesMatrix,
             json: true
         })
-        //console.log(response.data)
+        console.log(response.data)
         distanciasFinal[i] = response.data
     } catch(err){
           return {
@@ -523,6 +522,7 @@ async function getDistanceWT(req){
       console.log(distanciasFinal[i].rows[0].elements[j])
       if(distanciasFinal[i].rows[0].elements[j].status === "ZERO_RESULTS")
       {
+        console.log("NO SE PUDO CALCULAR LA DISTANCIA")
         destinos[j] = {
           direccion: distanciasFinal[i].destination_addresses[j],
           latitud: destinosFC[i][j].latitud.toString(),
