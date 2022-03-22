@@ -25,6 +25,7 @@ async function execStoredProcedure( storedProcedure, sqlParams ) {
         
     } catch (error) {
 
+        console.log(error);
         logger.error('Error en execStoredProcedure ' + storedProcedure + ': ' + JSON.stringify(error));
 
     }

@@ -1,0 +1,21 @@
+2022-03-22T03:33:10.762Z [32minfo[39m: 	Recuperando los Timbres Disponibles para el Cliente: 23
+2022-03-22T03:33:11.105Z [32minfo[39m: 	Ejecutando Stored Procedure: spCustomers_Stamping_CRUD_Records con los Parámetros: {"pvOptionCRUD":{"name":"pvOptionCRUD","io":1,"value":"VA","length":5},"piIdCustomer":{"name":"piIdCustomer","io":1,"value":23}}
+2022-03-22T03:33:32.775Z [32minfo[39m: 	Recuperando los Timbres Disponibles para el Cliente: 23
+2022-03-22T03:33:33.129Z [32minfo[39m: 	Ejecutando Stored Procedure: spCustomers_Stamping_CRUD_Records con los Parámetros: {"pvOptionCRUD":{"name":"pvOptionCRUD","io":1,"value":"VA","length":5},"piIdCustomer":{"name":"piIdCustomer","io":1,"value":23}}
+2022-03-22T03:35:11.946Z [32minfo[39m: 	Recuperando los Timbres Disponibles para el Cliente: 230
+2022-03-22T03:35:12.297Z [32minfo[39m: 	Ejecutando Stored Procedure: spCustomers_Stamping_CRUD_Records con los Parámetros: {"pvOptionCRUD":{"name":"pvOptionCRUD","io":1,"value":"VA","length":5},"piIdCustomer":{"name":"piIdCustomer","io":1,"value":230}}
+2022-03-22T03:35:12.675Z [31merror[39m: 	ERR: Error en Get Available Stampings:  Cannot read properties of undefined (reading 'Availables')
+2022-03-22T03:38:30.222Z [32minfo[39m: 	Recuperando los Timbres Disponibles para el Cliente: 230
+2022-03-22T03:38:30.551Z [32minfo[39m: 	Ejecutando Stored Procedure: spCustomers_Stamping_CRUD_Records con los Parámetros: {"pvOptionCRUD":{"name":"pvOptionCRUD","io":1,"value":"VA","length":5},"piIdCustomer":{"name":"piIdCustomer","io":1,"value":230}}
+2022-03-22T03:38:30.913Z [32minfo[39m: 	Los timbres disponibles para el Cliente: 230 son: 0
+2022-03-22T03:38:30.919Z [31merror[39m: 	ERR: Error en Get Available Stampings:  Cannot read properties of undefined (reading 'Availables')
+2022-03-22T03:39:05.472Z [32minfo[39m: 	Recuperando los Timbres Disponibles para el Cliente: 230
+2022-03-22T03:39:05.885Z [32minfo[39m: 	Ejecutando Stored Procedure: spCustomers_Stamping_CRUD_Records con los Parámetros: {"pvOptionCRUD":{"name":"pvOptionCRUD","io":1,"value":"VA","length":5},"piIdCustomer":{"name":"piIdCustomer","io":1,"value":230}}
+2022-03-22T03:39:06.248Z [32minfo[39m: 	Los timbres disponibles para el Cliente: 230 son: 0
+2022-03-22T03:39:06.253Z [31merror[39m: 	ERR: Error en Get Available Stampings:  Cannot read properties of undefined (reading 'Availables')
+2022-03-22T03:39:33.538Z [32minfo[39m: 	Recuperando los Timbres Disponibles para el Cliente: 230
+2022-03-22T03:39:33.871Z [32minfo[39m: 	Ejecutando Stored Procedure: spCustomers_Stamping_CRUD_Records con los Parámetros: {"pvOptionCRUD":{"name":"pvOptionCRUD","io":1,"value":"VA","length":5},"piIdCustomer":{"name":"piIdCustomer","io":1,"value":230}}
+2022-03-22T03:39:34.224Z [32minfo[39m: 	No existen registros de Timbres Disponibles para el Cliente: 230
+2022-03-22T03:40:15.004Z [32minfo[39m: 	Recuperando los Timbres Disponibles para el Cliente: 23
+2022-03-22T03:40:15.347Z [32minfo[39m: 	Ejecutando Stored Procedure: spCustomers_Stamping_CRUD_Records con los Parámetros: {"pvOptionCRUD":{"name":"pvOptionCRUD","io":1,"value":"VA","length":5},"piIdCustomer":{"name":"piIdCustomer","io":1,"value":23}}
+2022-03-22T03:40:15.747Z [32minfo[39m: 	Los timbres disponibles para el Cliente: 23 son: 0
