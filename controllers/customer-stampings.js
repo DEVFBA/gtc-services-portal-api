@@ -54,6 +54,38 @@ async function getAvailableStampings( idCustomer ) {
 
 }
 
+async function getCustomersStamping(idCustomer)
+{
+    try {
+
+        logger.info('Recuperando los Timbres Disponibles para el Cliente: ' + idCustomer);
+
+        const sqlParams = [
+            {
+                name: 'pvOptionCRUD',
+                type: sql.VarChar(1),
+                value: 'R'
+            },
+            {
+                name: 'piIdCustomer',
+                type: sql.Int,
+                value: idCustomer
+            }
+        ];
+
+        const customerStamping = await execStoredProcedure( 'spCustomers_Stamping_CRUD_Records', sqlParams );
+
+        return customerStamping;
+        
+    } catch (error) {
+        
+        console.log('ERR: Error en Get Customers Stampings: ', error);
+        logger.error('ERR: Error en Get Customers Stampings: ', error);
+
+    }
+}
+
 module.exports = {
-    getAvailableStampings
+    getAvailableStampings,
+    getCustomersStamping : getCustomersStamping
 }

@@ -87,6 +87,35 @@ async function addCustomerStampingRecord(data) {
 
 }
 
+async function getRequestsCustomersStamping(idCustomer)
+{
+    try {
+
+        const sqlParams = [
+            {
+                name: 'pvOptionCRUD',
+                type: sql.VarChar(5),
+                value: 'R'
+            },
+            {
+                name: 'piIdCustomer',
+                type: sql.Int,
+                value: idCustomer
+            },
+        ];
+
+        const getRecord = await execStoredProcedure('spRequest_Customers_Stamping_CRUD_Records', sqlParams);
+        return getRecord;
+        
+    } catch (error) {
+        
+        console.log('ERROR: Error en Get Request Customer Stamping: ', error);
+        logger.error('ERROR: Error en Get Request Customer Stamping: ' + error);
+
+    }
+}
+
 module.exports = {
-    addCustomerStampingRecord
+    addCustomerStampingRecord,
+    getRequestsCustomersStamping : getRequestsCustomersStamping
 }
