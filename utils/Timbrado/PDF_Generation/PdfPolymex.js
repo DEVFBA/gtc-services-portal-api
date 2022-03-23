@@ -21,10 +21,7 @@ var PdfPrinter = require('pdfmake');
 var printer = new PdfPrinter(fonts);
 const { AwesomeQR } = require("awesome-qr");
 const fs = require("fs");
-const xml = require('./xml.js')
 
-const dbcatcatalogs = require('../controllers/cat-catalogs')
-const dbcatgeneralparameters = require('../controllers/cat-general-parameters');
 const xml = require('../../xml.js')
 const pdf2base64 = require('pdf-to-base64');
 

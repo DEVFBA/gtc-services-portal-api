@@ -78,6 +78,16 @@ router.use('/timbrado', require('./timbrado-Invoice-One.js'));
 /**
  * * External Applications Route
  */
- router.use('/external-applications', require('./external-applications.js'));
+router.use('/external-applications', require('./external-applications.js'));
+
+ /**
+ * * Customer Stamping Routes
+ */
+router.use('/customers-stamping', require('./customers-stamping.js'));
+
+ /**
+ * * Request Customer Stamping Routes
+ */
+  router.use('/request-customer-stamping', require('./request-customer-stamping.js'));
 
 module.exports = router;
