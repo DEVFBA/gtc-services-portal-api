@@ -1711,7 +1711,7 @@ async function getPDFCasaDiaz(docBase64, pathLogo, nameFile, domicilioFiscal, no
             }
 
             var figuraTransporteCP = cartaP.elements.find( o => o.name === "cartaporte20:FiguraTransporte")
-            console.log(figuraTransporteCP)
+            //console.log(figuraTransporteCP)
 
             var figuraTransporte = {
                 table: {

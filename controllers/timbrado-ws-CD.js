@@ -67,11 +67,6 @@ let cfdiData = new Object ({
 
 async function login(req, res) {
 
-/*   logger.info('Login User Recibido: ' + req.body.user);
-  logger.info('Login idCustomer Recibido: ' + req.body.idCustomer);
-  logger.info('Login idApplication Recibido: ' + req.body.idApplication);
-  logger.info('Login timbradoApplication Recibido: ' + req.body.timbradoApplication); */
-
   const data = {
       user: req.body.user,
       password: req.body.password,
@@ -85,8 +80,6 @@ async function login(req, res) {
     let encRes = await axios.post('http://129.159.99.152/GTC_DEV/api/Hash/EncryptMD5', {text: data.password});
 
     let encryptedPassword = encRes.data;
-
-/*     logger.info('Password recibido: ' + encryptedPassword); */
 
     const pool = await sql.connect(config);
 
@@ -299,9 +292,13 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
           cfdiTimbrado: '',
           statusPDF: 0,
           pdf: '',
-          emailTo: ''
+          emailTo: '',
+          JDEtable: '',
+          rfcEmisor: ''
         }
       });
+
+      let JDETable = null;
 
       if ( !xmls[i].fileName || xmls[i].fileName === '' ) { // If fileName is empty or null
 
@@ -381,6 +378,19 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
         });
       
         idCustomer = idCustomer[0].Id_Customer;
+
+        /**
+         * * Determine JDE Table of the Receipt
+         */
+        if( !xmlDoc.getElementsByTagName('cartaporte20:CartaPorte')[0] ) {
+
+          JDETable = 'F55XTRC';
+
+        } else {
+
+          JDETable = 'F59TR01';
+
+        }
 
         /* Retrieve Customer Data */
 
@@ -554,6 +564,8 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
           cfdiData.timbrado.serie           = serie;
           cfdiData.timbrado.folio           = folio;
           cfdiData.timbrado.emailTo         = emailTo;
+          cfdiData.timbrado.JDEtable        = JDETable;
+          cfdiData.timbrado.rfcEmisor       = rfcEmisor;
 
           const base64 = await getPDFCasaDiaz( timbradoResponse.cfdiTimbrado, pdfLogo, timbradoResponse.uuid, address, businessName );
 
@@ -590,6 +602,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
     return cfdis;
 
   } catch (error) {
+
     logger.error(error + '/timbrado-ws-CD/timbrado - POST -')
     cfdiData.error          = 1;
     cfdiData.message        = error;

@@ -2,6 +2,7 @@ const fs                = require('fs');
 const soap              = require('soap');
 const path              = require('path');
 const express           = require('express');
+const logger            = require('./logger');
 
 /* const {
     sendMail
@@ -16,25 +17,34 @@ async function timbrarFactura(xmlBase64, url, user, password) {
       zip: false
   }
 
-  const response = await soap.createClientAsync(url).then( async (client) => {
+  try {
+    
+    const response = await soap.createClientAsync(url).then( async (client) => {
+  
+      return client.timbrarAsync(args)
+  
+      }).then(async (result) => {
+  
+        if (result[0].return.status === 200) {
+  
+            return result[0].return.resultados[0];
+  
+          } else {
+  
+            return result[0].return.resultados[0];
+  
+          }
+  
+      });
+  
+    return response;
 
-    return client.timbrarAsync(args)
+  } catch (error) {
 
-    }).then(async (result) => {
-
-      if (result[0].return.status === 200) {
-
-          return result[0].return.resultados[0];
-
-        } else {
-
-          return result[0].return.resultados[0];
-
-        }
-
-    });
-
-  return response;
+    logger.error('ERROR: Error en timbrarFactura: ' + error);
+    console.log(error);
+    
+  }
 
 }
 
