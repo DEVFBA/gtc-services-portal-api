@@ -85,7 +85,86 @@ async function getCustomersStamping(idCustomer)
     }
 }
 
+async function getCustomersStampings()
+{
+    try {
+
+        logger.info('Recuperando todos los Timbres');
+
+        const sqlParams = [
+            {
+                name: 'pvOptionCRUD',
+                type: sql.VarChar(1),
+                value: 'R'
+            },
+        ];
+
+        const customersStampings = await execStoredProcedure( 'spCustomers_Stamping_CRUD_Records', sqlParams );
+
+        return customersStampings;
+        
+    } catch (error) {
+        
+        console.log('ERR: Error en Get Customers Stampings: ', error);
+        logger.error('ERR: Error en Get Customers Stampings: ', error);
+
+    }
+}
+
+async function insertCustomerStamping(params)
+{
+    try {
+
+        logger.info('Recuperando todos los Timbres');
+
+        const sqlParams = [
+            {
+                name: 'pvOptionCRUD',
+                type: sql.VarChar(1),
+                value: 'C'
+            },
+            {
+                name: 'piIdCustomer',
+                type: sql.Int,
+                value: params.piIdCustomer
+            },
+            {
+                name: 'piAssigned',
+                type: sql.Int,
+                value: params.piAssigned
+            },
+            {
+                name: 'pvEffectiveDate',
+                type: sql.VarChar,
+                value: params.pvEffectiveDate
+            },
+            {
+                name: 'pvUser',
+                type: sql.VarChar,
+                value: params.pvUser
+            },
+            {
+                name: 'pvIP',
+                type: sql.VarChar,
+                value: params.pvIP
+            },
+        ];
+
+        const customersStampings = await execStoredProcedure( 'spCustomers_Stamping_CRUD_Records', sqlParams );
+
+        return customersStampings;
+        
+    } catch (error) {
+        
+        console.log('ERR: Error en Get Customers Stampings: ', error);
+        logger.error('ERR: Error en Get Customers Stampings: ', error);
+
+    }
+}
+
 module.exports = {
     getAvailableStampings,
-    getCustomersStamping : getCustomersStamping
+    getCustomersStamping : getCustomersStamping,
+    getCustomersStampings : getCustomersStampings,
+    insertCustomerStamping : insertCustomerStamping
 }
