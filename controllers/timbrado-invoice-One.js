@@ -484,8 +484,26 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user 
 
                 }
 
-                cfdiData.timbrado.emailTo = emailTo;
-                cfdiData.timbrado.emailCC = emailCC;
+                const cleanedEmailTo = emailTo.map((mail) => {
+
+                    const email = mail.replace(/(\r\n|\n|\r)/gm,'').trim();
+
+                    return email;
+
+                } );
+
+                const cleanedEmailCC = emailCC.map((mail) => {
+
+                    const email = mail.replace(/(\r\n|\n|\r)/gm,'').trim();
+
+                    return email;
+
+                } );
+
+                console.log(cleanedEmailTo);
+
+                cfdiData.timbrado.emailTo = cleanedEmailTo;
+                cfdiData.timbrado.emailCC = cleanedEmailCC;
 
                 /**
                  * * Send Mail if sendMail setting is true
