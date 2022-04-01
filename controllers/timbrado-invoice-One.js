@@ -195,8 +195,8 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user 
                   cfdiTimbrado: '',
                   statusPDF: 0,
                   pdf: '',
-                  emailTo: '',
-                  emailCC: ''
+                  emailTo: [],
+                  emailCC: []
                 }
             };
 
