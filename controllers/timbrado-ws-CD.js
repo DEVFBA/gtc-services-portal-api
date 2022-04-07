@@ -356,8 +356,9 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
 
         if( !xmlDoc.getElementsByTagName('cfdi:Emisor')[0] || !xmlDoc.getElementsByTagName('cfdi:Emisor')[0].getAttribute('Rfc')) {
 
-          cfdiData.error = 1;
-          cfdiData.message = 'XML Incorrecto - El XML no contiene el dato del CFDI RFC Emisor';
+          cfdiData.error                    = 1;
+          cfdiData.message                  = 'XML Incorrecto - El XML no contiene el dato del CFDI RFC Emisor';
+          cfdiData.timbrado.file            = path.basename(fileName, '.xml');
       
           cfdis = [...cfdis, cfdiData];
   
