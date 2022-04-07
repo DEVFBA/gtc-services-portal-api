@@ -307,7 +307,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
     
         cfdis = [...cfdis, cfdiData];
 
-        return cfdis;
+        continue;
         
       } else if( !xmls[i].xmlBase64 || xmls[i].xmlBase64 === '' ) { // If xmlBase64 is empty or null
 
@@ -316,7 +316,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
     
         cfdis = [...cfdis, cfdiData];
 
-        return cfdis;
+        continue;
 
       } else {
         
@@ -361,7 +361,7 @@ async function procesarXMLs(xmls, idApplication, tempPath) {
       
           cfdis = [...cfdis, cfdiData];
   
-          return cfdis;
+          continue;
 
         } else {
 
