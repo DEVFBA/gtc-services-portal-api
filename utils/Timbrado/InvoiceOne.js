@@ -23,13 +23,33 @@ async function timbrarFactura( stringXML, timbradoWSURL, timbradoWSUser, timbrad
             response: ''
         }
 
-        const args = {
+        const argsTest = {
             usuario: timbradoWSUser,
             contrasena: timbradoPassword,
             xmlComprobante: stringXML
         }
 
+        const argsProd = {
+            nombreUsuario: timbradoWSUser,
+            contrasena: timbradoPassword,
+            xmlComprobante: stringXML
+        }
+
         logger.info('Empieza proceso de función timbrarFactura.');
+
+        logger.info('El ambiente de timbrado es: ' + environment);
+
+        let args = {};
+
+        if( environment === 'PROD' ) {
+
+            args = argsProd;
+
+        } else {
+
+            args = argsTest;
+
+        }
 
         let response = await getTimbradoResponse(timbradoWSURL, args, environment);
 
