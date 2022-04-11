@@ -137,7 +137,7 @@ async function getTimbradoResponse( timbradoWSURL, args, environment ) {
     
                             response.success        = true;
                             response.data.request   = args.xmlComprobante;
-                            response.data.response  = result.ObtenerCFDIPruebaResult.Xml;
+                            response.data.response  = result.ObtenerCFDIResult.Xml;
                         
                             resolve(response);
     
@@ -197,6 +197,116 @@ async function getTimbradoResponse( timbradoWSURL, args, environment ) {
 
 }
 
+async function getComprobante( timbradoWSURL, args, environment ) {
+
+    try {
+        
+        return new Promise( (resolve, reject) => {
+
+            soap.createClient(timbradoWSURL, function(err, client) {
+
+                if(err){
+
+                    logger.error('ERROR: Error en createClient: ', + JSON.stringify(err, getCircularReplacer()));
+
+                }
+
+                /**
+                 * * Call Function to Get Stamped CFDI depending on environment
+                 */
+                if( environment === 'PROD' ) {
+
+                    client.ObtenerCFDI(args, function(err, result) {
+
+                        logger.info('Timbrando en Producción.');
+    
+                        let response = {
+                            success: false,
+                            data: {
+                                request: '',
+                                response: ''
+                            }
+                        }
+    
+                        if(err) {
+    
+                            logger.info('WARNING: ObtenerCFDI regresó error de Timbrado: ' + JSON.stringify(err, getCircularReplacer()));
+    
+                            response.success        = false;
+                            response.data.request   = result.config.data;
+                            response.data.response  = result.data;
+    
+                            resolve(response);
+    
+                        } else {
+    
+                            response.success        = true;
+                            response.data.request   = args.xmlComprobante;
+                            response.data.response  = result.ObtenerCFDIPruebaResult.Xml;
+                        
+                            resolve(response);
+    
+                        }
+    
+                    });
+
+                } else {
+
+                    client.recuperaComprobanteXML(args, function(err, result) {
+
+                        console.log('Recuperando comprobante.');
+
+                        console.log(args);
+    
+                        let response = {
+                            success: false,
+                            data: {
+                                xml: '',
+                                request: '',
+                                response: ''
+                            }
+                        }
+
+                        console.log('Result', result);
+    
+                        if(err) {
+    
+                            logger.info('WARNING: ObtenerCFDIPrueba regresó error de Timbrado: ' + JSON.stringify(err, getCircularReplacer()));
+    
+                            response.success        = false;
+                            response.data.request   = result.config.data;
+                            response.data.response  = result.data;
+    
+                            resolve(response);
+    
+                        } else {
+    
+                            response.success        = true;
+                            response.data.request   = args.xmlComprobante;
+                            response.data.response  = result.ObtenerCFDIPruebaResult.Xml;
+                        
+                            resolve(response);
+    
+                        }
+    
+                    });
+
+                }
+
+            });
+
+        });
+
+    } catch (error) {
+
+        console.log('ERROR: Error en getComprobante: ', error);
+        logger.error('ERROR: Error en getComprobante: ' + error);
+        
+    }
+
+}
+
 module.exports = {
-    timbrarFactura
+    timbrarFactura,
+    getComprobante
 }

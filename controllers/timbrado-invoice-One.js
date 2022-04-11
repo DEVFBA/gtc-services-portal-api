@@ -39,7 +39,8 @@ const {
 const { DOMParser, XMLSerializer } = require('@xmldom/xmldom');
 
 const { 
-    timbrarFactura 
+    timbrarFactura,
+    getComprobante
 } = require('../utils/Timbrado/InvoiceOne');
 
 const {
@@ -612,6 +613,33 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user 
 
 }
 
+async function obtenerCFDI(req) {
+
+    let response = {
+        data: 'Hola Angel'
+    }
+
+    try {
+
+        const args = {
+            nombreUsuario: 'GTC14021',
+            contrasena: '59c3$J3j',
+            referencia: '0B878509-EBDC-4131-8013-C26F253422B5'
+        }
+
+        const comprobante = await getComprobante( 'https://invoiceone.mx/TimbreCFDI/TimbreCFDI.asmx?wsdl', args, 'DEV' );
+
+        console.log(comprobante);
+        
+    } catch (error) {
+
+        console.log(error);
+        
+    }
+
+}
+
 module.exports = {
-    timbrar
+    timbrar,
+    obtenerCFDI
 }

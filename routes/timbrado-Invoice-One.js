@@ -16,4 +16,17 @@ router.route('/timbrar').post( auth, (request, response) => {
 
 } );
 
+router.route('/obtenerCFDI/:uuid').get( auth, (request, response) => {
+
+    const uuid = request.headers.uuid;
+
+    logger.info('Recuperando XML del UUID: ' + uuid);
+
+    timbrado.obtenerCFDI( request, response ).then( result => {
+        response.json(result);
+
+    })
+
+})
+
 module.exports = router;
