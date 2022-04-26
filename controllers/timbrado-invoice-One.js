@@ -25,7 +25,8 @@ const {
 const {
     certificar,
     getCadena,
-    getSello
+    getSello,
+    getCadena40
 } = require('../utils/SAT');
 
 const {
@@ -142,11 +143,30 @@ async function timbrar(req) {
         }
 
         /**
+         * * Retrieve CFDI Version
+         */
+        let cfdiVersion = null;
+
+        if( !body.version || body.version.trim() === '' ) {
+
+            logger.info('La versión del CFDI es 3.3.');
+
+            cfdiVersion = '3.3'
+
+        } else {
+
+            logger.info('La versión del CFDI es ' + body.version);
+
+            cfdiVersion = body.version;
+
+        }
+
+        /**
          * * Retrieve Data to Process
          */
         const xmls = body.xmls;
 
-        const cfdis = await procesarXMLs( xmls, timbradoSettings, tempFilesPath, idCustomer, user );
+        const cfdis = await procesarXMLs( xmls, timbradoSettings, tempFilesPath, idCustomer, user, cfdiVersion );
 
         response.data.success = true;
         response.data.cfdis = cfdis;
@@ -161,7 +181,7 @@ async function timbrar(req) {
 
 }
 
-async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user ) {
+async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user, cfdiVersion ) {
 
     try {
 
@@ -333,7 +353,17 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user 
              */
             logger.info('Sellando XML.');
 
-            const cadena = await getCadena('./resources/XSLT/cadenaoriginal_3_3.xslt', `${tempPath}${fileName}`);
+            let cadena = null;
+
+            if( cfdiVersion === '3.3' ) {
+
+                cadena = await getCadena('./resources/XSLT/cadenaoriginal_3_3.xslt', `${tempPath}${fileName}`);
+
+            } else if (cfdiVersion === '4.0') {
+                
+                cadena = await getCadena40('./resources/XSLT_4_0/cadenaoriginal.xslt', `${tempPath}${fileName}`);
+
+            }
 
             const prm = await getSello(keyFile, keyPassword);
         
@@ -436,16 +466,9 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user 
                 /**
                  * * Generate PDF and get its Data (pdfBase64, emailTo and emailCC)
                  */
-                const pdfOptions            = {
-                    pdfLogo: pdfLogo,
-                    pdfFunction: pdfFunction
-                }
-
-                const pdfData               = await getInvoicePDF( tempPath, xmlBase64, xmls[i].additionalFiles, pdfOptions );
-
-                const pdfBase64             = getBase64String(pdfData.pdfBase64);
-                const emailTo               = pdfData.emailTo;
-                const emailCC               = pdfData.emailCC;
+                let pdfBase64               = '';
+                let emailTo                 = null;
+                let emailCC                 = null;
                 const sendingMail           = timbradoSettings.SendMail;
                 const mailHost              = timbradoSettings.MailHost;
                 const mailPort              = timbradoSettings.MailPort;
@@ -454,9 +477,29 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user 
                 const mailPassword          = timbradoSettings.MailPassword;
                 const mailTemplate          = timbradoSettings.MailHTML;
 
+                if ( !pdfFunction || pdfFunction.trim() === '' ) {
+
+                    pdfBase64 = ''
+
+                } else {
+
+                    const pdfOptions            = {
+                        pdfLogo: pdfLogo,
+                        pdfFunction: pdfFunction
+                    }
+    
+                    const pdfData               = await getInvoicePDF( tempPath, xmlBase64, xmls[i].additionalFiles, pdfOptions );
+    
+                    pdfBase64                   = getBase64String(pdfData.pdfBase64);
+                    emailTo                     = pdfData.emailTo;
+                    emailCC                     = pdfData.emailCC;
+
+
+                }
+
                 if( pdfBase64.trim().length === 0 ) {
 
-                    logger.info('El PDF no se generó exitosamente.');
+                    logger.info('El PDF no se generó exitosamente o no existe función para generar PDF.');
 
                     cfdiData.timbrado.statusPDF         = 500;
                     cfdiData.timbrado.pdf               = '';
