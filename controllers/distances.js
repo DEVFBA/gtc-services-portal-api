@@ -261,7 +261,8 @@ async function getDistance(req){
 }
 
 async function getDistanceWT(req){
-  var googleAPIKey = await config2.getGoogleApiKey()
+  //var googleAPIKey = await config2.getGoogleApiKey()
+  var googleAPIKey = "AIzaSyDYlA2dPrmOWqveoQXfQ766MGfwwEzRpC0";
 
   var distances = req
   //para saber cuantos llamados a la API de coordenadas se hicieron

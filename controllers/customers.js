@@ -15,6 +15,32 @@ async function getCustomers(params){
     }
 }
 
+async function getCustomerById(id){
+    try{
+        let pool = await sql.connect(config);
+        let customers = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, "R")
+            .input('piIdCustomer', sql.VarChar, id)
+            .execute('spCustomers_CRUD_Records')
+        return customers.recordsets
+    }catch(error){
+        console.log(error)
+    }
+}
+
+async function getCustomer(name){
+    try{
+        let pool = await sql.connect(config);
+        let customers = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, "R")
+            .input('pvName', sql.VarChar, name)
+            .execute('spCustomers_CRUD_Records')
+        return customers.recordsets
+    }catch(error){
+        console.log(error)
+    }
+}
+
 // Get Customer Name
 async function getCustomerName(idCustomer){
 
@@ -286,5 +312,7 @@ module.exports = {
     insertCustomerRegister : insertCustomerRegister,
     updateCustomerRegister : updateCustomerRegister,
     getFullAddress : getFullAddress,
-    getCustomerName : getCustomerName
+    getCustomerName : getCustomerName,
+    getCustomer : getCustomer, 
+    getCustomerById : getCustomerById
 }

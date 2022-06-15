@@ -8,6 +8,8 @@
     "start": "nodemon api.js"
   },
   "dependencies": {
+    "@nodecfdi/sat-estado-cfdi": "^1.0.4",
+    "@nodecfdi/sat-estado-cfdi-soap": "^1.0.0",
     "@xmldom/xmldom": "^0.7.5",
     "awesome-qr": "^2.1.5-rc.0",
     "axios": "^0.23.0",

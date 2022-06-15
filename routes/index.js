@@ -85,9 +85,19 @@ router.use('/external-applications', require('./external-applications.js'));
  */
 router.use('/customers-stamping', require('./customers-stamping.js'));
 
- /**
+/**
  * * Request Customer Stamping Routes
  */
-  router.use('/request-customer-stamping', require('./request-customer-stamping.js'));
+router.use('/request-customer-stamping', require('./request-customer-stamping.js'));
+
+/**
+ * * Request Customer Service Codes
+ */
+router.use('/customer-service-codes', require('./customer-service-codes.js'));
+
+/**
+ * * Request Customer UoMs
+ */
+router.use('/customer-uoms', require('./customer-uoms.js'));
 
 module.exports = router;

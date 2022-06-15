@@ -106,9 +106,29 @@ async function getTempFilesPath() {
 
 }
 
+async function updateGeneralParameter(register){
+    console.log("SI ENTRE 2")
+    try{
+        let pool = await sql.connect(config);
+        let generalParameter = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, "U")
+            .input('piIdParameter', sql.Int, register.piIdParameter)
+            .input('pvIdGrouper', sql.VarChar, register.pvIdGrouper)
+            .input('pvLongDesc', sql.VarChar, register.pvLongDesc)
+            .input('pvValue', sql.VarChar, register.pvValue)
+            .input('pvUser', sql.VarChar, register.pvUser)
+            .input('pvIP', sql.VarChar, register.pvIP)
+            .execute('spCat_General_Parameters_CRUD_Records')
+        return generalParameter.recordsets
+    }catch(error){
+        console.log(error)
+    }
+}
+
 module.exports = {
     getGeneralParameters : getGeneralParameters,
     getGeneralParametersbyID: getGeneralParametersbyID,
     getEnvironment : getEnvironment,
-    getTempFilesPath : getTempFilesPath
+    getTempFilesPath : getTempFilesPath,
+    updateGeneralParameter : updateGeneralParameter
 }
