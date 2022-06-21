@@ -100,4 +100,9 @@ router.use('/customer-service-codes', require('./customer-service-codes.js'));
  */
 router.use('/customer-uoms', require('./customer-uoms.js'));
 
+/**
+ * * Request Customer Bill Tos
+ */
+ router.use('/customer-bill-tos', require('./customer-bill-tos.js'));
+
 module.exports = router;

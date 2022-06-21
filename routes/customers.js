@@ -22,7 +22,7 @@ router.route('/:id').get(auth, (request, response)=>{
 })
 
 //Ruta para obtener un cliente por nombre
-router.route('/:name').get(auth, (request, response)=>{
+router.route('/get-by-name/:name').get(auth, (request, response)=>{
     dbcustomers.getCustomer(request.params.name).then(result => {
         response.json(result[0]);
     })
