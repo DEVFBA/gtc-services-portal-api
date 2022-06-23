@@ -7,6 +7,7 @@ var fonts = {
     }
 };
 
+
 /*var fonts = {
     Roboto: {
       normal: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Roboto-Regular.ttf',
@@ -68,6 +69,9 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
 
         //Para obtener las piezas
         var arrayPiezas = lotesPiezas[2].split("^")
+
+        //Para obtener las referencias cruzadas
+        var arrayRefCruzadas = lotesPiezas[3].split("^")
 
         var xmlString = await xml.serializeXML(docBase64)
 
@@ -382,7 +386,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
             if(i !== conceptos.elements.length-1)
             {
                 concepts[psItems] = [
-                    {border: [true, false, false, false], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla', alignment: "center"},
+                    {border: [true, false, false, false], text: conceptos.elements[i].attributes.NoIdentificacion + "\n" + arrayRefCruzadas[i], style: 'textotabla', alignment: "center"},
                     {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion, style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"}, 
@@ -402,7 +406,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
             }
             else {
                 concepts[psItems] = [
-                    {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla', alignment: "center"},
+                    {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion + "\n" + arrayRefCruzadas[i], style: 'textotabla', alignment: "center"},
                     {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion, style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"}, 
