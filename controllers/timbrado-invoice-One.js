@@ -25,7 +25,8 @@ const {
 const {
     certificar,
     getCadena,
-    getSello
+    getSello,
+    getCadena40
 } = require('../utils/SAT');
 
 const {
@@ -142,11 +143,30 @@ async function timbrar(req) {
         }
 
         /**
+         * * Retrieve CFDI Version
+         */
+        let cfdiVersion = null;
+
+        if( !body.version || body.version.trim() === '' ) {
+
+            logger.info('La versión del CFDI es 3.3.');
+
+            cfdiVersion = '3.3'
+
+        } else {
+
+            logger.info('La versión del CFDI es ' + body.version);
+
+            cfdiVersion = body.version;
+
+        }
+
+        /**
          * * Retrieve Data to Process
          */
         const xmls = body.xmls;
 
-        const cfdis = await procesarXMLs( xmls, timbradoSettings, tempFilesPath, idCustomer, user );
+        const cfdis = await procesarXMLs( xmls, timbradoSettings, tempFilesPath, idCustomer, user, cfdiVersion );
 
         response.data.success = true;
         response.data.cfdis = cfdis;
@@ -161,7 +181,7 @@ async function timbrar(req) {
 
 }
 
-async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user ) {
+async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user, cfdiVersion ) {
 
     try {
 
@@ -320,6 +340,24 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user 
             }
 
             /**
+             * Get Issuer Name
+             */
+             logger.info('Recuperando Nombre del Emisor.');
+             let issuerName = '';
+ 
+             if( !xmlDoc.getElementsByTagName('cfdi:Emisor')[0].getAttribute('Nombre') ) {
+ 
+                 logger.info('El Documento XML recibido no tiene Nombre del Emisor');
+                 issuerName = '';
+ 
+             } else {
+ 
+                 logger.info('El Documento XML recibido contiene Nombre del Emisor');
+                 issuerName = xmlDoc.getElementsByTagName('cfdi:Emisor')[0].getAttribute('Nombre');
+ 
+             }
+
+            /**
              * * Generate Certificated XML Invoice
              */
             let stringXML = new XMLSerializer().serializeToString(xmlDoc);
@@ -333,7 +371,17 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user 
              */
             logger.info('Sellando XML.');
 
-            const cadena = await getCadena('./resources/XSLT/cadenaoriginal_3_3.xslt', `${tempPath}${fileName}`);
+            let cadena = null;
+
+            if( cfdiVersion === '3.3' ) {
+
+                cadena = await getCadena('./resources/XSLT/cadenaoriginal_3_3.xslt', `${tempPath}${fileName}`);
+
+            } else if ( cfdiVersion === '4.0' ) {
+                
+                cadena = await getCadena40('./resources/XSLT_4_0/cadenaoriginal.xslt', `${tempPath}${fileName}`);
+
+            }
 
             const prm = await getSello(keyFile, keyPassword);
         
@@ -436,27 +484,44 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user 
                 /**
                  * * Generate PDF and get its Data (pdfBase64, emailTo and emailCC)
                  */
-                const pdfOptions            = {
-                    pdfLogo: pdfLogo,
-                    pdfFunction: pdfFunction
-                }
+                let pdfBase64               = '';
+                let emailTo                 = null;
+                let emailCC                 = null;
+                let poNumber                = null;
+                let customMailSubject       = null;
+                let mailSubject             = timbradoSettings.MailSubject;
 
-                const pdfData               = await getInvoicePDF( tempPath, xmlBase64, xmls[i].additionalFiles, pdfOptions );
-
-                const pdfBase64             = getBase64String(pdfData.pdfBase64);
-                const emailTo               = pdfData.emailTo;
-                const emailCC               = pdfData.emailCC;
                 const sendingMail           = timbradoSettings.SendMail;
                 const mailHost              = timbradoSettings.MailHost;
                 const mailPort              = timbradoSettings.MailPort;
-                const mailSubject           = timbradoSettings.MailSubject;
                 const mailUser              = timbradoSettings.MailUser;
                 const mailPassword          = timbradoSettings.MailPassword;
                 const mailTemplate          = timbradoSettings.MailHTML;
+                const mailSubjectFormat     = timbradoSettings.MailSubjectFormat;
+
+                if ( !pdfFunction || pdfFunction.trim() === '' ) {
+
+                    pdfBase64 = ''
+
+                } else {
+
+                    const pdfOptions            = {
+                        pdfLogo: pdfLogo,
+                        pdfFunction: pdfFunction
+                    }
+    
+                    const pdfData               = await getInvoicePDF( tempPath, xmlBase64, xmls[i].additionalFiles, pdfOptions );
+    
+                    pdfBase64                   = getBase64String(pdfData.pdfBase64);
+                    emailTo                     = pdfData.emailTo;
+                    emailCC                     = pdfData.emailCC;
+                    poNumber                    = pdfData.poNumber;
+
+                }
 
                 if( pdfBase64.trim().length === 0 ) {
 
-                    logger.info('El PDF no se generó exitosamente.');
+                    logger.info('El PDF no se generó exitosamente o no existe función para generar PDF.');
 
                     cfdiData.timbrado.statusPDF         = 500;
                     cfdiData.timbrado.pdf               = '';
@@ -485,6 +550,9 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user 
 
                 }
 
+                /**
+                 * * Retrieve Email Data 
+                 */
                 const cleanedEmailTo = emailTo.map((mail) => {
 
                     const email = mail.replace(/(\r\n|\n|\r)/gm,'').trim();
@@ -501,10 +569,37 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user 
 
                 } );
 
-                console.log(cleanedEmailTo);
-
                 cfdiData.timbrado.emailTo = cleanedEmailTo;
                 cfdiData.timbrado.emailCC = cleanedEmailCC;
+
+                if( !mailSubject || mailSubject.trim() === '' ) {
+
+                    logger.info('Se debe enviar un Formato de Asunto Personalizado.')
+
+                    if( !mailSubjectFormat || mailSubjectFormat.trim() === '' ){
+
+                        logger.info('No se especifica el Formato de Asunto Personalizado, se envía genérico.')
+
+                        mailSubject = 'Envío de Factura';
+
+                    } else {
+
+                        logger.info('El formato personalizado del Asunto es: ' + mailSubjectFormat);
+
+                        const mailSubjectOptions = {
+
+                            serie: serie,
+                            folio: folio,
+                            poNumber: poNumber,
+                            issuer: issuerName
+
+                        }
+
+                        mailSubject = getCustomMailSubject( mailSubjectFormat, options );
+
+                    }
+
+                }
 
                 /**
                  * * Send Mail if sendMail setting is true
@@ -613,11 +708,7 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user 
 
 }
 
-async function obtenerCFDI(req) {
-
-    let response = {
-        data: 'Hola Angel'
-    }
+/* async function obtenerCFDI(req) {
 
     try {
 
@@ -635,6 +726,18 @@ async function obtenerCFDI(req) {
 
         console.log(error);
         
+    }
+
+} */
+
+function getCustomMailSubject(mailSubjectFormat, options) {
+
+    logger.info('Las Opciones recibidas para el Asunto son: ' + mailSubjectOptions.toString());
+
+    if( mailSubjectFormat === 'Serie|Folio|Issuer|PO' ) {
+
+        return `${options.serie}${options.folio} ${options.issuer} ${options.poNumber}`;
+
     }
 
 }

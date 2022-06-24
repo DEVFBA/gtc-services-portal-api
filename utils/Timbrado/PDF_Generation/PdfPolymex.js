@@ -976,7 +976,8 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 var result = {
                     pdfBase64: base64,
                     emailTo : arrayEmailTo,
-                    emailCC: arrayEmailCC
+                    emailCC: arrayEmailCC,
+                    poNumber: paramsEncabezado[30]
                 }
                 resolve(result);
 

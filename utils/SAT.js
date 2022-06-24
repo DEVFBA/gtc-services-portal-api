@@ -43,17 +43,13 @@ const certificar = (certificado) => {
 
 async function getCadena(stylesheetDir, originXML) {
 
-    logger.info('Obteniendo cadena...');
+    logger.info('Obteniendo cadena 3.3...');
 
     const libxmlDir = path.join(path.resolve(__dirname, '../'), 'lib', 'win','libxml');
 
     try {
 
-      //fs.writeFileSync(path.resolve(Config.files.logs, 'getCadena.txt'), 'Entra a generar Cadena');
-
       const cadena = await xsltproc({xsltproc_path: libxmlDir}).transform([stylesheetDir, originXML]);
-
-      //fs.writeFileSync(path.resolve(Config.files.logs, 'Cadena.txt'), cadena);
 
       logger.info('Cadena obtenida con éxito.');
 
@@ -67,6 +63,29 @@ async function getCadena(stylesheetDir, originXML) {
       return error;
 
     }
+
+}
+
+async function getCadena40(stylesheetDir, originXML) {
+
+  logger.info('Obteniendo cadena 4.0...');
+
+  const libxmlDir = path.join(path.resolve(__dirname, '../'), 'lib', 'win','libxml');
+
+  try {
+
+    const cadena = await xsltproc({xsltproc_path: libxmlDir}).transform([stylesheetDir, originXML]);
+
+    logger.info('Cadena obtenida con éxito.');
+
+    return cadena.result;
+    
+  } catch (error) {
+
+    console.log('Error en getCadena40: ', error);
+    logger.error('Error en getCadena40: ' + error);
+    
+  }
 
 }
 
@@ -151,5 +170,6 @@ module.exports = {
     getSello,
     sellar,
     getBase64XML,
-    sellarFactura
+    sellarFactura,
+    getCadena40
 }
