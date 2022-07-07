@@ -1,21 +1,21 @@
-var fonts = {
+/*var fonts = {
     Roboto: {
       normal: 'C:/GTC/Fonts/Roboto-Regular.ttf',
       bold: 'C:/GTC/Fonts/Roboto-Bold.ttf',
       italics: 'C:/GTC/Fonts/Montserrat-Italic.ttf',
       bolditalics: 'C:/GTC/Fonts/Montserrat-BoldItalic.ttf'
     }
-};
+};*/
 
 
-/*var fonts = {
+var fonts = {
     Roboto: {
       normal: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Roboto-Regular.ttf',
       bold: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Roboto-Bold.ttf',
       italics: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Montserrat-Italic.ttf',
       bolditalics: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Montserrat-BoldItalic.ttf'
     }
-};*/
+};
 
 var convert = require('xml-js');
 var PdfPrinter = require('pdfmake');
@@ -44,6 +44,7 @@ var xmlNotaCredito = "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPGNmZG
 var xmlComercioExterior = "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPGNmZGk6Q29tcHJvYmFudGUgeG1sbnM6Y2ZkaT0iaHR0cDovL3d3dy5zYXQuZ29iLm14L2NmZC8zIgoJeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIKCXhtbG5zOmNjZTExPSJodHRwOi8vd3d3LnNhdC5nb2IubXgvQ29tZXJjaW9FeHRlcmlvcjExIiB4c2k6c2NoZW1hTG9jYXRpb249Imh0dHA6Ly93d3cuc2F0LmdvYi5teC9jZmQvMyBodHRwOi8vd3d3LnNhdC5nb2IubXgvc2l0aW9faW50ZXJuZXQvY2ZkLzMvY2ZkdjMzLnhzZCBodHRwOi8vd3d3LnNhdC5nb2IubXgvQ29tZXJjaW9FeHRlcmlvcjExIGh0dHA6Ly93d3cuc2F0LmdvYi5teC9pbmZvcm1hY2lvbl9maXNjYWwvZmFjdHVyYV9lbGVjdHJvbmljYS9Eb2N1bWVudHMvQ29tcGxlbWVudG9zY2ZkaS9Db21lcmNpb0V4dGVyaW9yMTEueHNkIiBWZXJzaW9uPSIzLjMiIFNlcmllPSJSSSIgRm9saW89Ijk0MDk5IiBGZWNoYT0iMjAyMi0wNi0wM1QxNjo0NzoxMSIgU2VsbG89IiIgRm9ybWFQYWdvPSIwMyIgTm9DZXJ0aWZpY2Fkbz0iIiBDZXJ0aWZpY2Fkbz0iIiBDb25kaWNpb25lc0RlUGFnbz0iUEFHTyBBTlRJQ0lQQURPIiBTdWJUb3RhbD0iMzEzNzEuMiIgTW9uZWRhPSJVU0QiIFRpcG9DYW1iaW89IjIwLjI5OTIwMCIgVG90YWw9IjMxMzcxLjIiIFRpcG9EZUNvbXByb2JhbnRlPSJJIiBNZXRvZG9QYWdvPSJQVUUiIEx1Z2FyRXhwZWRpY2lvbj0iNjQ5ODgiPgoJPGNmZGk6RW1pc29yIFJmYz0iSVBNNjIwMzIyNkI0IiBOb21icmU9IklUVyBQb2x5bWV4IFMgREUgUkwgREUgQ1YiIFJlZ2ltZW5GaXNjYWw9IjYwMSIvPgoJPGNmZGk6UmVjZXB0b3IgUmZjPSJYRVhYMDEwMTAxMDAwIiBOb21icmU9IlBFUk5PRlVMTCBTLlIuTCIgUmVzaWRlbmNpYUZpc2NhbD0iQk9MIiBOdW1SZWdJZFRyaWI9IjAwMjE2ODI0MDIyIiBVc29DRkRJPSJQMDEiLz4KCTxjZmRpOkNvbmNlcHRvcz4KCQk8Y2ZkaTpDb25jZXB0byBDbGF2ZVByb2RTZXJ2PSIxNTEyMTgwNyIgTm9JZGVudGlmaWNhY2lvbj0iQVBDNjAiIENhbnRpZGFkPSI5NTAiIENsYXZlVW5pZGFkPSJYNEciIFVuaWRhZD0iQ0EiIERlc2NyaXBjaW9uPSJBTlRJTkNPTkdFTEFOVEUgQ09OQy4gR0FMLiBQVFgiIFZhbG9yVW5pdGFyaW89IjI2LjQ0MDAiIEltcG9ydGU9IjI1MTE4LjAwIj4KCQkJPGNmZGk6SW1wdWVzdG9zPgoJCQkJPGNmZGk6VHJhc2xhZG9zPgoJCQkJCTxjZmRpOlRyYXNsYWRvIEJhc2U9IjI1MTE4LjAwIiBJbXB1ZXN0bz0iMDAyIiBUaXBvRmFjdG9yPSJUYXNhIiBUYXNhT0N1b3RhPSIwLjAwMDAwMCIgSW1wb3J0ZT0iMC4wMCIgLz4KCQkJCTwvY2ZkaTpUcmFzbGFkb3M+CgkJCTwvY2ZkaTpJbXB1ZXN0b3M+CgkJPC9jZmRpOkNvbmNlcHRvPgoJCTxjZmRpOkNvbmNlcHRvIENsYXZlUHJvZFNlcnY9IjE1MTIxODA3IiBOb0lkZW50aWZpY2FjaW9uPSJBUE82MCIgQ2FudGlkYWQ9IjkwIiBDbGF2ZVVuaWRhZD0iWDRHIiBVbmlkYWQ9IkNBIiBEZXNjcmlwY2lvbj0iQU5ULiBPUkdBTklDTyBMUFVTQVIgR0FMT04iIFZhbG9yVW5pdGFyaW89IjE5LjQ4MDAiIEltcG9ydGU9IjE3NTMuMjAiPgoJCQk8Y2ZkaTpJbXB1ZXN0b3M+CgkJCQk8Y2ZkaTpUcmFzbGFkb3M+CgkJCQkJPGNmZGk6VHJhc2xhZG8gQmFzZT0iMTc1My4yMCIgSW1wdWVzdG89IjAwMiIgVGlwb0ZhY3Rvcj0iVGFzYSIgVGFzYU9DdW90YT0iMC4wMDAwMDAiIEltcG9ydGU9IjAuMDAiIC8+CgkJCQk8L2NmZGk6VHJhc2xhZG9zPgoJCQk8L2NmZGk6SW1wdWVzdG9zPgoJCTwvY2ZkaTpDb25jZXB0bz4KCQk8Y2ZkaTpDb25jZXB0byBDbGF2ZVByb2RTZXJ2PSIzMTE5MTUwOSIgTm9JZGVudGlmaWNhY2lvbj0iMzEtQSIgQ2FudGlkYWQ9IjMwIiBDbGF2ZVVuaWRhZD0iWDRHIiBVbmlkYWQ9IkNBIiBEZXNjcmlwY2lvbj0iVkVMT0NJTCBET0JMRSBGT05ETyA1NEciIFZhbG9yVW5pdGFyaW89IjE1MC4wMDAwIiBJbXBvcnRlPSI0NTAwLjAwIj4KCQkJPGNmZGk6SW1wdWVzdG9zPgoJCQkJPGNmZGk6VHJhc2xhZG9zPgoJCQkJCTxjZmRpOlRyYXNsYWRvIEJhc2U9IjQ1MDAuMDAiIEltcHVlc3RvPSIwMDIiIFRpcG9GYWN0b3I9IlRhc2EiIFRhc2FPQ3VvdGE9IjAuMDAwMDAwIiBJbXBvcnRlPSIwLjAwIiAvPgoJCQkJPC9jZmRpOlRyYXNsYWRvcz4KCQkJPC9jZmRpOkltcHVlc3Rvcz4KCQk8L2NmZGk6Q29uY2VwdG8+Cgk8L2NmZGk6Q29uY2VwdG9zPgoJPGNmZGk6SW1wdWVzdG9zIFRvdGFsSW1wdWVzdG9zVHJhc2xhZGFkb3M9IjAiPgoJCTxjZmRpOlRyYXNsYWRvcz4KCQkJPGNmZGk6VHJhc2xhZG8gSW1wdWVzdG89IjAwMiIgVGlwb0ZhY3Rvcj0iVGFzYSIgVGFzYU9DdW90YT0iMC4wMDAwMDAiIEltcG9ydGU9IjAuMDAiIC8+CgkJPC9jZmRpOlRyYXNsYWRvcz4KCTwvY2ZkaTpJbXB1ZXN0b3M+Cgk8Y2ZkaTpDb21wbGVtZW50bz4KCQk8Y2NlMTE6Q29tZXJjaW9FeHRlcmlvciBWZXJzaW9uPSIxLjEiIFRpcG9PcGVyYWNpb249IjIiIENsYXZlRGVQZWRpbWVudG89IkExIiBDZXJ0aWZpY2Fkb09yaWdlbj0iMCIgSW5jb3Rlcm09IkZBUyIgU3ViZGl2aXNpb249IjAiIFRpcG9DYW1iaW9VU0Q9IjIwLjI5OTIwMCIgVG90YWxVU0Q9IjMxMzcxLjIwIj4KCQkJPGNjZTExOkVtaXNvcj4KCQkJCTxjY2UxMTpEb21pY2lsaW8gQ2FsbGU9IkNBUlJFVEVSQSBOQUNJT05BTCIgTnVtZXJvRXh0ZXJpb3I9Ijc4MjEiIENvbG9uaWE9IjA1NDYiIExvY2FsaWRhZD0iMDciIE11bmljaXBpbz0iMDM5IiBFc3RhZG89Ik5MRSIgUGFpcz0iTUVYIiBDb2RpZ29Qb3N0YWw9IjY0OTg4Ii8+CgkJCTwvY2NlMTE6RW1pc29yPgoJCQk8Y2NlMTE6UmVjZXB0b3I+CgkJCQk8Y2NlMTE6RG9taWNpbGlvIENhbGxlPSJBVkVOSURBIDEiIE51bWVyb0V4dGVyaW9yPSJOby4zIiBDb2xvbmlhPSJaT05BIFZJTExBIFJPU0FTIFBBTVBBIiBNdW5pY2lwaW89IkJPTElWSUEiIEVzdGFkbz0iTFAiIFBhaXM9IkJPTCIgQ29kaWdvUG9zdGFsPSIwMDAwMCIvPgoJCQk8L2NjZTExOlJlY2VwdG9yPgoJCQk8Y2NlMTE6TWVyY2FuY2lhcz4KCQkJCTxjY2UxMTpNZXJjYW5jaWEgTm9JZGVudGlmaWNhY2lvbj0iQVBDNjAiIEZyYWNjaW9uQXJhbmNlbGFyaWE9IjM4MjAwMDAxMDAiIENhbnRpZGFkQWR1YW5hPSIxNTM1Mi4wMCIgVW5pZGFkQWR1YW5hPSIwOCIgVmFsb3JVbml0YXJpb0FkdWFuYT0iMS42NCIgVmFsb3JEb2xhcmVzPSIyNTExOC4wMCI+CgkJCQkJPGNjZTExOkRlc2NyaXBjaW9uZXNFc3BlY2lmaWNhcyBNYXJjYT0iUEVSTUFURVgiIE1vZGVsbz0iQU5USUNPTkdFTEFOVEVTIiBTdWJNb2RlbG89IlBST0RVQ1RPIFBBUkEgUkFESUFET1IiIC8+CgkJCQk8L2NjZTExOk1lcmNhbmNpYT4KCQkJCTxjY2UxMTpNZXJjYW5jaWEgTm9JZGVudGlmaWNhY2lvbj0iQVBPNjAiIEZyYWNjaW9uQXJhbmNlbGFyaWE9IjM4MjAwMDAxMDAiIENhbnRpZGFkQWR1YW5hPSIxNDA3LjYwIiBVbmlkYWRBZHVhbmE9IjA4IiBWYWxvclVuaXRhcmlvQWR1YW5hPSIxLjI1IiBWYWxvckRvbGFyZXM9IjE3NTMuMjAiPgoJCQkJCTxjY2UxMTpEZXNjcmlwY2lvbmVzRXNwZWNpZmljYXMgTWFyY2E9IlBFUk1BVEVYIiBNb2RlbG89IkFOVElDT05HRUxBTlRFUyIgU3ViTW9kZWxvPSJQUk9EVUNUT1MgUEFSQSBSQURJQURPUiIgLz4KCQkJCTwvY2NlMTE6TWVyY2FuY2lhPgoJCQkJPGNjZTExOk1lcmNhbmNpYSBOb0lkZW50aWZpY2FjaW9uPSIzMS1BIiBGcmFjY2lvbkFyYW5jZWxhcmlhPSIzNDAzMTk5OTAwIiBDYW50aWRhZEFkdWFuYT0iMjEwLjAwIiBVbmlkYWRBZHVhbmE9IjAxIiBWYWxvclVuaXRhcmlvQWR1YW5hPSIyMS40MyIgVmFsb3JEb2xhcmVzPSI0NTAwLjAwIj4KCQkJCQk8Y2NlMTE6RGVzY3JpcGNpb25lc0VzcGVjaWZpY2FzIE1hcmNhPSJRVUlNSUNBIFRGIiBNb2RlbG89IlBST0RVQ1RPUyBFU1BFQ0lBTEVTIiBOdW1lcm9TZXJpZT0iODc1MDEzNzczMDUwMjAiIFN1Yk1vZGVsbz0iRVNNRVJJTCBCQVNFIEdSQVNBIiAvPgoJCQkJPC9jY2UxMTpNZXJjYW5jaWE+CgkJCTwvY2NlMTE6TWVyY2FuY2lhcz4KCQk8L2NjZTExOkNvbWVyY2lvRXh0ZXJpb3I+CgkJPHRmZDpUaW1icmVGaXNjYWxEaWdpdGFsIAogICAgICAgICAgICB4c2k6c2NoZW1hTG9jYXRpb249Imh0dHA6Ly93d3cuc2F0LmdvYi5teC9UaW1icmVGaXNjYWxEaWdpdGFsIGh0dHA6Ly93d3cuc2F0LmdvYi5teC9zaXRpb19pbnRlcm5ldC9jZmQvVGltYnJlRmlzY2FsRGlnaXRhbC9UaW1icmVGaXNjYWxEaWdpdGFsdjExLnhzZCIgCiAgICAgICAgICAgIFZlcnNpb249IjEuMSIgCiAgICAgICAgICAgIFVVSUQ9ImZjNDUwOTg0LTYyNjUtNDljZS05YzU5LTM5NThlOTQxNzQ3ZCIgCiAgICAgICAgICAgIEZlY2hhVGltYnJhZG89IjIwMjItMDYtMTRUMTY6MTk6MzEiIAogICAgICAgICAgICBSZmNQcm92Q2VydGlmPSJMU08xMzA2MTg5UjUiIAogICAgICAgICAgICBTZWxsb0NGRD0iS3Nza3ZtbVF3dFdDWU9ZSGVDMEY1RXdGeUNuMXlCdSsza1RvWHU4a2x3MDBEUXQ2NjNkTHhvR2lJZXhZU25wbkxES2NYemZ2bFkzQndNdHBsNUg2YjdKY09RZ3lMTitLMVU0RHdiR0UvRFdIS1ZwTk1qS2lmMWk3WTdBakZwcmRjYUs4NjVVWnFoVHRxSStGOGE2RFBqeWJNdDZnZVJEVHR4VEQvY3RvMlNRTHF1dTZmVi9TR1YyNmxqZ0sxUXdLQzhLdzJHUzVnYnAzMlRBSHlYRFI2ZDhDVi80TXZ3SjR0cWhGYXNra3ZKazhxbTdzTFJSeTBuT1ZpYitEUEFRQmJLSlUvN3RvRVhlYnp6UVJtWkNHbHFNWVQ3ZFl5T25ISHIyM3hFU0xPOTRwTDF4bUU3Y3FIOVArTE1jVVk2NFpMcU5Hd00rTVBXL2t4MzJlSGFDSFd3PT0iIAogICAgICAgICAgICBOb0NlcnRpZmljYWRvU0FUPSIwMDAwMTAwMDAwMDUwOTg0NjY2MyIgCiAgICAgICAgICAgIFNlbGxvU0FUPSJqNnlsOEhZa0tmZmxxSSsvd2k2RnNLeEMzV0RYNDdPTWcrYU9DdmkwWXZHZjBhTGs0YXp5SFhBdy91c09DS2hudjdnc3pmTEQyd3EyQkdmMzVGNGVYUC8vMDdreGlOemZSbWdDbDZjTVFWK3hYcS9OaS9rTSs5VWw5VG00N3pKOTJpdWRzWFEvLyt5L2xLRDFzVk45R3NHWTg1REYzUFhFV1luTDJueHBWSnFhY1hPVThManpnMjBsY3dHWGVMWUxMWnJnMkdkOEcwSmk0UVIwc2RWeVU1N3dGWDdYaGQrUUhOQ3lvUjNkalE5WjQ2TDhna3pUTGtEMG0ra0xybUViQ3RPaTZPSEQ5b0Y5RnNpYkZYV0E3N05jT0hRbXlqMnpxOVcxUTkxMmliaDhZbXJOd0RRKzBqcnNOVldPSGR4aSs4YStxaU4wVnVQV0ZmL0NTaFpKZ1E9PSIgCiAgICAgICAgICAgIHhtbG5zOnRmZD0iaHR0cDovL3d3dy5zYXQuZ29iLm14L1RpbWJyZUZpc2NhbERpZ2l0YWwiIAogICAgICAgICAgICB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIiAvPgoJPC9jZmRpOkNvbXBsZW1lbnRvPgo8L2NmZGk6Q29tcHJvYmFudGU+"
 var xmlIngreso1 ="PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPGNmZGk6Q29tcHJvYmFudGUgeG1sbnM6Y2ZkaT0iaHR0cDovL3d3dy5zYXQuZ29iLm14L2NmZC8zIiB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIiB4c2k6c2NoZW1hTG9jYXRpb249Imh0dHA6Ly93d3cuc2F0LmdvYi5teC9jZmQvMyBodHRwOi8vd3d3LnNhdC5nb2IubXgvc2l0aW9faW50ZXJuZXQvY2ZkLzMvY2ZkdjMzLnhzZCIgVmVyc2lvbj0iMy4zIiBTZXJpZT0iUkkiIEZvbGlvPSI5NDYzOCIgRmVjaGE9IjIwMjItMDYtMTZUMDg6MTE6NDgiIFNlbGxvPSIiIEZvcm1hUGFnbz0iOTkiIE5vQ2VydGlmaWNhZG89IiIgQ2VydGlmaWNhZG89IiIgQ29uZGljaW9uZXNEZVBhZ289IjMwIERJQVMgTkVUT1MiIFN1YlRvdGFsPSI5ODE4LjY4IiBNb25lZGE9Ik1YTiIgVGlwb0NhbWJpbz0iMSIgVG90YWw9IjExMzg5LjY3IiBUaXBvRGVDb21wcm9iYW50ZT0iSSIgTWV0b2RvUGFnbz0iUFBEIiBMdWdhckV4cGVkaWNpb249IjY0OTg4Ij4KCTxjZmRpOkVtaXNvciBSZmM9IklQTTYyMDMyMjZCNCIgTm9tYnJlPSJJVFcgUG9seW1leCBTIERFIFJMIERFIENWIiBSZWdpbWVuRmlzY2FsPSI2MDEiLz4KCTxjZmRpOlJlY2VwdG9yIFJmYz0iR09MQTg1MDcxMThDNiIgTm9tYnJlPSJBTE1BIEVTTUVSQUxEQSBHT05aQUxFWiBMRU9OIiBVc29DRkRJPSJHMDEiLz4KCTxjZmRpOkNvbmNlcHRvcz4KCQk8Y2ZkaTpDb25jZXB0byBDbGF2ZVByb2RTZXJ2PSIxMTE5MTYwMCIgTm9JZGVudGlmaWNhY2lvbj0iUExBU1RJQyIgQ2FudGlkYWQ9IjcwIiBDbGF2ZVVuaWRhZD0iNTgiIFVuaWRhZD0iS0ciIERlc2NyaXBjaW9uPSJQTEFTVElDTyIgVmFsb3JVbml0YXJpbz0iMy4wMDAwIiBJbXBvcnRlPSIyMTAuMDAiID4KCQkJPGNmZGk6SW1wdWVzdG9zPgoJCQk8Y2ZkaTpUcmFzbGFkb3M+CgkJCQk8Y2ZkaTpUcmFzbGFkbyBCYXNlPSIyMTAuMDAiIEltcHVlc3RvPSIwMDIiIFRpcG9GYWN0b3I9IlRhc2EiIFRhc2FPQ3VvdGE9IjAuMTYwMDAwIiBJbXBvcnRlPSIzMy42MCIgLz4KCQkJPC9jZmRpOlRyYXNsYWRvcz4KCQkJPC9jZmRpOkltcHVlc3Rvcz4KCQk8L2NmZGk6Q29uY2VwdG8+CgkJPGNmZGk6Q29uY2VwdG8gQ2xhdmVQcm9kU2Vydj0iMTExOTE2MDAiIE5vSWRlbnRpZmljYWNpb249IlBBUEVSQk9BUkQiIENhbnRpZGFkPSIyNzgyIiBDbGF2ZVVuaWRhZD0iNTgiIFVuaWRhZD0iS0ciIERlc2NyaXBjaW9uPSJDQVJUT04iIFZhbG9yVW5pdGFyaW89IjEuMDAwMCIgSW1wb3J0ZT0iMjc4Mi4wMCIgPgoJCQk8Y2ZkaTpJbXB1ZXN0b3M+CgkJCTxjZmRpOlRyYXNsYWRvcz4KCQkJCTxjZmRpOlRyYXNsYWRvIEJhc2U9IjI3ODIuMDAiIEltcHVlc3RvPSIwMDIiIFRpcG9GYWN0b3I9IlRhc2EiIFRhc2FPQ3VvdGE9IjAuMTYwMDAwIiBJbXBvcnRlPSI0NDUuMTIiIC8+CgkJCTwvY2ZkaTpUcmFzbGFkb3M+CgkJCTwvY2ZkaTpJbXB1ZXN0b3M+CgkJPC9jZmRpOkNvbmNlcHRvPgoJCTxjZmRpOkNvbmNlcHRvIENsYXZlUHJvZFNlcnY9IjExMTkxNjAwIiBOb0lkZW50aWZpY2FjaW9uPSJTQ1JBUCIgQ2FudGlkYWQ9IjIyNjgiIENsYXZlVW5pZGFkPSI1OCIgVW5pZGFkPSJLRyIgRGVzY3JpcGNpb249IkNIQVRBUlJBIiBWYWxvclVuaXRhcmlvPSIzLjAxMDAiIEltcG9ydGU9IjY4MjYuNjgiID4KCQkJPGNmZGk6SW1wdWVzdG9zPgoJCQk8Y2ZkaTpUcmFzbGFkb3M+CgkJCQk8Y2ZkaTpUcmFzbGFkbyBCYXNlPSI2ODI2LjY4IiBJbXB1ZXN0bz0iMDAyIiBUaXBvRmFjdG9yPSJUYXNhIiBUYXNhT0N1b3RhPSIwLjE2MDAwMCIgSW1wb3J0ZT0iMTA5Mi4yNyIgLz4KCQkJPC9jZmRpOlRyYXNsYWRvcz4KCQkJPC9jZmRpOkltcHVlc3Rvcz4KCQk8L2NmZGk6Q29uY2VwdG8+Cgk8L2NmZGk6Q29uY2VwdG9zPgoJPGNmZGk6SW1wdWVzdG9zIFRvdGFsSW1wdWVzdG9zVHJhc2xhZGFkb3M9IjE1NzAuOTkiPgoJCTxjZmRpOlRyYXNsYWRvcz4KCQkJPGNmZGk6VHJhc2xhZG8gSW1wdWVzdG89IjAwMiIgVGlwb0ZhY3Rvcj0iVGFzYSIgVGFzYU9DdW90YT0iMC4xNjAwMDAiIEltcG9ydGU9IjE1NzAuOTkiIC8+CgkJPC9jZmRpOlRyYXNsYWRvcz4KCTwvY2ZkaTpJbXB1ZXN0b3M+Cgk8Y2ZkaTpDb21wbGVtZW50bz4KICAgICAgICA8dGZkOlRpbWJyZUZpc2NhbERpZ2l0YWwgCiAgICAgICAgICAgIHhzaTpzY2hlbWFMb2NhdGlvbj0iaHR0cDovL3d3dy5zYXQuZ29iLm14L1RpbWJyZUZpc2NhbERpZ2l0YWwgaHR0cDovL3d3dy5zYXQuZ29iLm14L3NpdGlvX2ludGVybmV0L2NmZC9UaW1icmVGaXNjYWxEaWdpdGFsL1RpbWJyZUZpc2NhbERpZ2l0YWx2MTEueHNkIiAKICAgICAgICAgICAgVmVyc2lvbj0iMS4xIiAKICAgICAgICAgICAgVVVJRD0iZmM0NTA5ODQtNjI2NS00OWNlLTljNTktMzk1OGU5NDE3NDdkIiAKICAgICAgICAgICAgRmVjaGFUaW1icmFkbz0iMjAyMi0wNi0xNFQxNjoxOTozMSIgCiAgICAgICAgICAgIFJmY1Byb3ZDZXJ0aWY9IkxTTzEzMDYxODlSNSIgCiAgICAgICAgICAgIFNlbGxvQ0ZEPSJLc3Nrdm1tUXd0V0NZT1lIZUMwRjVFd0Z5Q24xeUJ1KzNrVG9YdThrbHcwMERRdDY2M2RMeG9HaUlleFlTbnBuTERLY1h6ZnZsWTNCd010cGw1SDZiN0pjT1FneUxOK0sxVTREd2JHRS9EV0hLVnBOTWpLaWYxaTdZN0FqRnByZGNhSzg2NVVacWhUdHFJK0Y4YTZEUGp5Yk10NmdlUkRUdHhURC9jdG8yU1FMcXV1NmZWL1NHVjI2bGpnSzFRd0tDOEt3MkdTNWdicDMyVEFIeVhEUjZkOENWLzRNdndKNHRxaEZhc2trdkprOHFtN3NMUlJ5MG5PVmliK0RQQVFCYktKVS83dG9FWGVienpRUm1aQ0dscU1ZVDdkWXlPbkhIcjIzeEVTTE85NHBMMXhtRTdjcUg5UCtMTWNVWTY0WkxxTkd3TStNUFcva3gzMmVIYUNIV3c9PSIgCiAgICAgICAgICAgIE5vQ2VydGlmaWNhZG9TQVQ9IjAwMDAxMDAwMDAwNTA5ODQ2NjYzIiAKICAgICAgICAgICAgU2VsbG9TQVQ9Imo2eWw4SFlrS2ZmbHFJKy93aTZGc0t4QzNXRFg0N09NZythT0N2aTBZdkdmMGFMazRhenlIWEF3L3VzT0NLaG52N2dzemZMRDJ3cTJCR2YzNUY0ZVhQLy8wN2t4aU56ZlJtZ0NsNmNNUVYreFhxL05pL2tNKzlVbDlUbTQ3eko5Mml1ZHNYUS8vK3kvbEtEMXNWTjlHc0dZODVERjNQWEVXWW5MMm54cFZKcWFjWE9VOExqemcyMGxjd0dYZUxZTExacmcyR2Q4RzBKaTRRUjBzZFZ5VTU3d0ZYN1hoZCtRSE5DeW9SM2RqUTlaNDZMOGdrelRMa0QwbStrTHJtRWJDdE9pNk9IRDlvRjlGc2liRlhXQTc3TmNPSFFteWoyenE5VzFROTEyaWJoOFltck53RFErMGpyc05WV09IZHhpKzhhK3FpTjBWdVBXRmYvQ1NoWkpnUT09IiAKICAgICAgICAgICAgeG1sbnM6dGZkPSJodHRwOi8vd3d3LnNhdC5nb2IubXgvVGltYnJlRmlzY2FsRGlnaXRhbCIgCiAgICAgICAgICAgIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIC8+CiAgICA8L2NmZGk6Q29tcGxlbWVudG8+CjwvY2ZkaTpDb21wcm9iYW50ZT4="
 var xmlLeyendas= "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPGNmZGk6Q29tcHJvYmFudGUgeG1sbnM6Y2ZkaT0iaHR0cDovL3d3dy5zYXQuZ29iLm14L2NmZC80IgogICAgICAgICAgICAgICAgICB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIgogICAgICAgICAgICAgICAgICB4c2k6c2NoZW1hTG9jYXRpb249Imh0dHA6Ly93d3cuc2F0LmdvYi5teC9jZmQvNCBodHRwOi8vd3d3LnNhdC5nb2IubXgvc2l0aW9faW50ZXJuZXQvY2ZkLzQvY2ZkdjQwLnhzZCBodHRwOi8vd3d3LnNhdC5nb2IubXgvbGV5ZW5kYXNGaXNjYWxlcyBodHRwOi8vd3d3LnNhdC5nb2IubXgvc2l0aW9faW50ZXJuZXQvY2ZkL2xleWVuZGFzRmlzY2FsZXMvbGV5ZW5kYXNGaXNjLnhzZCIKICAgICAgICAgICAgICAgICAgeG1sbnM6bGV5ZW5kYXNGaXNjPSJodHRwOi8vd3d3LnNhdC5nb2IubXgvbGV5ZW5kYXNGaXNjYWxlcyIKICAgICAgICAgICAgICAgICAgVmVyc2lvbj0iNC4wIgogICAgICAgICAgICAgICAgICBTZXJpZT0iUkkiCiAgICAgICAgICAgICAgICAgIEZvbGlvPSI5MDM4MiIKICAgICAgICAgICAgICAgICAgRmVjaGE9IjIwMjItMDUtMzBUMTI6NDU6MDMiCiAgICAgICAgICAgICAgICAgIFNlbGxvPSJZTnV3YVN2VW45eVUvMjZjVVVjcWhMWnpndGJrd1VVMER5eFI3RkNhSnRMdDhCREZoR2NkZnFXMTI4amhMcW1yMHZSeklSNDVTeWp2UU0wMndWSUs2em9IU0hyOWF2bHVKRTlWU1U4TlpaT21KQUplcStxYWtla3M4TW9IVUZKOHpNRDhaZlJBTUMvc3A1SERlQ1RTYlFVQ2FhcXhOdUZDV1dlUEJXKzhvV0gwakM3VEVBcldTUGRwV21naXI0YThsbE9Ma2JCaUF0Ykw4VVR0blNsLyswTElDdnVleWkxK2lpZkRUdHVxc2poY3pnR1QyaksybHRPUnpQNEdGYk1peFRBNGhWNlliay9TdmV4RWdKQ2N2bUhWcFJBZVZwT1Q0b1VxNStNUCtVVkFLZkQyRG1DcXNRNFVSQjE2T04ycGVxOTlYOHZxQjMya1RFdlVpUktxQkE9PSIKICAgICAgICAgICAgICAgICAgRm9ybWFQYWdvPSI5OSIKICAgICAgICAgICAgICAgICAgTm9DZXJ0aWZpY2Fkbz0iMzAwMDEwMDAwMDA0MDAwMDI0MzQiCiAgICAgICAgICAgICAgICAgIENlcnRpZmljYWRvPSJNSUlGdXpDQ0E2T2dBd0lCQWdJVU16QXdNREV3TURBd01EQTBNREF3TURJME16UXdEUVlKS29aSWh2Y05BUUVMQlFBd2dnRXJNUTh3RFFZRFZRUUREQVpCUXlCVlFWUXhMakFzQmdOVkJBb01KVk5GVWxaSlEwbFBJRVJGSUVGRVRVbE9TVk5VVWtGRFNVOU9JRlJTU1VKVlZFRlNTVUV4R2pBWUJnTlZCQXNNRVZOQlZDMUpSVk1nUVhWMGFHOXlhWFI1TVNnd0pnWUpLb1pJaHZjTkFRa0JGaGx2YzJOaGNpNXRZWEowYVc1bGVrQnpZWFF1WjI5aUxtMTRNUjB3R3dZRFZRUUpEQlF6Y21FZ1kyVnljbUZrWVNCa1pTQmpZV1JwZWpFT01Bd0dBMVVFRVF3Rk1EWXpOekF4Q3pBSkJnTlZCQVlUQWsxWU1Sa3dGd1lEVlFRSURCQkRTVlZFUVVRZ1JFVWdUVVZZU1VOUE1SRXdEd1lEVlFRSERBaERUMWxQUVVOQlRqRVJNQThHQTFVRUxSTUlNaTQxTGpRdU5EVXhKVEFqQmdrcWhraUc5dzBCQ1FJVEZuSmxjM0J2Ym5OaFlteGxPaUJCUTBSTlFTMVRRVlF3SGhjTk1Ua3dOakUzTVRrME5ERTBXaGNOTWpNd05qRTNNVGswTkRFMFdqQ0I0akVuTUNVR0ExVUVBeE1lUlZORFZVVk1RU0JMUlUxUVJWSWdWVkpIUVZSRklGTkJJRVJGSUVOV01TY3dKUVlEVlFRcEV4NUZVME5WUlV4QklFdEZUVkJGVWlCVlVrZEJWRVVnVTBFZ1JFVWdRMVl4SnpBbEJnTlZCQW9USGtWVFExVkZURUVnUzBWTlVFVlNJRlZTUjBGVVJTQlRRU0JFUlNCRFZqRWxNQ01HQTFVRUxSTWNSVXRWT1RBd016RTNNME01SUM4Z1dFbFJRamc1TVRFeE5sRkZOREVlTUJ3R0ExVUVCUk1WSUM4Z1dFbFJRamc1TVRFeE5rMUhVazFhVWpBMU1SNHdIQVlEVlFRTEV4VkZjMk4xWld4aElFdGxiWEJsY2lCVmNtZGhkR1V3Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLQW9JQkFRQ04wcGVLcGdmT0w3NWlZUnYxZnFxK29WWXNMUFZVUi9HaWJZbUdLYzlJbkhGeTVsWUY2T1RZam5JSXZta09kUm9iYkdsQ1V4T1JYL3RMc2w4WWE5Z202WW83aEhuT0RSQklEdXAzR0lTRnpCLzk2UjlLL016WVFPY3NjTUlvQkRBUmF5Y25Mdnk3RmxNdk83L3JsVm5zU0FSeFpSTzhLejhaa2tzajJ6cGVZcGpaSXlhLzM2OStvR3FRazFjVFJrSG81OUp2SjRUZmJrLzNpSXlmNEgvSW5pOW5CZTljWVdvME1uS29iN0REdC92c2RpNXRBOG1NdEE5NTNMYXBOeUNaSURDUlFRbFVHTmdEcVk5LzhGNW1VdlZna2NjenNJZ0dkdmY5dk1RUFNmM2pqQ2lLajdqNnVjeGwxK0Z3SldtYnZnTm1pYVVSLzBxNG0ycm03OGxGQWdNQkFBR2pIVEFiTUF3R0ExVWRFd0VCL3dRQ01BQXdDd1lEVlIwUEJBUURBZ2JBTUEwR0NTcUdTSWIzRFFFQkN3VUFBNElDQVFCY3BqMVRqVDRqaWluSXVqSWRBbEZ6RTZrUndZSkNuREcwOHpTcDRrU25TaGp4QURHRVhIMmNoZWhLTVYwRlk3YzRuakE1ZURHZEEvRzJPQ1RQdkY1cnBlQ1pQNUR3NTA0UlprWURsMnN1Unord2Exc05CVnBibkJKRUswZlFjTjNJZnRCd3NnTkZkRmhVdEN5dzNsdXMxU1NKYlB4akxIUzZGY1paNTFZU2VJZmNOWE9BdVRxZGltdXNhWHExNUdyU3JDT2tNNm4yamZqMnNNSllNMkhYYVhKNnJHVEVnWW1oWWR3eFd0aWw2UmZaQitmR1EvSDlJOVdMbmw0S1RaVVM2QzkrTkxIaDRGUERoU2sxOWZwUzJTLzU2YXFnRm9HQWtYQVl0OUZ5NUVDYVBjVUxJZkoxREVic1hLeVJkQ3YzSlk4OSswTU5rT2RhRG5zZW1TMm81R2wwOHpJNGlZdHQzTDQwZ0FaNjBOUGgzMWtWTG5ZTnNtdmZOeFl5S3ArQWVKdERIeVc5dzdmdE0wSG9pK0J1Um1jQVFTS0ZWM3BrOGo1MWxhK2pyUkJyQVV2OGJsYlJjUTVCaVpVd0p6SEZFS0l3VHNSR29SeUV4OTZzTm5CMDNuNkdUd2pJR3o5MlNtTGRObDk1cjlya3ZwKzJtNFM2cTFsUHVYYUZnN0RHQnJYV0M4aXlxZVdFMmlvYmR3SUl1WFBUTVZxUWIxMm0xZEFrSlZSTzVOZEhuUC9NcHFPdk9nTHFvWkJOSEd5Qmc0R3FtNHNDSkhDeEExYzhFbGZhMlJRVENrMHRBemxsTDR2T25JMUdIa0dKbjY1eG9rR3NhVTRCNEQzNnhoN2VXcmZqNC9wZ1dIbXRvREFZYTh3elN3bzJHVkNaT3MrbXRFZ09RQjkxL2c9PSIKICAgICAgICAgICAgICAgICAgQ29uZGljaW9uZXNEZVBhZ289IjYwIERJQVMgTkVUT1MiCiAgICAgICAgICAgICAgICAgIFN1YlRvdGFsPSIxMzUzLjgwIgogICAgICAgICAgICAgICAgICBNb25lZGE9IlVTRCIKICAgICAgICAgICAgICAgICAgVGlwb0NhbWJpbz0iMTkuODUzMjAwIgogICAgICAgICAgICAgICAgICBUb3RhbD0iMTU3MC40MSIKICAgICAgICAgICAgICAgICAgVGlwb0RlQ29tcHJvYmFudGU9IkkiCiAgICAgICAgICAgICAgICAgIE1ldG9kb1BhZ289IlBQRCIKICAgICAgICAgICAgICAgICAgTHVnYXJFeHBlZGljaW9uPSI2NDk4OCIKICAgICAgICAgICAgICAgICAgRXhwb3J0YWNpb249IjAxIj4KCTxjZmRpOkVtaXNvciBSZmM9IkVLVTkwMDMxNzNDOSIKCSAgICAgICAgICAgICBOb21icmU9IklUVyBQb2x5bWV4IgoJICAgICAgICAgICAgIFJlZ2ltZW5GaXNjYWw9IjYwMSIvPgoJPGNmZGk6UmVjZXB0b3IgUmZjPSJYQVhYMDEwMTAxMDAwIgoJICAgICAgICAgICAgICAgTm9tYnJlPSJWQUxFTyBOT1JUSCBBTUVSSUNBIElOQyIKCSAgICAgICAgICAgICAgIFVzb0NGREk9IlMwMSIKCSAgICAgICAgICAgICAgIERvbWljaWxpb0Zpc2NhbFJlY2VwdG9yPSI2NDk4OCIKCSAgICAgICAgICAgICAgIFJlZ2ltZW5GaXNjYWxSZWNlcHRvcj0iNjE2Ii8+Cgk8Y2ZkaTpDb25jZXB0b3M+CgkJPGNmZGk6Q29uY2VwdG8gQ2xhdmVQcm9kU2Vydj0iMTUxMjE5MDAiCgkJICAgICAgICAgICAgICAgT2JqZXRvSW1wPSIwMiIKCQkgICAgICAgICAgICAgICBOb0lkZW50aWZpY2FjaW9uPSIxMjMzLTQiCgkJICAgICAgICAgICAgICAgQ2FudGlkYWQ9IjIiCgkJICAgICAgICAgICAgICAgQ2xhdmVVbmlkYWQ9Ikg4NyIKCQkgICAgICAgICAgICAgICBVbmlkYWQ9IkVBIgoJCSAgICAgICAgICAgICAgIERlc2NyaXBjaW9uPSJTQUZJUk8gRU5EVVJFIEJPVEUgMUtHIgoJCSAgICAgICAgICAgICAgIFZhbG9yVW5pdGFyaW89IjY3Ni45MDAwIgoJCSAgICAgICAgICAgICAgIEltcG9ydGU9IjEzNTMuODAiPgoJCQk8Y2ZkaTpJbXB1ZXN0b3M+CgkJCQk8Y2ZkaTpUcmFzbGFkb3M+CgkJCQkJPGNmZGk6VHJhc2xhZG8gQmFzZT0iMTM1My44MCIKCQkJCQkgICAgICAgICAgICAgICBJbXB1ZXN0bz0iMDAyIgoJCQkJCSAgICAgICAgICAgICAgIFRpcG9GYWN0b3I9IlRhc2EiCgkJCQkJICAgICAgICAgICAgICAgVGFzYU9DdW90YT0iMC4xNjAwMDAiCgkJCQkJICAgICAgICAgICAgICAgSW1wb3J0ZT0iMjE2LjYxIi8+CgkJCQk8L2NmZGk6VHJhc2xhZG9zPgoJCQk8L2NmZGk6SW1wdWVzdG9zPgoJCTwvY2ZkaTpDb25jZXB0bz4KCQk8Y2ZkaTpDb25jZXB0byBDbGF2ZVByb2RTZXJ2PSIxNTEyMTkxMCIKCQkgICAgICAgICAgICAgICBPYmpldG9JbXA9IjAyIgoJCSAgICAgICAgICAgICAgIE5vSWRlbnRpZmljYWNpb249IjEyMzMtNC1PdHJvIgoJCSAgICAgICAgICAgICAgIENhbnRpZGFkPSI1IgoJCSAgICAgICAgICAgICAgIENsYXZlVW5pZGFkPSJIODciCgkJICAgICAgICAgICAgICAgVW5pZGFkPSJFQSIKCQkgICAgICAgICAgICAgICBEZXNjcmlwY2lvbj0iU0FGSVJPIE90cm8gSXRlbSIKCQkgICAgICAgICAgICAgICBWYWxvclVuaXRhcmlvPSI2NzYuOTAwMCIKCQkgICAgICAgICAgICAgICBJbXBvcnRlPSIxMzUzLjgwIj4KCQkJPGNmZGk6SW1wdWVzdG9zPgoJCQkJPGNmZGk6VHJhc2xhZG9zPgoJCQkJCTxjZmRpOlRyYXNsYWRvIEJhc2U9IjEzNTMuODAiCgkJCQkJICAgICAgICAgICAgICAgSW1wdWVzdG89IjAwMiIKCQkJCQkgICAgICAgICAgICAgICBUaXBvRmFjdG9yPSJUYXNhIgoJCQkJCSAgICAgICAgICAgICAgIFRhc2FPQ3VvdGE9IjAuMTYwMDAwIgoJCQkJCSAgICAgICAgICAgICAgIEltcG9ydGU9IjIxNi42MSIvPgoJCQkJPC9jZmRpOlRyYXNsYWRvcz4KCQkJPC9jZmRpOkltcHVlc3Rvcz4KCQk8L2NmZGk6Q29uY2VwdG8+Cgk8L2NmZGk6Q29uY2VwdG9zPgoJPGNmZGk6SW1wdWVzdG9zIFRvdGFsSW1wdWVzdG9zVHJhc2xhZGFkb3M9IjIxNi42MSI+CgkJPGNmZGk6VHJhc2xhZG9zPgoJCQk8Y2ZkaTpUcmFzbGFkbyBJbXB1ZXN0bz0iMDAyIgoJCQkgICAgICAgICAgICAgICBUaXBvRmFjdG9yPSJUYXNhIgoJCQkgICAgICAgICAgICAgICBUYXNhT0N1b3RhPSIwLjE2MDAwMCIKCQkJICAgICAgICAgICAgICAgSW1wb3J0ZT0iMjE2LjYxIgoJCQkgICAgICAgICAgICAgICBCYXNlPSIxMzUzLjgwIi8+CgkJPC9jZmRpOlRyYXNsYWRvcz4KCTwvY2ZkaTpJbXB1ZXN0b3M+Cgk8Y2ZkaTpDb21wbGVtZW50bz4KCQk8dGZkOlRpbWJyZUZpc2NhbERpZ2l0YWwgeG1sbnM6dGZkPSJodHRwOi8vd3d3LnNhdC5nb2IubXgvVGltYnJlRmlzY2FsRGlnaXRhbCIKCQkgICAgICAgICAgICAgICAgICAgICAgICAgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIKCQkgICAgICAgICAgICAgICAgICAgICAgICAgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vd3d3LnNhdC5nb2IubXgvVGltYnJlRmlzY2FsRGlnaXRhbCBodHRwOi8vd3d3LnNhdC5nb2IubXgvc2l0aW9faW50ZXJuZXQvY2ZkL1RpbWJyZUZpc2NhbERpZ2l0YWwvVGltYnJlRmlzY2FsRGlnaXRhbHYxMS54c2QiCgkJICAgICAgICAgICAgICAgICAgICAgICAgIFZlcnNpb249IjEuMSIKCQkgICAgICAgICAgICAgICAgICAgICAgICAgVVVJRD0iQjk1MzdBQUMtQjYxNS00RDBBLTkwQ0EtMEM1MjY5RUFCRDJBIgoJCSAgICAgICAgICAgICAgICAgICAgICAgICBGZWNoYVRpbWJyYWRvPSIyMDIyLTA2LTAxVDEyOjIwOjU4IgoJCSAgICAgICAgICAgICAgICAgICAgICAgICBSZmNQcm92Q2VydGlmPSJBQUEwMTAxMDFBQUEiCgkJICAgICAgICAgICAgICAgICAgICAgICAgIFNlbGxvQ0ZEPSJZTnV3YVN2VW45eVUvMjZjVVVjcWhMWnpndGJrd1VVMER5eFI3RkNhSnRMdDhCREZoR2NkZnFXMTI4amhMcW1yMHZSeklSNDVTeWp2UU0wMndWSUs2em9IU0hyOWF2bHVKRTlWU1U4TlpaT21KQUplcStxYWtla3M4TW9IVUZKOHpNRDhaZlJBTUMvc3A1SERlQ1RTYlFVQ2FhcXhOdUZDV1dlUEJXKzhvV0gwakM3VEVBcldTUGRwV21naXI0YThsbE9Ma2JCaUF0Ykw4VVR0blNsLyswTElDdnVleWkxK2lpZkRUdHVxc2poY3pnR1QyaksybHRPUnpQNEdGYk1peFRBNGhWNlliay9TdmV4RWdKQ2N2bUhWcFJBZVZwT1Q0b1VxNStNUCtVVkFLZkQyRG1DcXNRNFVSQjE2T04ycGVxOTlYOHZxQjMya1RFdlVpUktxQkE9PSIKCQkgICAgICAgICAgICAgICAgICAgICAgICAgTm9DZXJ0aWZpY2Fkb1NBVD0iMjAwMDEwMDAwMDAxMDAwMDU3NjEiCgkJICAgICAgICAgICAgICAgICAgICAgICAgIFNlbGxvU0FUPSJZeHlNZ1g5bEZuSkdsRzhSL1h2V3l1U0VZMGhJZ1htUHBZOE5oeldWRlpwN3NBVXRpamNqMFFqTHYrSXFzUGs5YWJ5OHVsNE1NMHM4UTdFVkNxeXJGd25OQUN5Qm56ZzdraVBHQUF2eFg5TmNXTXdZRmtVQnN4MEZ4YW5HcTdVTmpPVGVxQ0ZlR01XVFdmMkpQNG15NytVYng1bnZTM3NsckdTM1dvUDJEelk9Ii8+CgkJPGxleWVuZGFzRmlzYzpMZXllbmRhc0Zpc2NhbGVzIHZlcnNpb249IjEuMCI+CgkJCTxsZXllbmRhc0Zpc2M6TGV5ZW5kYSBkaXNwb3NpY2lvbkZpc2NhbD0iUkdDRSIKCQkJICAgICAgICAgICAgICAgICAgICAgIG5vcm1hPSI1LjIuNi4iCgkJCSAgICAgICAgICAgICAgICAgICAgICB0ZXh0b0xleWVuZGE9IlJFRlJBQ1RBUklPUyBZIEFJU0xBTUlFTlRPUyBERSIvPgoJCTwvbGV5ZW5kYXNGaXNjOkxleWVuZGFzRmlzY2FsZXM+Cgk8L2NmZGk6Q29tcGxlbWVudG8+CjwvY2ZkaTpDb21wcm9iYW50ZT4="
+var prueba1 = "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPGNmZGk6Q29tcHJvYmFudGUgeG1sbnM6Y2ZkaT0iaHR0cDovL3d3dy5zYXQuZ29iLm14L2NmZC80IgogICAgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vd3d3LnNhdC5nb2IubXgvY2ZkLzQgaHR0cDovL3d3dy5zYXQuZ29iLm14L3NpdGlvX2ludGVybmV0L2NmZC80L2NmZHY0MC54c2QiIFZlcnNpb249IjQuMCIgU2VyaWU9IkdUQyIgRm9saW89IjIyMDcwNTAyIiBGZWNoYT0iMjAyMi0wNy0wNFQxODoyNjoyNiIgU2VsbG89ImNUdklYdFMxTGhyTHZYYVUwL0hubCttSFpITmFSOUJyVnRJZ2xpWEtrV3RRdkd3T0RKczIyMjFlbWQ2aVpQbytQWWNYTFVya3RKSXVwVDg3RXdtTHh4blVtMUVFTDNJYm5GRVpmNDhvSS9YMy82dURpR2tWWTJvMTkxNUZpZnlVZXgvV2w2OU1MWGcxOXE1UlNadjBPeGxKRDZSRGpRQ0RyVzdwWEMvOElob1lEZjRyM2xpZTArNzVxYkIzUnphcUhTWDRRd3MybWhRcjZZaThBN1ROdUlDMno5aDVqd3NZRWEveEJPdnJqK1Y3ZU1wdythaDUxc3ZsMjdCQ1BMV01TbTBVUWQ0azN0aEJ4M1pLZGVabWN3QndpZkNLcExGZTJkRlFpYVpUaVFwMHNyK1RRMzNPZGp4cElJekhXblM4SjluMDMyc2hFU1JGbHhqVlg2N05sQT09IiBGb3JtYVBhZ289Ijk5IiBOb0NlcnRpZmljYWRvPSIwMDAwMTAwMDAwMDUxMzYyMjQwNiIgQ2VydGlmaWNhZG89Ik1JSUdEVENDQS9XZ0F3SUJBZ0lVTURBd01ERXdNREF3TURBMU1UTTJNakkwTURZd0RRWUpLb1pJaHZjTkFRRUxCUUF3Z2dHRU1TQXdIZ1lEVlFRRERCZEJWVlJQVWtsRVFVUWdRMFZTVkVsR1NVTkJSRTlTUVRFdU1Dd0dBMVVFQ2d3bFUwVlNWa2xEU1U4Z1JFVWdRVVJOU1U1SlUxUlNRVU5KVDA0Z1ZGSkpRbFZVUVZKSlFURWFNQmdHQTFVRUN3d1JVMEZVTFVsRlV5QkJkWFJvYjNKcGRIa3hLakFvQmdrcWhraUc5dzBCQ1FFV0cyTnZiblJoWTNSdkxuUmxZMjVwWTI5QWMyRjBMbWR2WWk1dGVERW1NQ1FHQTFVRUNRd2RRVll1SUVoSlJFRk1SMDhnTnpjc0lFTlBUQzRnUjFWRlVsSkZVazh4RGpBTUJnTlZCQkVNQlRBMk16QXdNUXN3Q1FZRFZRUUdFd0pOV0RFWk1CY0dBMVVFQ0F3UVEwbFZSRUZFSUVSRklFMUZXRWxEVHpFVE1CRUdBMVVFQnd3S1ExVkJWVWhVUlUxUFF6RVZNQk1HQTFVRUxSTU1VMEZVT1Rjd056QXhUazR6TVZ3d1dnWUpLb1pJaHZjTkFRa0NFMDF5WlhOd2IyNXpZV0pzWlRvZ1FVUk5TVTVKVTFSU1FVTkpUMDRnUTBWT1ZGSkJUQ0JFUlNCVFJWSldTVU5KVDFNZ1ZGSkpRbFZVUVZKSlQxTWdRVXdnUTA5T1ZGSkpRbFZaUlU1VVJUQWVGdzB5TWpBMk1qUXhOVEEyTVRKYUZ3MHlOakEyTWpReE5UQTJNVEphTUlIYk1TTXdJUVlEVlFRREV4cEpWRmNnVUU5TVdTQk5SVmdnVXlCRVJTQlNUQ0JFUlNCRFZqRWpNQ0VHQTFVRUtSTWFTVlJYSUZCUFRGa2dUVVZZSUZNZ1JFVWdVa3dnUkVVZ1ExWXhJekFoQmdOVkJBb1RHa2xVVnlCUVQweFpJRTFGV0NCVElFUkZJRkpNSUVSRklFTldNU1V3SXdZRFZRUXRFeHhKVUUwMk1qQXpNakkyUWpRZ0x5QldRVkJGTnpFd016QTVOMW80TVI0d0hBWURWUVFGRXhVZ0x5QldRVkJGTnpFd09UQTVTRTFEVWxKRU1EQXhJekFoQmdOVkJBc1RHa2xVVnlCUVQweFpJRTFGV0NCVElFUkZJRkpNSUVSRklFTldNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQWswVjF6M1BSV3hpUmFVaFN0VHArSjZXUDlVQWk2ZTFOcFdSTnhjYlBpeDExVlUvY1ExRWpWa1VpMDFTNWJMU0VmQU9hZHoyNnVCL2dPUHRjc21EeXUvUGNpb1ZCTWJKZmxYNDNUTk9LSXlPNno5aHJPak1WRlphYUxOVWh6NTF4Z1JXYlphWjZVMkYvRlF1VUcvMEt5QUNtd1phMTZNRFRKZjlsNURmTWFLZ3NFMnVOZ2tIa1g4REVlOVdZRlVEVXdFT056VU94eU9OZUtjR2JMZ3pMWnFUb1NIZitKbEJTRzdLYzlkUVYwL0JtTkFGcFl5eC96dW5ENG9ES2JDVDZieGJKSmhnQlRLTVAvYTZSNkplZTk0SVFoeThKUTVHV1l3c0FJakh0L0VQMXRQTHFwTnVucnN6K01aMkV3Nk1Md1VVcEpFVzF1Szh3c0l4dmd5ckhId0lEQVFBQm94MHdHekFNQmdOVkhSTUJBZjhFQWpBQU1Bc0dBMVVkRHdRRUF3SUd3REFOQmdrcWhraUc5dzBCQVFzRkFBT0NBZ0VBcWdKVGNBUFdMejNWYkxCazg4d1ZCVjR5cnBwQldEb0dabUk2dFZnWmdINGordlhIcXhEUnNGNFd1cjRVenNaWGVYQmdlRm96QU82bGZkSXpTRGdCNDNwLy92ZjFyYmJkR01XazhOU09aOU1vRGF2UDZFendnUXdUR1RvSXNoVWlNeEJzV0M2QWZRWTN2Qm9pWVhlajh2VTFTVEF5LzVLdUZnZVdoZkhoNHNmNjBsS2l0N09LcVhUMEs2NnFSZUhvcHhNbGQyT0hvUC9abXRlMGIvUUxSZlR6VkZzb3hSRWpkQWNUOW16cURzTWNxRVhGWFQvQ1FpRHZWWCtRbk5lZlBQUlhZcGZGU3FWMngzV0hxUEZkNkpaczBoZWtyYTNGQXRFY09sRFNVbmY3UTFGTzhCYTlLS2VhSlJkVzI5SDU3MmNrL095aEUxOWF4OHpkWVVFdHg1SDRtK0EyODdHK3VPSTcvbU1qa2tUb1pLR2F6UWppVHV0YURHVjdneXo5UFNZcHB1ZkNQU2tGY2kvT0JPdUhWTnNPaEYzcXg2OWdLMTJnU2M4TS9aMHRNbWhOMGVCcURtdldTRmRkM3dWR0h0aTU5bDVWSEFCdUlEdjRob1M0eHJuS0V6blVMLzRGYVFwSDNxZzRoVnR6Y0hFNUxUY1ppalF1bnV0WUd0a1hOMFRtczJaeGlVODh4M1JsZ3g2R2FIbkwxbmJQYi9saUxKY2dSMFU0RitMZWxXUytJd3lpS3pRU3BsRFlSM1VBT0pkdnRTTjRrbHZBbDBya29rVVhsSUJOWTgzUWhHellyMytjdmJYOHFqMFhESm5YaWtJOEQ2QkE5STh6MWtIbkVMdTJPcG5pWVVyRGRVZHgzQU50anhQRHZ4bDFycDFPSHZVWFBYd1dRbmc9IiBDb25kaWNpb25lc0RlUGFnbz0iMzAgRElBUyBORVRPUyIgU3ViVG90YWw9IjE2MTIxMi41IiBNb25lZGE9Ik1YTiIgVGlwb0NhbWJpbz0iMSIgVG90YWw9IjE4NzAwNi41IiBUaXBvRGVDb21wcm9iYW50ZT0iSSIgTWV0b2RvUGFnbz0iUFBEIiBMdWdhckV4cGVkaWNpb249Ijc2MjQ2IiBFeHBvcnRhY2lvbj0iMDEiPgogICAgPGNmZGk6RW1pc29yIFJmYz0iSVBNNjIwMzIyNkI0IiBOb21icmU9IklUVyBQT0xZIE1FWCIgUmVnaW1lbkZpc2NhbD0iNjAxIi8+CiAgICA8Y2ZkaTpSZWNlcHRvciBSZmM9Ik1HRDA3MTExM04yMCIgTm9tYnJlPSJNRURJTUVYIEdETCIgVXNvQ0ZEST0iRzAxIiBEb21pY2lsaW9GaXNjYWxSZWNlcHRvcj0iNDQ0OTAiIFJlZ2ltZW5GaXNjYWxSZWNlcHRvcj0iNjAxIi8+CiAgICA8Y2ZkaTpDb25jZXB0b3M+CiAgICAgICAgPGNmZGk6Q29uY2VwdG8gQ2xhdmVQcm9kU2Vydj0iMzEyMDE2MTkiIE5vSWRlbnRpZmljYWNpb249IlRBSS1UMyIgQ2FudGlkYWQ9IjI1IiBDbGF2ZVVuaWRhZD0iWDRHIiBVbmlkYWQ9IkNBIiBEZXNjcmlwY2lvbj0iUEVHQU1FTlRPIElOU1QgVE9QIDMuNUcgVElSQSIgVmFsb3JVbml0YXJpbz0iNTg1Ni4wMDAwIiBJbXBvcnRlPSIxNDY0MDAuMDAiIE9iamV0b0ltcD0iMDIiPgogICAgICAgICAgICA8Y2ZkaTpJbXB1ZXN0b3M+CiAgICAgICAgICAgICAgICA8Y2ZkaTpUcmFzbGFkb3M+CiAgICAgICAgICAgICAgICAgICAgPGNmZGk6VHJhc2xhZG8gQmFzZT0iMTQ2NDAwLjAwIiBJbXB1ZXN0bz0iMDAyIiBUaXBvRmFjdG9yPSJUYXNhIiBUYXNhT0N1b3RhPSIwLjE2MDAwMCIgSW1wb3J0ZT0iMjM0MjQuMDAiLz4KICAgICAgICAgICAgICAgIDwvY2ZkaTpUcmFzbGFkb3M+CiAgICAgICAgICAgIDwvY2ZkaTpJbXB1ZXN0b3M+CiAgICAgICAgPC9jZmRpOkNvbmNlcHRvPgogICAgICAgIDxjZmRpOkNvbmNlcHRvIENsYXZlUHJvZFNlcnY9IjYwMTAxMzAwIiBOb0lkZW50aWZpY2FjaW9uPSJUTEFUOCIgQ2FudGlkYWQ9IjEwIiBDbGF2ZVVuaWRhZD0iWDRHIiBVbmlkYWQ9IkNBIiBEZXNjcmlwY2lvbj0iTEFQSVogQURIRVNJVk8gOEcgVElSQSAyMCBQWkFTIiBWYWxvclVuaXRhcmlvPSIxNDgxLjI1MDAiIEltcG9ydGU9IjE0ODEyLjUwIiBPYmpldG9JbXA9IjAyIj4KICAgICAgICAgICAgPGNmZGk6SW1wdWVzdG9zPgogICAgICAgICAgICAgICAgPGNmZGk6VHJhc2xhZG9zPgogICAgICAgICAgICAgICAgICAgIDxjZmRpOlRyYXNsYWRvIEJhc2U9IjE0ODEyLjUwIiBJbXB1ZXN0bz0iMDAyIiBUaXBvRmFjdG9yPSJUYXNhIiBUYXNhT0N1b3RhPSIwLjE2MDAwMCIgSW1wb3J0ZT0iMjM3MC4wMCIvPgogICAgICAgICAgICAgICAgPC9jZmRpOlRyYXNsYWRvcz4KICAgICAgICAgICAgPC9jZmRpOkltcHVlc3Rvcz4KICAgICAgICA8L2NmZGk6Q29uY2VwdG8+CiAgICA8L2NmZGk6Q29uY2VwdG9zPgogICAgPGNmZGk6SW1wdWVzdG9zIFRvdGFsSW1wdWVzdG9zVHJhc2xhZGFkb3M9IjI1Nzk0Ij4KICAgICAgICA8Y2ZkaTpUcmFzbGFkb3M+CiAgICAgICAgICAgIDxjZmRpOlRyYXNsYWRvIEltcHVlc3RvPSIwMDIiIFRpcG9GYWN0b3I9IlRhc2EiIFRhc2FPQ3VvdGE9IjAuMTYwMDAwIiBJbXBvcnRlPSIyNTc5NCIgQmFzZT0iMTYxMjEyLjUiLz4KICAgICAgICA8L2NmZGk6VHJhc2xhZG9zPgogICAgPC9jZmRpOkltcHVlc3Rvcz4KICAgIDxjZmRpOkNvbXBsZW1lbnRvPgogICAgICAgIDx0ZmQ6VGltYnJlRmlzY2FsRGlnaXRhbCB4bWxuczp0ZmQ9Imh0dHA6Ly93d3cuc2F0LmdvYi5teC9UaW1icmVGaXNjYWxEaWdpdGFsIgogICAgICAgICAgICB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIiB4c2k6c2NoZW1hTG9jYXRpb249Imh0dHA6Ly93d3cuc2F0LmdvYi5teC9UaW1icmVGaXNjYWxEaWdpdGFsIGh0dHA6Ly93d3cuc2F0LmdvYi5teC9zaXRpb19pbnRlcm5ldC9jZmQvVGltYnJlRmlzY2FsRGlnaXRhbC9UaW1icmVGaXNjYWxEaWdpdGFsdjExLnhzZCIgVmVyc2lvbj0iMS4xIiBVVUlEPSI5MEZDOUQ3Mi1BMDRFLTQ2MjItODg5MS02ODFDREY3QkY2M0MiIEZlY2hhVGltYnJhZG89IjIwMjItMDctMDVUMTg6Mzk6MDMiIFJmY1Byb3ZDZXJ0aWY9IkFBQTAxMDEwMUFBQSIgU2VsbG9DRkQ9ImNUdklYdFMxTGhyTHZYYVUwL0hubCttSFpITmFSOUJyVnRJZ2xpWEtrV3RRdkd3T0RKczIyMjFlbWQ2aVpQbytQWWNYTFVya3RKSXVwVDg3RXdtTHh4blVtMUVFTDNJYm5GRVpmNDhvSS9YMy82dURpR2tWWTJvMTkxNUZpZnlVZXgvV2w2OU1MWGcxOXE1UlNadjBPeGxKRDZSRGpRQ0RyVzdwWEMvOElob1lEZjRyM2xpZTArNzVxYkIzUnphcUhTWDRRd3MybWhRcjZZaThBN1ROdUlDMno5aDVqd3NZRWEveEJPdnJqK1Y3ZU1wdythaDUxc3ZsMjdCQ1BMV01TbTBVUWQ0azN0aEJ4M1pLZGVabWN3QndpZkNLcExGZTJkRlFpYVpUaVFwMHNyK1RRMzNPZGp4cElJekhXblM4SjluMDMyc2hFU1JGbHhqVlg2N05sQT09IiBOb0NlcnRpZmljYWRvU0FUPSIyMDAwMTAwMDAwMDEwMDAwNTc2MSIgU2VsbG9TQVQ9IlVJMGFCajNTV3Z1aVVTc2JoTDJzeWwzRi9GVysycmJQU3lBK2ZrcU0xMGFpUnBOaDdOenZyT0NsNWVWYngwV1YvaHlHYVpPZlUxS0R6S092YzFFaDJqRzR4b3FKWUkxZURXcEtmeHpNQnprc3d2V0VQNEkzY2JlZmg3eFgvRENUSENEVmNNZFQ3RmFGNmF3cG9FekpMMXBiYjFKRDg5cXZBaG9iTStjR0lIcz0iLz4KICAgIDwvY2ZkaTpDb21wbGVtZW50bz4KPC9jZmRpOkNvbXByb2JhbnRlPg=="
 
 async function getPDFPolymex(docBase64, txtDocument, pathLogo)
 {
@@ -54,6 +55,8 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
 
         //Leo el archivo guardado anteriormente
         const txtString  = fs.readFileSync(txtDocument, 'utf-8');
+
+        console.log(txtString)
 
         //Separamos el archivo por \r para obtener cada uno de los elementos.
         var arrayLineas = txtString.split("\n")
@@ -339,6 +342,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
         var pagosTable = {}
         var cfdiRelTable = {}
         var comercioExteriorTable = {}
+        var espacio1={}
         if(attributes.TipoDeComprobante === "I")
         {
             tipoComprobante = {
@@ -555,46 +559,47 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
             {
                 if(conceptos.elements[i].elements !== undefined)
                 {
+                    
                     var impuestos = conceptos.elements[i].elements.find( o => o.name === "cfdi:Impuestos")
                     var traslados = impuestos.elements.find( o => o.name === "cfdi:Traslados")
-                    
+
                     if(i !== conceptos.elements.length-1)
                     {
                         concepts[psItems] = [
-                            {border: [true, false, false, false], text: conceptos.elements[i].attributes.NoIdentificacion + "\n" + arrayRefCruzadas[i], style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, false], text: arrayLotes[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: arrayPiezas[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.ValorUnitario), style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "$" + Intl.NumberFormat("en-IN").format(traslados.elements[0].attributes.Base), style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: traslados.elements[0].attributes.Impuesto, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, false], text: traslados.elements[0].attributes.TipoFactor, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: traslados.elements[0].attributes.TasaOCuota, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, true, false], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.Importe), style: 'textotabla', alignment: "center"}, 
+                            {border: [true, false, false, false], text: conceptos.elements[i].attributes.NoIdentificacion + "\n" + arrayRefCruzadas[i], style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, false], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(traslados.elements[0].attributes.Base).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: traslados.elements[0].attributes.Impuesto, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, false], text: traslados.elements[0].attributes.TipoFactor, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: traslados.elements[0].attributes.TasaOCuota, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, false], text: "$" + parseFloat( conceptos.elements[i].attributes.Importe).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
                     }
                     else {
                         concepts[psItems] = [
-                            {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion + "\n" + arrayRefCruzadas[i], style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" +  "Objeto Imp. - " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, true], text: arrayLotes[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: arrayPiezas[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.ValorUnitario), style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "$" + Intl.NumberFormat("en-IN").format(traslados.elements[0].attributes.Base), style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: traslados.elements[0].attributes.Impuesto, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, true], text: traslados.elements[0].attributes.TipoFactor, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: traslados.elements[0].attributes.TasaOCuota, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, true, true], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.Importe), style: 'textotabla', alignment: "center"}, 
+                            {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion + "\n" + arrayRefCruzadas[i], style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" +  "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, true], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat(traslados.elements[0].attributes.Base).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: traslados.elements[0].attributes.Impuesto, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, true], text: traslados.elements[0].attributes.TipoFactor, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: traslados.elements[0].attributes.TasaOCuota, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, true], text: "$" + parseFloat( conceptos.elements[i].attributes.Importe).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
@@ -604,40 +609,40 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     if(i !== conceptos.elements.length-1)
                     {
                         concepts[psItems] = [
-                            {border: [true, false, false, false], text: conceptos.elements[i].attributes.NoIdentificacion + "\n" + arrayRefCruzadas[i], style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla', alignment: "center"}, 
+                            {border: [true, false, false, false], text: conceptos.elements[i].attributes.NoIdentificacion + "\n" + arrayRefCruzadas[i], style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, false], text: arrayLotes[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: arrayPiezas[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.ValorUnitario), style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "", style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "", style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, false], text: "", style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "", style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, true, false], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.Importe), style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, false], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, false], text: "$" + parseFloat( conceptos.elements[i].attributes.Importe).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
                     }
                     else {
                         concepts[psItems] = [
-                            {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion + "\n" + arrayRefCruzadas[i], style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" +  "Objeto Imp. - " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, true], text: arrayLotes[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: arrayPiezas[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.ValorUnitario), style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "", style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "", style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, true], text: "", style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "", style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, true, true], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.Importe), style: 'textotabla', alignment: "center"}, 
+                            {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion + "\n" + arrayRefCruzadas[i], style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" +  "Objeto Imp. - " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, true], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, true], text: "$" + parseFloat( conceptos.elements[i].attributes.Importe).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
@@ -651,7 +656,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     table: {
                         dontBreakRows: true, 
                         headerRows: 1,
-                        widths: [27,35,"*",27,27,27,27,27,27,27,28,27,27,27],
+                        widths: [27,30,"*",25,25,27,27,27,32,31,28,25,27,29],
                         body: concepts
                     },
                     layout: {
@@ -711,7 +716,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
 
                 comercioE[psItems] = [
                     {border: [true, false, false, false], text: "Certificado Origen: " + comercioExterior.attributes.CertificadoOrigen, style: 'textotablaEmisorReceptor', alignment: "left"},
-                    {border: [false, false, true, false], text: "Tipo de Cambio USD: " + "$" + Intl.NumberFormat("en-IN").format(comercioExterior.attributes.TipoCambioUSD), style: 'textotablaEmisorReceptor', alignment: "left",}, 
+                    {border: [false, false, true, false], text: "Tipo de Cambio USD: " + "$" + parseFloat(comercioExterior.attributes.TipoCambioUSD).toLocaleString("en"), style: 'textotablaEmisorReceptor', alignment: "left",}, 
 
                 ]
         
@@ -762,7 +767,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             {border: [false, false, false, false], text: mercArray.elements[i].attributes.CantidadAduana, style: 'textotabla', alignment: "center"}, 
                             {border: [false, false, false, false], text: mercArray.elements[i].attributes.UnidadAduana, style: 'textotabla', alignment: "center"}, 
                             {border: [false, false, false, false], text: mercArray.elements[i].attributes.ValorUnitarioAduana, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, true, false], text: "$" + Intl.NumberFormat("en-IN").format(mercArray.elements[i].attributes.ValorDolares), style: 'textotabla', alignment: "center"},
+                            {border: [false, false, true, false], text: "$" + parseFloat(mercArray.elements[i].attributes.ValorDolares).toLocaleString("en"), style: 'textotabla', alignment: "center"},
                         ]
                 
                         psItems++
@@ -797,7 +802,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             {border: [false, false, false, false], text: mercArray.elements[i].attributes.CantidadAduana, style: 'textotabla', alignment: "center"}, 
                             {border: [false, false, false, false], text: mercArray.elements[i].attributes.UnidadAduana, style: 'textotabla', alignment: "center"}, 
                             {border: [false, false, false, false], text: mercArray.elements[i].attributes.ValorUnitarioAduana, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, true, false], text: "$" + Intl.NumberFormat("en-IN").format(mercArray.elements[i].attributes.ValorDolares), style: 'textotabla', alignment: "center"},
+                            {border: [false, false, true, false], text: "$" + parseFloat(mercArray.elements[i].attributes.ValorDolares).toLocaleString("en"), style: 'textotabla', alignment: "center"},
                         ]
                 
                         psItems++
@@ -939,7 +944,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                         {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"},  
                         {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla', alignment: "center"},
-                        {border: [false, false, false, false], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.ValorUnitario), style: 'textotabla', alignment: "center"}, 
+                        {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, true, false], text: "$0", style: 'textotabla', alignment: "center"}, 
                     ]
             
@@ -952,7 +957,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                         {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla', alignment: "center"},
-                        {border: [false, false, false, true], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.ValorUnitario), style: 'textotabla', alignment: "center"}, 
+                        {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, true, true], text: "$0", style: 'textotabla', alignment: "center"}, 
                     ]
             
@@ -1022,7 +1027,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
 
             pagos[psItems] = [
                 {border: [true, false, false, false], text: `Fecha de Pago: `  + pago.elements[0].attributes.FechaPago, style: 'textotablaEmisorReceptor', alignment: "left"},
-                {border: [false, false, true, false], text: `Total del Pago: ` + "$" + Intl.NumberFormat("en-IN").format(pago.elements[0].attributes.Monto), style: 'textotablaEmisorReceptor', alignment: "left"}, 
+                {border: [false, false, true, false], text: `Total del Pago: ` + "$" + parseFloat(pago.elements[0].attributes.Monto).toLocaleString("en"), style: 'textotablaEmisorReceptor', alignment: "left"}, 
             ]
 
             psItems++
@@ -1194,11 +1199,11 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                         {border: [false, false, false, false], text: pago20.elements[i].attributes.Folio, style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, false, false], text: pago20.elements[i].attributes.ObjetoImpDR, style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, false, false], text: pago20.elements[i].attributes.EquivalenciaDR, style: 'textotabla', alignment: "center"}, 
-                        {border: [false, false, false, false], text: "$" + Intl.NumberFormat("en-IN").format(impuestoRetencionesDR), style: 'textotabla', alignment: "center"}, 
+                        {border: [false, false, false, false], text: "$" + parseFloat(impuestoRetencionesDR).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, false, false], text: impuestoRetencionesP, style: 'textotabla', alignment: "center"}, 
-                        {border: [false, false, false, false], text: "$" + Intl.NumberFormat("en-IN").format(pago20.elements[i].attributes.ImpSaldoInsoluto), style: 'textotabla', alignment: "center"}, 
-                        {border: [false, false, false, false], text: "$" + Intl.NumberFormat("en-IN").format(pago20.elements[i].attributes.ImpSaldoAnt), style: 'textotabla', alignment: "center"}, 
-                        {border: [false, false, true, false], text: "$" + Intl.NumberFormat("en-IN").format(pago20.elements[i].attributes.ImpPagado), style: 'textotabla', alignment: "center"}, 
+                        {border: [false, false, false, false], text: "$" + parseFloat(pago20.elements[i].attributes.ImpSaldoInsoluto).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
+                        {border: [false, false, false, false], text: "$" + parseFloat(pago20.elements[i].attributes.ImpSaldoAnt).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
+                        {border: [false, false, true, false], text: "$" + parseFloat(pago20.elements[i].attributes.ImpPagado).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
                     ]
         
                     psItems++
@@ -1221,7 +1226,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [true, true, true, false],  text: "Total retenciones IVA", style: 'textotabla', alignment: "left", colSpan:3},
                     {border: [true, true, true, false],  text: ""}, 
                     {border: [false, true, false, false],  text: ""}, 
-                    {border: [true, true, true, false],  text: "$" + Intl.NumberFormat("en-IN").format(retIva), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, true, true, false],  text: "$" + parseFloat(retIva).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, true, true, false],  text: ""}, 
                 ]
     
@@ -1242,7 +1247,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [true, false, true, false],  text: "Total Retenciones ISR", style: 'textotabla', alignment: "left", colSpan:3},
                     {border: [true, false, true, false],  text: ""}, 
                     {border: [false, false, false, false],  text: ""}, 
-                    {border: [true, false, true, false],  text: "$" + Intl.NumberFormat("en-IN").format(retIsr), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, false, true, false],  text: "$" + parseFloat(retIsr).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
                 ]
     
@@ -1263,7 +1268,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [true, false, true, false],  text: "Total Retenciones IEPS", style: 'textotabla', alignment: "left", colSpan:3},
                     {border: [true, false, true, false],  text: ""}, 
                     {border: [false, false, false, false],  text: ""}, 
-                    {border: [true, false, true, false],  text: "$" + Intl.NumberFormat("en-IN").format(retIeps), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, false, true, false],  text: "$" + parseFloat(retIeps).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
                 ]
     
@@ -1284,7 +1289,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [true, false, true, false],  text: "Total Traslado Base IVA 16 ", style: 'textotabla', alignment: "left", colSpan:3},
                     {border: [true, false, true, false],  text: ""}, 
                     {border: [false, false, false, false],  text: ""}, 
-                    {border: [true, false, true, false],  text: "$" + Intl.NumberFormat("en-IN").format(trasIB16), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, false, true, false],  text: "$" + parseFloat(trasIB16).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
                 ]
     
@@ -1305,7 +1310,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [true, false, true, false],  text: "Total Traslados Impuesto IVA 16", style: 'textotabla', alignment: "left", colSpan:3},
                     {border: [true, false, true, false],  text: ""}, 
                     {border: [false, false, false, false],  text: ""}, 
-                    {border: [true, false, true, false],  text: "$" + Intl.NumberFormat("en-IN").format(trasI16), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, false, true, false],  text: "$" + parseFloat(trasI16).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
                 ]
     
@@ -1326,7 +1331,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [true, false, true, false],  text: "Total Traslados Base IVA 8", style: 'textotabla', alignment: "left", colSpan:3},
                     {border: [true, false, true, false],  text: ""}, 
                     {border: [false, false, false, false],  text: ""}, 
-                    {border: [true, false, true, false],  text: "$" + Intl.NumberFormat("en-IN").format(trasIB8), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, false, true, false],  text: "$" + parseFloat(trasIB8).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
                 ]
     
@@ -1347,7 +1352,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [true, false, true, false],  text: "Total Traslados Impuestos IVA 8", style: 'textotabla', alignment: "left", colSpan:3},
                     {border: [true, false, true, false],  text: ""}, 
                     {border: [false, false, false, false],  text: ""}, 
-                    {border: [true, false, true, false],  text: "$" + Intl.NumberFormat("en-IN").format(trasII8), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, false, true, false],  text: "$" + parseFloat(trasII8).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
                 ]
     
@@ -1368,7 +1373,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [true, false, true, false],  text: "Total Traslados Base IVA 0", style: 'textotabla', alignment: "left", colSpan:3},
                     {border: [true, false, true, false],  text: ""}, 
                     {border: [false, false, false, false],  text: ""}, 
-                    {border: [true, false, true, false],  text: "$" + Intl.NumberFormat("en-IN").format(trasBI0), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, false, true, false],  text: "$" + parseFloat(trasBI0).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
                 ]
     
@@ -1389,7 +1394,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [true, false, true, false],  text: "Total Traslado Impuesto IVA 0", style: 'textotabla', alignment: "left", colSpan:3},
                     {border: [true, false, true, false],  text: ""}, 
                     {border: [false, false, false, false],  text: ""}, 
-                    {border: [true, false, true, false],  text: "$" + Intl.NumberFormat("en-IN").format(trasII0), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, false, true, false],  text: "$" + parseFloat(trasII0).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
                 ]
     
@@ -1410,7 +1415,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [true, false, true, false],  text: "Total Trasladados Base IVA Excento", style: 'textotabla', alignment: "left", colSpan:3},
                     {border: [true, false, true, false],  text: ""}, 
                     {border: [false, false, false, false],  text: ""}, 
-                    {border: [true, false, true, false],  text: "$" + Intl.NumberFormat("en-IN").format(trasBI6), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, false, true, false],  text: "$" + parseFloat(trasBI6).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
                 ]
     
@@ -1432,7 +1437,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 {border: [true, false, true, true],  text: "Monto Total Pagos", style: 'textotabla', alignment: "left", colSpan:3},
                 {border: [true, false, true, false],  text: ""}, 
                 {border: [false, false, false, false],  text: ""}, 
-                {border: [true, false, true, true],  text: "$" + Intl.NumberFormat("en-IN").format(montoTP), style: 'textotabla', alignment: "left", colSpan:2}, 
+                {border: [true, false, true, true],  text: "$" + parseFloat(montoTP).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                 {border: [false, false, true, false],  text: ""}, 
             ]
 
@@ -1601,40 +1606,40 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     if(i !== conceptos.elements.length-1)
                     {
                         concepts[psItems] = [
-                            {border: [true, false, false, false], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, false], text: arrayLotes[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: arrayPiezas[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.ValorUnitario), style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "$" + Intl.NumberFormat("en-IN").format(traslados.elements[0].attributes.Base), style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: traslados.elements[0].attributes.Impuesto, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, false], text: traslados.elements[0].attributes.TipoFactor, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: traslados.elements[0].attributes.TasaOCuota, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, true, false], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.Importe), style: 'textotabla', alignment: "center"}, 
+                            {border: [true, false, false, false], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, false], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(traslados.elements[0].attributes.Base).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: traslados.elements[0].attributes.Impuesto, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, false], text: traslados.elements[0].attributes.TipoFactor, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: traslados.elements[0].attributes.TasaOCuota, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
                     }
                     else {
                         concepts[psItems] = [
-                            {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" +  "Objeto Imp. - " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, true], text: arrayLotes[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: arrayPiezas[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.ValorUnitario), style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "$" + Intl.NumberFormat("en-IN").format(traslados.elements[0].attributes.Base), style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: traslados.elements[0].attributes.Impuesto, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, true], text: traslados.elements[0].attributes.TipoFactor, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: traslados.elements[0].attributes.TasaOCuota, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, true, true], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.Importe), style: 'textotabla', alignment: "center"}, 
+                            {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" +  "Objeto Imp. - " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, true], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat(traslados.elements[0].attributes.Base).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: traslados.elements[0].attributes.Impuesto, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, true], text: traslados.elements[0].attributes.TipoFactor, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: traslados.elements[0].attributes.TasaOCuota, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
@@ -1645,40 +1650,40 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {
                         console.log(conceptos.elements[i].attributes)
                         concepts[psItems] = [
-                            {border: [true, false, false, false], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, false], text: arrayLotes[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: arrayPiezas[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.ValorUnitario), style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "", style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "", style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, false], text: "", style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "", style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, true, false], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.Importe), style: 'textotabla', alignment: "center"}, 
+                            {border: [true, false, false, false], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, false], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
                     }
                     else {
                         concepts[psItems] = [
-                            {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" +  "Objeto Imp. - " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, true], text: arrayLotes[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: arrayPiezas[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.ValorUnitario), style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "", style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "", style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, true], text: "", style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "", style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, true, true], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.Importe), style: 'textotabla', alignment: "center"}, 
+                            {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" +  "Objeto Imp. - " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, true], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
@@ -1817,40 +1822,40 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     if(i !== conceptos.elements.length-1)
                     {
                         concepts[psItems] = [
-                            {border: [true, false, false, false], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, false], text: arrayLotes[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: arrayPiezas[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.ValorUnitario), style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "$" + Intl.NumberFormat("en-IN").format(traslados.elements[0].attributes.Base), style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: traslados.elements[0].attributes.Impuesto, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, false], text: traslados.elements[0].attributes.TipoFactor, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: traslados.elements[0].attributes.TasaOCuota, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, true, false], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.Importe), style: 'textotabla', alignment: "center"}, 
+                            {border: [true, false, false, false], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, false], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(traslados.elements[0].attributes.Base).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, false], text: traslados.elements[0].attributes.Impuesto, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, false], text: traslados.elements[0].attributes.TipoFactor, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: traslados.elements[0].attributes.TasaOCuota, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
                         ]
                 
                         psItems++
                     }
                     else {
                         concepts[psItems] = [
-                            {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" +  "Objeto Imp. - " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, true], text: arrayLotes[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: arrayPiezas[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.ValorUnitario), style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "$" + Intl.NumberFormat("en-IN").format(traslados.elements[0].attributes.Base), style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: traslados.elements[0].attributes.Impuesto, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, true], text: traslados.elements[0].attributes.TipoFactor, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: traslados.elements[0].attributes.TasaOCuota, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, true, true], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.Importe), style: 'textotabla', alignment: "center"}, 
+                            {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" +  "Objeto Imp. - " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, true], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat(traslados.elements[0].attributes.Base).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: traslados.elements[0].attributes.Impuesto, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, true], text: traslados.elements[0].attributes.TipoFactor, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: traslados.elements[0].attributes.TasaOCuota, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
@@ -1861,40 +1866,40 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {
                         console.log(conceptos.elements[i].attributes)
                         concepts[psItems] = [
-                            {border: [true, false, false, false], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, false], text: arrayLotes[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: arrayPiezas[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.ValorUnitario), style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "", style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "", style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, false], text: "", style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "", style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, true, false], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.Importe), style: 'textotabla', alignment: "center"}, 
+                            {border: [true, false, false, false], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, false], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
                     }
                     else {
                         concepts[psItems] = [
-                            {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" +  "Objeto Imp. - " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, true], text: arrayLotes[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: arrayPiezas[i], style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "$" + Intl.NumberFormat("en-IN").format( conceptos.elements[i].attributes.ValorUnitario), style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "", style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "", style: 'textotabla', alignment: "center"},
-                            {border: [false, false, false, true], text: "", style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "", style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, true, true], text: "$" + Intl.NumberFormat("en-IN").format(conceptos.elements[i].attributes.Importe), style: 'textotabla', alignment: "center"}, 
+                            {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" +  "Objeto Imp. - " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, true], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat( conceptos.elements[i].attributes.ValorUnitario).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"},
+                            {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
@@ -2000,6 +2005,67 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 },
                 {text: "\n"}
             ]
+
+            /*if(conceptos.elements.length === 1)
+            {
+                espacio1 = [
+                    "\n",
+                    "\n",
+                    "\n",
+                    "\n",
+                    "\n",
+                    "\n",
+                    "\n",
+                    "\n"
+                ]
+            }
+            else if(conceptos.elements.length === 2)
+            {
+                espacio1 = [
+                    "\n",
+                    "\n",
+                    "\n",
+                    "\n",
+                    "\n",
+                    "\n",
+                    "\n"
+                ]
+            }
+            else if(conceptos.elements.length === 3)
+            {
+                espacio1 = [
+                    "\n",
+                    "\n",
+                    "\n",
+                    "\n",
+                    "\n",
+                    "\n"
+                ]
+            }
+            else if(conceptos.elements.length === 4)
+            {
+                espacio1 = [
+                    "\n",
+                    "\n",
+                    "\n",
+                    "\n",
+                ]
+            }
+    
+            else if(conceptos.elements.length === 5)
+            {
+                espacio1 = [
+                    "\n",
+                    "\n",
+                    "\n",
+                ]
+            }
+            else
+            {
+                espacio1 = [
+                    "\n",
+                ]
+            }*/
         }
 
         //Se arma la CADENA ORIGINAL DEL COMPLEMENTO DE CERTIFICACIÓN DIGITAL DEL SAT
@@ -2136,6 +2202,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
         
         var codigos = {
             table: {
+                dontBreakRows: true,
                 widths: [110, "*", 40,80],
                 body: [
                     [
@@ -2147,9 +2214,9 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             {text: "Total", alignment: 'left', style: "textotablatotales"},
                         ]},
                         {border: [false, true, true, true], text:  [
-                            {text: "$" + Intl.NumberFormat("en-IN").format(attributes.SubTotal) + "\n\n", alignment: 'left', style: "textotablatotales"},
+                            {text: "$" + parseFloat(attributes.SubTotal).toLocaleString("en") + "\n\n", alignment: 'left', style: "textotablatotales"},
                             {text:  "" + "\n\n", alignment: 'left', style: "textotablatotales"},
-                            {text:  "$" + Intl.NumberFormat("en-IN").format(attributes.Total) + "\n\n", alignment: 'left', style: "textotablatotales"}
+                            {text:  "$" + parseFloat(attributes.Total).toLocaleString("en") + "\n\n", alignment: 'left', style: "textotablatotales"}
                         ]},
                     ],
                 ]
@@ -2178,69 +2245,6 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
         }
 
         var resRegimenFiscal = await dbcatcatalogs.getCatalogIdDescription(paramsRegimenFiscal)
-
-        //Para poner espacios entre el codigo y las cadenas
-        var espacio1 = ["\n"]
-        /*if(conceptos.elements.length === 1)
-        {
-            espacio1 = [
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n"
-            ]
-        }
-        else if(conceptos.elements.length === 2)
-        {
-            espacio1 = [
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n"
-            ]
-        }
-        else if(conceptos.elements.length === 3)
-        {
-            espacio1 = [
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n"
-            ]
-        }
-        else if(conceptos.elements.length === 4)
-        {
-            espacio1 = [
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-            ]
-        }
-
-        else if(conceptos.elements.length === 5)
-        {
-            espacio1 = [
-                "\n",
-                "\n",
-                "\n",
-            ]
-        }
-        else
-        {
-            espacio1 = [
-                "\n",
-            ]
-        }*/
 
         var docDefinition = {
             pageMargins: [ 25, 10, 25, 50 ],
@@ -2274,13 +2278,8 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 leyendasF,
                 norma,
                 cadenasTable, 
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n",
                 espacio1,
+                "\n",
                 codigos
                 
             ],
@@ -2377,6 +2376,9 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 },
                 textotabla2: {
                     fontSize: 7,
+                },
+                textotabla3: {
+                    fontSize: 5.5,
                 },
                 textotablacodigo: {
                     fontSize: 6.0,
@@ -2493,7 +2495,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
     
 }
 
-//getPDFPolymex(xmlLeyendas, "/Users/alexishernandezolvera/Desktop/IPM6203226B4_RI_90382_20220318_Varios_Item.txt", "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/images/Logo_Polymex.png")
+getPDFPolymex(xmlLeyendas, "/Users/alexishernandezolvera/Desktop/PRUEBASPOLYMEX/IPM6203226B4_RI_90382_20220318_Varios_Item.txt", "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/images/Logo_Polymex.png")
 
 var numeroALetras = (function() {
     
