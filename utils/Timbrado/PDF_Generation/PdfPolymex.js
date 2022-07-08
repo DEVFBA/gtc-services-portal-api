@@ -1,21 +1,21 @@
-/*var fonts = {
+var fonts = {
     Roboto: {
       normal: 'C:/GTC/Fonts/Roboto-Regular.ttf',
       bold: 'C:/GTC/Fonts/Roboto-Bold.ttf',
       italics: 'C:/GTC/Fonts/Montserrat-Italic.ttf',
       bolditalics: 'C:/GTC/Fonts/Montserrat-BoldItalic.ttf'
     }
-}*/
+}
 
 
-var fonts = {
+/*var fonts = {
     Roboto: {
       normal: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Roboto-Regular.ttf',
       bold: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Roboto-Bold.ttf',
       italics: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Montserrat-Italic.ttf',
       bolditalics: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Montserrat-BoldItalic.ttf'
     }
-};
+};*/
 
 var convert = require('xml-js');
 var PdfPrinter = require('pdfmake');
@@ -128,18 +128,28 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
             exportacion = "Exportación: " + attributes.Exportacion + "\n"
         }
 
+        var paramsRegimenFiscalEmisor = {
+            pvOptionCRUD: "R",
+            pvIdCatalog: emisor.attributes.RegimenFiscal,
+            table: "SAT_Cat_Tax_Regimens"
+        }
+
+        var resRegimenFiscalEmisor = await dbcatcatalogs.getCatalogIdDescription(paramsRegimenFiscalEmisor);
+
+
         var datosEmisor = {
             text: [
                 "\n",
                 "\n",
                 {text: emisor.attributes.Nombre + `\n`, style: 'textotablaboldlarge'},
-                {text: "DOMICILIO FISCAL \n", style: 'encabezadoDomicilio'},
+                {text: "DOMICILIO FISCAL EMISOR\n", style: 'encabezadoDomicilio'},
                 {text: paramsEncabezado[0] + " No. " + paramsEncabezado[1] + "\n", style: 'encabezadoTexto'},
                 {text: paramsEncabezado[2] + "\n", style: 'encabezadoTexto'},
                 {text: paramsEncabezado[3] + ", " + paramsEncabezado[4] +  " CP: " + paramsEncabezado[5] +  " " + paramsEncabezado[8] + "\n", style: 'encabezadoTexto'},
                 {text: "Tel: " + paramsEncabezado[9] + "\n", style: 'encabezadoTexto'},
                 {text: emisor.attributes.Rfc + `\n`, style: 'encabezadoTexto'},
                 {text: "Lugar de expedición: " + attributes.LugarExpedicion + "\n", style: 'encabezadoTexto'},
+                {text: "Régimen Fiscal: " + emisor.attributes.RegimenFiscal + " - " + resRegimenFiscalEmisor + "\n", style: 'encabezadoTexto'},
                 {text: exportacion, style: 'encabezadoTexto'},
             ]
         }
@@ -251,6 +261,16 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
         if(receptor.attributes.RegimenFiscalReceptor !== undefined)
         {
             regFiscal = receptor.attributes.RegimenFiscalReceptor;
+
+            var paramsRegimenFiscalReceptor = {
+                pvOptionCRUD: "R",
+                pvIdCatalog: receptor.attributes.RegimenFiscalReceptor,
+                table: "SAT_Cat_Tax_Regimens"
+            }
+    
+            var resRegimenFiscalReceptor = await dbcatcatalogs.getCatalogIdDescription(paramsRegimenFiscalReceptor);
+
+            regFiscal = regFiscal + " - " + resRegimenFiscalReceptor
         }
 
         var emisorReceptor = 
@@ -263,10 +283,10 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             [
                                 {text: `Nombre o Razón Social:\n`, style: 'textotablaEmisorReceptor'},
                                 {text: receptor.attributes.Nombre + `\n`, style: 'textotablaEmisorReceptor'},
+                                {text: "Domicilio Fiscal Receptor:" + `\n`, style: 'textotablaEmisorReceptor'},
                                 {text: paramsEncabezado[10] + " " + paramsEncabezado[11] + `\n`, style: 'textotablaEmisorReceptor'},
                                 {text: paramsEncabezado[12] + `\n`, style: 'textotablaEmisorReceptor'},
                                 {text: paramsEncabezado[13] + ", " + paramsEncabezado[14] + " CP: " + paramsEncabezado[15] + "\n", style: 'textotablaEmisorReceptor'},
-                                {text: "Domicilio Fiscal: " + domFiscal + "\n", style: 'textotablaEmisorReceptor'},
                                 {text: "RFC: " + receptor.attributes.Rfc + "\t\t\t\t\t\t\t\t\t\t" + paramsEncabezado[17] + "\n", style: 'textotablaEmisorReceptor'},
                                 {text: "Tel: " + paramsEncabezado[16] + "\n", style: 'textotablaEmisorReceptor'},
                                 {text: "Régimen Fiscal: " + regFiscal, style: 'textotablaEmisorReceptor'},
@@ -533,7 +553,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     var noPedimento = ""
                     if(informacionAduanera !== undefined)
                     {
-                        noPedimento = "No. Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
+                        noPedimento = "Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
                     }
 
                     if(i !== conceptos.elements.length-1)
@@ -583,7 +603,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     var noPedimento = ""
                     if(informacionAduanera !== undefined)
                     {
-                        noPedimento = "No. Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
+                        noPedimento = "Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
                     }
 
                     if(i !== conceptos.elements.length-1)
@@ -929,8 +949,8 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 {border: [false, true, false, true], text: `Descripción`, style: 'textotabla2', alignment: "center"}, 
                 {border: [false, true, false, true], text: `Unidad`, style: 'textotabla2', alignment: "center"},  
                 {border: [false, true, false, true], text: `Cantidad`, style: 'textotabla2', alignment: "center"},
-                {border: [false, true, false, true], text: `Precio Unitario`, style: 'textotabla2', alignment: "center"}, 
-                {border: [false, true, true, true], text: `Base`, style: 'textotabla2', alignment: "center"},
+                {border: [false, true, false, true], text: `Valor Unitario`, style: 'textotabla2', alignment: "center"}, 
+                {border: [false, true, true, true], text: `Importe`, style: 'textotabla2', alignment: "center"},
             ]
 
             psItems++
@@ -942,7 +962,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 var noPedimento = ""
                 if(informacionAduanera !== undefined)
                 {
-                    noPedimento = "No. Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
+                    noPedimento = "Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
                 }
                 
                 if(i !== conceptos.elements.length-1)
@@ -954,7 +974,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                         {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"},  
                         {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla', alignment: "center"},
                         {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
-                        {border: [false, false, true, false], text: "$0", style: 'textotabla', alignment: "center"}, 
+                        {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe), style: 'textotabla', alignment: "center"}, 
                     ]
             
                     psItems++
@@ -967,7 +987,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                         {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla', alignment: "center"},
                         {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
-                        {border: [false, false, true, true], text: "$0", style: 'textotabla', alignment: "center"}, 
+                        {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe), style: 'textotabla', alignment: "center"}, 
                     ]
             
                     psItems++
@@ -1637,7 +1657,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     var noPedimento = ""
                     if(informacionAduanera !== undefined)
                     {
-                        noPedimento = "No. Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
+                        noPedimento = "Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
                     }
 
                     if(i !== conceptos.elements.length-1)
@@ -1687,7 +1707,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     var noPedimento = ""
                     if(informacionAduanera !== undefined)
                     {
-                        noPedimento = "No. Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
+                        noPedimento = "Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
                     }
 
                     if(i !== conceptos.elements.length-1)
@@ -1891,7 +1911,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     var noPedimento = ""
                     if(informacionAduanera !== undefined)
                     {
-                        noPedimento = "No. Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
+                        noPedimento = "Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
                     }
 
                     if(i !== conceptos.elements.length-1)
@@ -1941,7 +1961,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     var noPedimento = ""
                     if(informacionAduanera !== undefined)
                     {
-                        noPedimento = "No. Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
+                        noPedimento = "Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
                     }
 
                     if(i !== conceptos.elements.length-1)
@@ -2626,7 +2646,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
     
 }
 
-getPDFPolymex(xmlNotaCredito2, "/Users/alexishernandezolvera/Desktop/IPM6203226B4_RM_14_20220708.txt", "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/images/Logo_Polymex.png")
+//getPDFPolymex(xmlComercioExterior, "/Users/alexishernandezolvera/Desktop/IPM6203226B4_RI_94099_20220603.txt", "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/images/Logo_Polymex.png")
 
 var numeroALetras = (function() {
     
