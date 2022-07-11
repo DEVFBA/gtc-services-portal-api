@@ -125,7 +125,15 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
         var exportacion = "";
         if(attributes.Exportacion !== undefined)
         {
-            exportacion = "Exportación: " + attributes.Exportacion + "\n"
+            let paramsExportacion = {
+                pvOptionCRUD: "R",
+                pvIdCatalog: attributes.Exportacion,
+                table: "SAT_Cat_Export"
+            }
+    
+            let resExportacion = await dbcatcatalogs.getCatalogIdDescription(paramsExportacion)
+
+            exportacion = "Exportación: " + attributes.Exportacion + " - " + resExportacion + "\n"
         }
 
         var paramsRegimenFiscalEmisor = {
@@ -650,7 +658,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 }
             }
 
-            if(paramsEncabezado[35] !== "")
+            if(paramsEncabezado[35] !== undefined)
             {
                 concepts[psItems] = [
                     {border: [true, true, true, true], text: paramsEncabezado[35], style: 'textotabla', alignment: "center", colSpan: 14},
@@ -958,13 +966,17 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
             //Iteramos cada uno de los conceptos
             for(var i=0; i<conceptos.elements.length; i++)
             {
-                var informacionAduanera = conceptos.elements[i].elements.find( o => o.name === "cfdi:InformacionAduanera")
                 var noPedimento = ""
-                if(informacionAduanera !== undefined)
+                if(conceptos.elements[i].elements !== undefined)
                 {
-                    noPedimento = "Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
-                }
+                    var informacionAduanera = conceptos.elements[i].elements.find( o => o.name === "cfdi:InformacionAduanera")
                 
+                    if(informacionAduanera !== undefined)
+                    {
+                        noPedimento = "Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
+                    }
+                }
+                  
                 if(i !== conceptos.elements.length-1)
                 {
                     concepts[psItems] = [
@@ -994,7 +1006,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 }
             }
 
-            if(paramsEncabezado[35] !== "")
+            if(paramsEncabezado[35] !== undefined)
             {
                 concepts[psItems] = [
                     {border: [true, true, true, true], text: paramsEncabezado[35], style: 'textotabla', alignment: "center", colSpan: 7},
@@ -1145,8 +1157,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
             psItems = 0;
 
             cfdiRelacionados[psItems] = [
-                {border: [true, true, true, false], text: `CFDI Relacionados`, style: 'textotablaEmisorReceptor', alignment: "center", colSpan: 10},
-                {border: [true, true, true, false], text: ``}, 
+                {border: [true, true, true, false], text: `CFDI Relacionados`, style: 'textotablaEmisorReceptor', alignment: "center", colSpan: 9},
                 {border: [true, true, true, false], text: ``}, 
                 {border: [true, true, true, false], text: ``}, 
                 {border: [true, true, true, false], text: ``}, 
@@ -1160,8 +1171,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
             psItems++
 
             cfdiRelacionados[psItems] = [
-                {border: [true, false, true, false], text: "", colSpan: 10},
-                {border: [true, true, true, false], text: ``}, 
+                {border: [true, false, true, false], text: "", colSpan: 9},
                 {border: [true, true, true, false], text: ``}, 
                 {border: [true, true, true, false], text: ``}, 
                 {border: [true, true, true, false], text: ``}, 
@@ -1181,7 +1191,6 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 {fillColor: "#e4e4e4", border: [false, false, false, false], text: `Objeto Imp. DR`, style: 'textotabla', alignment: "center"}, 
                 {fillColor: "#e4e4e4", border: [false, false, false, false], text: `Equivalencia DR`, style: 'textotabla', alignment: "center"}, 
                 {fillColor: "#e4e4e4", border: [false, false, false, false], text: `Impuesto Retenciones DR`, style: 'textotabla', alignment: "center"}, 
-                {fillColor: "#e4e4e4", border: [false, false, false, false], text: `Impuesto Retenciones del Pago`, style: 'textotabla', alignment: "center"}, 
                 {fillColor: "#e4e4e4", border: [false, false, false, false], text: `Importe del saldo insoluto`, style: 'textotabla', alignment: "center"}, 
                 {fillColor: "#e4e4e4", border: [false, false, false, false], text: `Saldo pendiente`, style: 'textotabla', alignment: "center"}, 
                 {fillColor: "#e4e4e4", border: [false, false, true, false], text: `Importe pagado`, style: 'textotabla', alignment: "center"}, 
@@ -1220,33 +1229,15 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     }
                 }
 
-                var impuestoRetencionesP = 0
-                if(pago20.elements[i].name == "pago20:ImpuestosP")
-                {   
-                    var retencionesP = pago20.elements[i].elements.find( o => o.name === "pago20:RetencionesP")
-                    //var retencionesP = impuestosP.elements.find( o => o.name === "pago20:RetencionesDR")
-                    if(retencionesP !== undefined)
-                    {
-                        //Se realiza la suma de todas las retencionesDR+
-                        for(var j=0; j<retencionesP.elements.length; j++)
-                        {
-                            console.log(retencionesP.elements[j].attributes.ImporteP)
-                            impuestoRetencionesP = impuestoRetencionesP + parseInt(retencionesP.elements[j].attributes.ImporteP,10)
-                            console.log("YA ACABE")
-                        }
-                    }
-                }
-
                 if(pago20.elements[i].name === "pago20:DoctoRelacionado")
                 {
                     cfdiRelacionados[psItems] = [
-                        {border: [true, false, false, false], text: pago20.elements[i].attributes.IdDocumento, style: 'textotabla', alignment: "left"},
+                        {border: [true, false, false, false], text: pago20.elements[i].attributes.IdDocumento, style: 'textotabla3', alignment: "left"},
                         {border: [false, false, false, false], text: pago20.elements[i].attributes.NumParcialidad, style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, false, false], text: pago20.elements[i].attributes.Folio, style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, false, false], text: pago20.elements[i].attributes.ObjetoImpDR, style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, false, false], text: pago20.elements[i].attributes.EquivalenciaDR, style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, false, false], text: "$" + parseFloat(impuestoRetencionesDR).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
-                        {border: [false, false, false, false], text: impuestoRetencionesP, style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, false, false], text: "$" + parseFloat(pago20.elements[i].attributes.ImpSaldoInsoluto).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, false, false], text: "$" + parseFloat(pago20.elements[i].attributes.ImpSaldoAnt).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, true, false], text: "$" + parseFloat(pago20.elements[i].attributes.ImpPagado).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
@@ -1255,6 +1246,58 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     psItems++
                 }
             }
+
+            var impuestosP = pago20.elements.find( o => o.name === "pago20:ImpuestosP");
+            if(impuestosP !== undefined)
+            {
+                var retencionesP = impuestosP.elements.find( o => o.name === "pago20:RetencionesP")
+                if(retencionesP !== undefined)
+                {
+                    var impuestoRetencionesP = 0;
+                    //Se realiza la suma de todas las retencionesP+
+                    for(var j=0; j<retencionesP.elements.length; j++)
+                    {
+                        //console.log(retencionesP.elements[j].attributes.ImporteP)
+                        impuestoRetencionesP = impuestoRetencionesP + parseInt(retencionesP.elements[j].attributes.ImporteP,10);
+                    }
+
+                    cfdiRelacionados[psItems] = [
+                        {border: [true, false, false, false], text: ""},
+                        {border: [false, false, false, false], text: ""}, 
+                        {border: [false, false, false, false], text: ""}, 
+                        {border: [false, false, false, false], text: ""}, 
+                        {border: [false, false, false, false], text: ""}, 
+                        {border: [false, false, true, false], text: [
+                            {text: "Impuesto Retenciones del Pago: ", style: 'textotablaboldblack'},
+                            {text: "$" + parseFloat(impuestoRetencionesP).toLocaleString("en"), style: 'textotabla', alignment: "center"}
+                        ], colSpan: 4}, 
+                        {border: [false, false, false, false], text: ""}, 
+                        {border: [false, false, false, false], text: ""}, 
+                        {border: [false, false, true, false], text: ""}, 
+                    ]
+        
+                    psItems++
+                    
+                }
+            }
+            /*var impuestoRetencionesP = 0
+            if(pago20.elements[i].name == "pago20:ImpuestosP")
+            {   
+                var retencionesP = pago20.elements[i].elements.find( o => o.name === "pago20:RetencionesP")
+                //var retencionesP = impuestosP.elements.find( o => o.name === "pago20:RetencionesDR")
+                if(retencionesP !== undefined)
+                {
+                    //Se realiza la suma de todas las retencionesDR+
+                    for(var j=0; j<retencionesP.elements.length; j++)
+                    {
+                        console.log(retencionesP.elements[j].attributes.ImporteP)
+                        impuestoRetencionesP = impuestoRetencionesP + parseInt(retencionesP.elements[j].attributes.ImporteP,10)
+                        console.log("YA ACABE")
+                    }
+                }
+            }*/
+
+            console.log(pago20.elements)
 
             var pagoTotales = pago.elements.find( o => o.name === "pago20:Totales");
 
@@ -1269,8 +1312,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, true, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, true, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, true, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
-                    {border: [true, true, true, false],  text: "Total retenciones IVA", style: 'textotabla', alignment: "left", colSpan:3},
-                    {border: [true, true, true, false],  text: ""}, 
+                    {border: [true, true, true, false],  text: "Total retenciones IVA", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, true, false, false],  text: ""}, 
                     {border: [true, true, true, false],  text: "$" + parseFloat(retIva).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, true, true, false],  text: ""}, 
@@ -1290,8 +1332,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
-                    {border: [true, false, true, false],  text: "Total Retenciones ISR", style: 'textotabla', alignment: "left", colSpan:3},
-                    {border: [true, false, true, false],  text: ""}, 
+                    {border: [true, false, true, false],  text: "Total Retenciones ISR", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, false, false, false],  text: ""}, 
                     {border: [true, false, true, false],  text: "$" + parseFloat(retIsr).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
@@ -1311,8 +1352,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
-                    {border: [true, false, true, false],  text: "Total Retenciones IEPS", style: 'textotabla', alignment: "left", colSpan:3},
-                    {border: [true, false, true, false],  text: ""}, 
+                    {border: [true, false, true, false],  text: "Total Retenciones IEPS", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, false, false, false],  text: ""}, 
                     {border: [true, false, true, false],  text: "$" + parseFloat(retIeps).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
@@ -1332,8 +1372,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
-                    {border: [true, false, true, false],  text: "Total Traslado Base IVA 16 ", style: 'textotabla', alignment: "left", colSpan:3},
-                    {border: [true, false, true, false],  text: ""}, 
+                    {border: [true, false, true, false],  text: "Total Traslado Base IVA 16 ", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, false, false, false],  text: ""}, 
                     {border: [true, false, true, false],  text: "$" + parseFloat(trasIB16).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
@@ -1353,8 +1392,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
-                    {border: [true, false, true, false],  text: "Total Traslados Impuesto IVA 16", style: 'textotabla', alignment: "left", colSpan:3},
-                    {border: [true, false, true, false],  text: ""}, 
+                    {border: [true, false, true, false],  text: "Total Traslados Impuesto IVA 16", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, false, false, false],  text: ""}, 
                     {border: [true, false, true, false],  text: "$" + parseFloat(trasI16).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
@@ -1374,8 +1412,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
-                    {border: [true, false, true, false],  text: "Total Traslados Base IVA 8", style: 'textotabla', alignment: "left", colSpan:3},
-                    {border: [true, false, true, false],  text: ""}, 
+                    {border: [true, false, true, false],  text: "Total Traslados Base IVA 8", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, false, false, false],  text: ""}, 
                     {border: [true, false, true, false],  text: "$" + parseFloat(trasIB8).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
@@ -1395,8 +1432,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
-                    {border: [true, false, true, false],  text: "Total Traslados Impuestos IVA 8", style: 'textotabla', alignment: "left", colSpan:3},
-                    {border: [true, false, true, false],  text: ""}, 
+                    {border: [true, false, true, false],  text: "Total Traslados Impuestos IVA 8", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, false, false, false],  text: ""}, 
                     {border: [true, false, true, false],  text: "$" + parseFloat(trasII8).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
@@ -1416,8 +1452,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
-                    {border: [true, false, true, false],  text: "Total Traslados Base IVA 0", style: 'textotabla', alignment: "left", colSpan:3},
-                    {border: [true, false, true, false],  text: ""}, 
+                    {border: [true, false, true, false],  text: "Total Traslados Base IVA 0", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, false, false, false],  text: ""}, 
                     {border: [true, false, true, false],  text: "$" + parseFloat(trasBI0).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
@@ -1437,8 +1472,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
-                    {border: [true, false, true, false],  text: "Total Traslado Impuesto IVA 0", style: 'textotabla', alignment: "left", colSpan:3},
-                    {border: [true, false, true, false],  text: ""}, 
+                    {border: [true, false, true, false],  text: "Total Traslado Impuesto IVA 0", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, false, false, false],  text: ""}, 
                     {border: [true, false, true, false],  text: "$" + parseFloat(trasII0).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
@@ -1458,8 +1492,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
-                    {border: [true, false, true, false],  text: "Total Trasladados Base IVA Excento", style: 'textotabla', alignment: "left", colSpan:3},
-                    {border: [true, false, true, false],  text: ""}, 
+                    {border: [true, false, true, false],  text: "Total Trasladados Base IVA Excento", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, false, false, false],  text: ""}, 
                     {border: [true, false, true, false],  text: "$" + parseFloat(trasBI6).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
@@ -1480,8 +1513,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                 {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                 {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
-                {border: [true, false, true, true],  text: "Monto Total Pagos", style: 'textotabla', alignment: "left", colSpan:3},
-                {border: [true, false, true, false],  text: ""}, 
+                {border: [true, false, true, true],  text: "Monto Total Pagos", style: 'textotabla', alignment: "left", colSpan:2},
                 {border: [false, false, false, false],  text: ""}, 
                 {border: [true, false, true, true],  text: "$" + parseFloat(montoTP).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
                 {border: [false, false, true, false],  text: ""}, 
@@ -1494,7 +1526,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 {
                     table: {
                         dontBreakRows: true, 
-                        widths: ["*", 40, 40, 40, 40, 40, 40, 40, 40, 40],
+                        widths: ["*", 45, 45, 45, 45, 45, 45, 45, 45],
                         body: cfdiRelacionados
                     },
                     layout: {
@@ -1755,7 +1787,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 }
             }
 
-            if(paramsEncabezado[35] !== "")
+            if(paramsEncabezado[35] !== undefined)
             {
                 concepts[psItems] = [
                     {border: [true, true, true, true], text: paramsEncabezado[35], style: 'textotabla', alignment: "center", colSpan: 14},
@@ -2009,7 +2041,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 }
             }
 
-            if(paramsEncabezado[35] !== "")
+            if(paramsEncabezado[35] !== undefined)
             {
                 concepts[psItems] = [
                     {border: [true, true, true, true], text: paramsEncabezado[35], style: 'textotabla', alignment: "center", colSpan: 14},
@@ -2646,7 +2678,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
     
 }
 
-//getPDFPolymex(xmlComercioExterior, "/Users/alexishernandezolvera/Desktop/IPM6203226B4_RI_94099_20220603.txt", "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/images/Logo_Polymex.png")
+//getPDFPolymex(xmlPagos2, "/Users/alexishernandezolvera/Desktop/P31651.txt", "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/images/Logo_Polymex.png")
 
 var numeroALetras = (function() {
     
