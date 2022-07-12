@@ -113,14 +113,14 @@ async function getPDFGtc(docBase64, pathLogo)
                             widths: [70,70,"*"],
                             body: [
                                 [
-                                    {fillColor: "#1C932B", border: [true, true, true, false], text: `Serie`, style: 'textotablacolor', alignment: "center"},
-                                    {fillColor: "#1C932B", border: [true, true, true, false], text: `Folio`, style: 'textotablacolor', alignment: "center"}, 
-                                    {fillColor: "#1C932B", border: [true, true, true, false], text: `Fecha`, style: 'textotablacolor', alignment: "center"}, 
+                                    {fillColor: "#1C932B", border: [true, true, false, false], text: `Serie`, style: 'textotablacolor', alignment: "center"},
+                                    {fillColor: "#1C932B", border: [false, true, false, false], text: `Folio`, style: 'textotablacolor', alignment: "center"}, 
+                                    {fillColor: "#1C932B", border: [false, true, true, false], text: `Fecha`, style: 'textotablacolor', alignment: "center"}, 
                                 ],
                                 [
-                                    {border: [true, false, true, true], text: attributes.Serie, style: 'textotablaEmisorReceptor', alignment: "center"},
-                                    {border: [true, false, true, true], text: attributes.Folio, style: 'textotablaEmisorReceptor', alignment: "center"}, 
-                                    {border: [true, false, true, true], text: attributes.Fecha, style: 'textotablaEmisorReceptor', alignment: "center"}, 
+                                    {border: [true, false, false, true], text: attributes.Serie, style: 'textotablaEmisorReceptor', alignment: "center"},
+                                    {border: [false, false, false, true], text: attributes.Folio, style: 'textotablaEmisorReceptor', alignment: "center"}, 
+                                    {border: [false, false, true, true], text: attributes.Fecha, style: 'textotablaEmisorReceptor', alignment: "center"}, 
                                 ],
                             ]
                         },
@@ -281,26 +281,29 @@ async function getPDFGtc(docBase64, pathLogo)
                 }
             }
 
-            cfdiRel = {
-                table: {
-                    widths: ["*"],
-                    body: cfdiR
+            cfdiRel = [
+                {
+                    table: {
+                        widths: ["*"],
+                        body: cfdiR
+                    },
+                    layout: {
+                        hLineWidth: function () {
+                            return  0.7;
+                        },
+                        vLineWidth: function () {
+                            return 0.7;
+                        },
+                        hLineColor: function () {
+                            return 'black';
+                        },
+                        vLineColor: function () {
+                            return 'black';
+                        },
+                    }
                 },
-                layout: {
-                    hLineWidth: function () {
-                        return  0.7;
-                    },
-                    vLineWidth: function () {
-                        return 0.7;
-                    },
-                    hLineColor: function () {
-                        return 'black';
-                    },
-                    vLineColor: function () {
-                        return 'black';
-                    },
-                }
-            }
+                {text:  "\n"}
+            ]
         }
 
         var paramsMoneda= {
@@ -320,37 +323,40 @@ async function getPDFGtc(docBase64, pathLogo)
         var resMetodoPago = await dbcatcatalogs.getCatalogIdDescription(paramsMetodoPago);
 
         var monedaMetodo = 
-        {
-            table: {
-                widths: [165,"*",165],
-                body: [
-                    [
-                        {border: [true, true, true, false], text: `Moneda`, style: 'textotablaboldblack', alignment: "center"},
-                        {border: [true, true, true, false], text: `Método de Pago`, style: 'textotablaboldblack', alignment: "center"}, 
-                        {border: [true, true, true, false], text: `UUID`, style: 'textotablaboldblack', alignment: "center"}, 
-                    ],
-                    [
-                        {border: [true, false, true, true], text: attributes.Moneda + " - " + resMoneda, style: 'textotablaEmisorReceptor', alignment: "center"},
-                        {border: [true, false, true, true], text:  attributes.MetodoPago + " - " + resMetodoPago, style: 'textotablaEmisorReceptor', alignment: "center"}, 
-                        {border: [true, false, true, true], text: timbreFiscal.attributes.UUID, style: 'textotabla4', alignment: "center"}, 
-                    ],
-                ]
+        [
+            {
+                table: {
+                    widths: [165,"*",165],
+                    body: [
+                        [
+                            {border: [true, true, true, false], text: `Moneda`, style: 'textotablaEmisorReceptorBold', alignment: "center"},
+                            {border: [true, true, true, false], text: `Método de Pago`, style: 'textotablaEmisorReceptorBold', alignment: "center"}, 
+                            {border: [true, true, true, false], text: `UUID`, style: 'textotablaEmisorReceptorBold', alignment: "center"}, 
+                        ],
+                        [
+                            {border: [true, false, true, true], text: attributes.Moneda + " - " + resMoneda, style: 'textotablaEmisorReceptor', alignment: "center"},
+                            {border: [true, false, true, true], text:  attributes.MetodoPago + " - " + resMetodoPago, style: 'textotablaEmisorReceptor', alignment: "center"}, 
+                            {border: [true, false, true, true], text: timbreFiscal.attributes.UUID, style: 'textotabla4', alignment: "center"}, 
+                        ],
+                    ]
+                },
+                layout: {
+                    hLineWidth: function () {
+                        return  0.7;
+                    },
+                    vLineWidth: function () {
+                        return 0.7;
+                    },
+                    hLineColor: function () {
+                        return 'black';
+                    },
+                    vLineColor: function () {
+                        return 'black';
+                    },
+                }
             },
-            layout: {
-                hLineWidth: function () {
-                    return  0.7;
-                },
-                vLineWidth: function () {
-                    return 0.7;
-                },
-                hLineColor: function () {
-                    return 'black';
-                },
-                vLineColor: function () {
-                    return 'black';
-                },
-            }
-        }
+            {text:  "\n"}
+        ]
         
         var concepts = []
         psItems = 0;
@@ -861,28 +867,31 @@ async function getPDFGtc(docBase64, pathLogo)
         psItems++
 
         var conceptosTable = 
-        {
-            table: {
-                dontBreakRows: true, 
-                headerRows: 1,
-                widths: [60,60,60,"*",60,60,60],
-                body: concepts
+        [
+            {
+                table: {
+                    dontBreakRows: true, 
+                    headerRows: 1,
+                    widths: [60,60,60,"*",60,60,60],
+                    body: concepts
+                },
+                layout: {
+                    hLineWidth: function () {
+                        return  0.7;
+                    },
+                    vLineWidth: function () {
+                        return 0.7;
+                    },
+                    hLineColor: function () {
+                        return 'black';
+                    },
+                    vLineColor: function () {
+                        return 'black';
+                    },
+                }
             },
-            layout: {
-                hLineWidth: function () {
-                    return  0.7;
-                },
-                vLineWidth: function () {
-                    return 0.7;
-                },
-                hLineColor: function () {
-                    return 'black';
-                },
-                vLineColor: function () {
-                    return 'black';
-                },
-            }
-        }
+            {text:  "\n"}
+        ]
 
         var compPago = {}
         var compP = []
@@ -913,24 +922,10 @@ async function getPDFGtc(docBase64, pathLogo)
     
             psItems++
 
-            compP[psItems] = [
-                {border: [false, false, false, false], text: `\n`, style: 'textotablaboldblack', alignment: "center", colSpan:9},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {}
-            ]
-    
-            psItems++
-
             for(var i=0; i<complementoPago.elements.length; i++)
             {
                 compP[psItems] = [
-                    {fillColor: "#1C932B", border: [true, true, true, true], text: `Pago ` + i+1, style: 'textoTablaTrasladoHeader', alignment: "center", colSpan:9},
+                    {border: [true, true, true, true], text: `Pago ` + parseInt(i+1, 10), style: 'textotablaEmisorReceptorBold', alignment: "center", colSpan:9},
                     {},
                     {},
                     {},
@@ -944,19 +939,19 @@ async function getPDFGtc(docBase64, pathLogo)
                 psItems++
 
                 compP[psItems] = [
-                    {border: [true, true, true, true], text: [
+                    {border: [true, true, false, false], text: [
                         {text: `Cuenta Beneficiario: `, style: 'textotablaEmisorReceptorBold'},
                         {text: complementoPago.elements[i].attributes.CtaBeneficiario, style: 'textotablaEmisorReceptor'},
                     ], colSpan: 3},
                     {},
                     {},
-                    {border: [true, true, true, true], text: [
+                    {border: [false, true, false, false], text: [
                         {text: `Forma de Pago: `, style: 'textotablaEmisorReceptorBold'},
                         {text: complementoPago.elements[i].attributes.FormaDePagoP, style: 'textotablaEmisorReceptor'},
                     ], colSpan: 3},
                     {},
                     {},
-                    {border: [true, true, true, true], text: [
+                    {border: [false, true, true, false], text: [
                         {text: `Tipo Cambio: `, style: 'textotablaEmisorReceptorBold'},
                         {text: complementoPago.elements[i].attributes.TipoCambioP, style: 'textotablaEmisorReceptor'},
                     ], colSpan: 3},
@@ -967,19 +962,19 @@ async function getPDFGtc(docBase64, pathLogo)
                 psItems++
     
                 compP[psItems] = [
-                    {border: [true, true, true, true], text: [
+                    {border: [true, false, false, false], text: [
                         {text: `Cuenta Ordenante: `, style: 'textotablaEmisorReceptorBold'},
                         {text: complementoPago.elements[i].attributes.CtaOrdenante, style: 'textotablaEmisorReceptor'},
                     ], colSpan: 3},
                     {},
                     {},
-                    {border: [true, true, true, true], text: [
+                    {border: [false, false, false, false], text: [
                         {text: `Moneda: `, style: 'textotablaEmisorReceptorBold'},
                         {text: complementoPago.elements[i].attributes.MonedaP, style: 'textotablaEmisorReceptor'},
                     ], colSpan: 3},
                     {},
                     {},
-                    {border: [true, true, true, true], text: [
+                    {border: [false, false, true, false], text: [
                         {text: `Banco Ordenante: `, style: 'textotablaEmisorReceptorBold'},
                         {text: complementoPago.elements[i].attributes.NomBancoOrdExt, style: 'textotablaEmisorReceptor'},
                     ], colSpan: 3},
@@ -990,24 +985,52 @@ async function getPDFGtc(docBase64, pathLogo)
                 psItems++
 
                 compP[psItems] = [
-                    {border: [true, true, true, true], text: [
+                    {border: [true, false, false, false], text: [
                         {text: `Fecha Pago: `, style: 'textotablaEmisorReceptorBold'},
                         {text: complementoPago.elements[i].attributes.FormaDePagoP, style: 'textotablaEmisorReceptor'},
                     ], colSpan: 3},
                     {},
                     {},
-                    {border: [true, true, true, true], text: [
+                    {border: [false, false, false, false], text: [
                         {text: `Monto Pago: `, style: 'textotablaEmisorReceptorBold'},
                         {text: complementoPago.elements[i].attributes.Monto, style: 'textotablaEmisorReceptor'},
                     ], colSpan: 3},
                     {},
                     {},
-                    {border: [true, true, true, true], text: [
+                    {border: [false, false, true, false], text: [
                         {text: `RFC Ordenante: `, style: 'textotablaEmisorReceptorBold'},
                         {text: complementoPago.elements[i].attributes.RfcEmisorCtaOrd, style: 'textotablaEmisorReceptor'},
                     ], colSpan: 3},
                     {},
                     {},
+                ]
+        
+                psItems++
+
+                compP[psItems] = [
+                    {border: [true, true, true, false], text: `CFDI Relacionados`, style: 'textotablaEmisorReceptor', alignment: "center", colSpan: 9},
+                    {border: [false, false, false, false], text: ``},
+                    {border: [false, false, false, false], text: ``}, 
+                    {border: [false, false, false, false], text: ``}, 
+                    {border: [false, false, false, false], text: ``}, 
+                    {border: [false, false, false, false], text: ``}, 
+                    {border: [false, false, false, false], text: ``}, 
+                    {border: [false, false, false, false], text: ``},
+                    {border: [false, false, true, false], text: ``},
+                ]
+        
+                psItems++
+
+                compP[psItems] = [
+                    {border: [true, false, true, false], text: ``, style: 'textotablaEmisorReceptor', alignment: "center", colSpan: 9},
+                    {border: [false, false, false, false], text: ``},
+                    {border: [false, false, false, false], text: ``}, 
+                    {border: [false, false, false, false], text: ``}, 
+                    {border: [false, false, false, false], text: ``}, 
+                    {border: [false, false, false, false], text: ``}, 
+                    {border: [false, false, false, false], text: ``}, 
+                    {border: [false, false, false, false], text: ``},
+                    {border: [false, false, true, false], text: ``},
                 ]
         
                 psItems++
@@ -1018,29 +1041,29 @@ async function getPDFGtc(docBase64, pathLogo)
                     {
                         
                         compP[psItems] = [
-                            {fillColor: "#1C932B", border: [true, true, false, false], text: `Serie`, style: 'textotabla2', alignment: "center"},
-                            {fillColor: "#1C932B", border: [false, true, false, false], text: `Folio`, style: 'textotabla2', alignment: "center"},
-                            {fillColor: "#1C932B", border: [false, true, false, true], text: `UUID`, style: 'textotabla2', alignment: "center"}, 
-                            {fillColor: "#1C932B", border: [false, true, false, true], text: `Método de Pago DR`, style: 'textotabla2', alignment: "center"}, 
-                            {fillColor: "#1C932B", border: [false, true, false, true], text: `Moneda DR`, style: 'textotabla2', alignment: "center"}, 
-                            {fillColor: "#1C932B", border: [false, true, false, true], text: `Num Parcialidad`, style: 'textotabla2', alignment: "center"}, 
-                            {fillColor: "#1C932B", border: [false, true, false, true], text: `Saldo Anterior`, style: 'textotabla2', alignment: "center"}, 
-                            {fillColor: "#1C932B", border: [false, true, false, true], text: `Importe Pago`, style: 'textotabla2', alignment: "center"},
-                            {fillColor: "#1C932B", border: [false, true, true, true], text: `Saldo Insoluto`, style: 'textotabla2', alignment: "center"},
+                            {fillColor: "#e4e4e4", border: [true, false, false, false], text: `Serie`, style: 'textotabla', alignment: "center"},
+                            {fillColor: "#e4e4e4", border: [false, false, false, false], text: `Folio`, style: 'textotabla', alignment: "center"},
+                            {fillColor: "#e4e4e4", border: [false, false, false, false], text: `UUID`, style: 'textotabla', alignment: "center"}, 
+                            {fillColor: "#e4e4e4", border: [false, false, false, false], text: `Método de Pago DR`, style: 'textotabla', alignment: "center"}, 
+                            {fillColor: "#e4e4e4", border: [false, false, false, false], text: `Moneda DR`, style: 'textotabla', alignment: "center"}, 
+                            {fillColor: "#e4e4e4", border: [false, false, false, false], text: `Num Parcialidad`, style: 'textotabla', alignment: "center"}, 
+                            {fillColor: "#e4e4e4", border: [false, false, false, false], text: `Saldo Anterior`, style: 'textotabla', alignment: "center"}, 
+                            {fillColor: "#e4e4e4", border: [false, false, false, false], text: `Importe Pago`, style: 'textotabla', alignment: "center"},
+                            {fillColor: "#e4e4e4", border: [false, false, true, false], text: `Saldo Insoluto`, style: 'textotabla', alignment: "center"},
                         ]
                 
                         psItems++
 
                         compP[psItems] = [
-                            {border: [true, true, false, false], text: complementoPago.elements[i].elements[j].attributes.Serie, style: 'textotabla', alignment: "center"},
-                            {border: [false, true, false, false], text: complementoPago.elements[i].elements[j].attributes.Folio, style: 'textotabla', alignment: "center"},
-                            {border: [false, true, false, false], text: complementoPago.elements[i].elements[j].attributes.IdDocumento, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, true, false, false], text: complementoPago.elements[i].elements[j].attributes.MetodoDePagoDR, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, true, false, false], text: complementoPago.elements[i].elements[j].attributes.MonedaDR, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, true, false, false], text: complementoPago.elements[i].elements[j].attributes.NumParcialidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, true, false, false], text: complementoPago.elements[i].elements[j].attributes.ImpSaldoAnt, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, true, false, false], text: complementoPago.elements[i].elements[j].attributes.ImpPagado, style: 'textotabla', alignment: "center"},
-                            {border: [false, true, true, false], text: complementoPago.elements[i].elements[j].attributes.ImpSaldoInsoluto, style: 'textotabla', alignment: "center"},
+                            {border: [true, false, false, false], text: complementoPago.elements[i].elements[j].attributes.Serie, style: 'textotabla', alignment: "center"},
+                            {border: [false, false, false, false], text: complementoPago.elements[i].elements[j].attributes.Folio, style: 'textotabla', alignment: "center"},
+                            {border: [false, false, false, false], text: complementoPago.elements[i].elements[j].attributes.IdDocumento, style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, false], text: complementoPago.elements[i].elements[j].attributes.MetodoDePagoDR, style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, false], text: complementoPago.elements[i].elements[j].attributes.MonedaDR, style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, false], text: complementoPago.elements[i].elements[j].attributes.NumParcialidad, style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(complementoPago.elements[i].elements[j].attributes.ImpSaldoAnt).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(complementoPago.elements[i].elements[j].attributes.ImpPagado).toLocaleString("en"), style: 'textotabla', alignment: "center"},
+                            {border: [false, false, true, false], text: "$" + parseFloat(complementoPago.elements[i].elements[j].attributes.ImpSaldoInsoluto).toLocaleString("en"), style: 'textotabla', alignment: "center"},
                         ]
                 
                         psItems++
@@ -1048,71 +1071,60 @@ async function getPDFGtc(docBase64, pathLogo)
                     else if(j===complementoPago.elements[i].elements.length-1)
                     {
                         compP[psItems] = [
-                            {border: [true, true, false, true], text: complementoPago.elements[i].elements[j].attributes.Serie, style: 'textotabla', alignment: "center"},
-                            {border: [false, true, false, true], text: complementoPago.elements[i].elements[j].attributes.Folio, style: 'textotabla', alignment: "center"},
-                            {border: [false, true, false, true], text: complementoPago.elements[i].elements[j].attributes.IdDocumento, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, true, false, true], text: complementoPago.elements[i].elements[j].attributes.MetodoDePagoDR, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, true, false, true], text: complementoPago.elements[i].elements[j].attributes.MonedaDR, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, true, false, true], text: complementoPago.elements[i].elements[j].attributes.NumParcialidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, true, false, true], text: complementoPago.elements[i].elements[j].attributes.ImpSaldoAnt, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, true, false, true], text: complementoPago.elements[i].elements[j].attributes.ImpPagado, style: 'textotabla', alignment: "center"},
-                            {border: [false, true, true, true], text: complementoPago.elements[i].elements[j].attributes.ImpSaldoInsoluto, style: 'textotabla', alignment: "center"},
+                            {border: [true, false, false, true], text: complementoPago.elements[i].elements[j].attributes.Serie, style: 'textotabla', alignment: "center"},
+                            {border: [false, false, false, true], text: complementoPago.elements[i].elements[j].attributes.Folio, style: 'textotabla', alignment: "center"},
+                            {border: [false, false, false, true], text: complementoPago.elements[i].elements[j].attributes.IdDocumento, style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, true], text: complementoPago.elements[i].elements[j].attributes.MetodoDePagoDR, style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, true], text: complementoPago.elements[i].elements[j].attributes.MonedaDR, style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, true], text: complementoPago.elements[i].elements[j].attributes.NumParcialidad, style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat(complementoPago.elements[i].elements[j].attributes.ImpSaldoAnt).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat(complementoPago.elements[i].elements[j].attributes.ImpPagado).toLocaleString("en"), style: 'textotabla', alignment: "center"},
+                            {border: [false, false, true, true], text: "$" + parseFloat(complementoPago.elements[i].elements[j].attributes.ImpSaldoInsoluto).toLocaleString("en"), style: 'textotabla', alignment: "center"},
                         ]
                 
                         psItems++
                     }
                     else {
                         compP[psItems] = [
-                            {border: [true, true, false, false], text: complementoPago.elements[i].elements[j].attributes.Serie, style: 'textotabla', alignment: "center"},
-                            {border: [false, true, false, false], text: complementoPago.elements[i].elements[j].attributes.Folio, style: 'textotabla', alignment: "center"},
-                            {border: [false, true, false, false], text: complementoPago.elements[i].elements[j].attributes.IdDocumento, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, true, false, false], text: complementoPago.elements[i].elements[j].attributes.MetodoDePagoDR, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, true, false, false], text: complementoPago.elements[i].elements[j].attributes.MonedaDR, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, true, false, false], text: complementoPago.elements[i].elements[j].attributes.NumParcialidad, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, true, false, false], text: complementoPago.elements[i].elements[j].attributes.ImpSaldoAnt, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, true, false, false], text: complementoPago.elements[i].elements[j].attributes.ImpPagado, style: 'textotabla', alignment: "center"},
-                            {border: [false, true, true, false], text: complementoPago.elements[i].elements[j].attributes.ImpSaldoInsoluto, style: 'textotabla', alignment: "center"},
+                            {border: [true, false, false, false], text: complementoPago.elements[i].elements[j].attributes.Serie, style: 'textotabla', alignment: "center"},
+                            {border: [false, false, false, false], text: complementoPago.elements[i].elements[j].attributes.Folio, style: 'textotabla', alignment: "center"},
+                            {border: [false, false, false, false], text: complementoPago.elements[i].elements[j].attributes.IdDocumento, style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, false], text: complementoPago.elements[i].elements[j].attributes.MetodoDePagoDR, style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, false], text: complementoPago.elements[i].elements[j].attributes.MonedaDR, style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, false], text: complementoPago.elements[i].elements[j].attributes.NumParcialidad, style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(complementoPago.elements[i].elements[j].attributes.ImpSaldoAnt).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(complementoPago.elements[i].elements[j].attributes.ImpPagado).toLocaleString("en"), style: 'textotabla', alignment: "center"},
+                            {border: [false, false, true, false], text: "$" + parseFloat(complementoPago.elements[i].elements[j].attributes.ImpSaldoInsoluto).toLocaleString("en"), style: 'textotabla', alignment: "center"},
                         ]
                 
                         psItems++
                     }
                 }
-
-                compP[psItems] = [
-                    {border: [false, false, false, false], text: `\n`, style: 'textotablaboldblack', alignment: "center", colSpan:9},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {}
-                ]
-        
-                psItems++
             }
 
-            compPago = {
-                table: {
-                    widths: [51, 52, 52, 52, 52, 52, 52, 52, 51],
-                    body: compP
+            compPago = [
+                {
+                    table: {
+                        widths: [40, 40, "*", 40, 40, 40, 40, 40, 40],
+                        body: compP
+                    },
+                    layout: {
+                        hLineWidth: function () {
+                            return  0.7;
+                        },
+                        vLineWidth: function () {
+                            return 0.7;
+                        },
+                        hLineColor: function () {
+                            return 'black';
+                        },
+                        vLineColor: function () {
+                            return 'black';
+                        },
+                    }
                 },
-                layout: {
-                    hLineWidth: function () {
-                        return  0.7;
-                    },
-                    vLineWidth: function () {
-                        return 0.7;
-                    },
-                    hLineColor: function () {
-                        return 'black';
-                    },
-                    vLineColor: function () {
-                        return 'black';
-                    },
-                }
-            }
+                {text:  "\n"}
+            ]
         }
 
         //Se arma la CADENA ORIGINAL DEL COMPLEMENTO DE CERTIFICACIÓN DIGITAL DEL SAT
@@ -1180,30 +1192,33 @@ async function getPDFGtc(docBase64, pathLogo)
         }
 
         var cadenasTable = 
-        {
-            table: {
-                widths: [536],
-                body: [
-                    [
-                        cadenaCodigo
+        [
+            {
+                table: {
+                    widths: [536],
+                    body: [
+                        [
+                            cadenaCodigo
+                        ]
                     ]
-                ]
+                },
+                layout: {
+                    hLineWidth: function () {
+                        return  0.7;
+                    },
+                    vLineWidth: function () {
+                        return 0.7;
+                    },
+                    hLineColor: function () {
+                        return 'black';
+                    },
+                    vLineColor: function () {
+                        return 'black';
+                    },
+                }
             },
-            layout: {
-                hLineWidth: function () {
-                    return  0.7;
-                },
-                vLineWidth: function () {
-                    return 0.7;
-                },
-                hLineColor: function () {
-                    return 'black';
-                },
-                vLineColor: function () {
-                    return 'black';
-                },
-            }
-        }
+            {text:  "\n"}
+        ]
 
         //Se arma el url para el código QR
         var finSelloDig = timbreFiscal.attributes.SelloCFD.substr(-8);
@@ -1241,41 +1256,45 @@ async function getPDFGtc(docBase64, pathLogo)
             singular: resMoneda.toUpperCase(),
         });
         
-        var codigos = {
-            table: {
-                widths: [110, 416],
-                body: [
-                    [
-                        {image: temporalFilesPath + imageQR, width: 100, height: 100, alignment: 'center', verticalAlign: 'middle'},
-                        {border: [false, true, true, true], text:  [
-                            {text: "Cadena original del complemento de certificación digital del SAT:\n", style: 'textotablaboldblack'},
-                            {text: `${complementoCertificacionSAT}\n\n`, style: 'textotablacodigo'},
-                            {text: "RFC del proveedor de certificación: ", style: 'textotablaboldblack'},
-                            {text: timbreFiscal.attributes.RfcProvCertif + "\n\n", style: 'textotabla'},
-                            {text: `No. De serie del certificado SAT: `, style: 'textotablaboldblack'},
-                            {text: timbreFiscal.attributes.NoCertificadoSAT + `\n\n`, style: 'textotabla'},
-                            {text: "Fecha y Hora de Certificación: ", style: 'textotablaboldblack'},
-                            {text: timbreFiscal.attributes.FechaTimbrado, style: 'textotabla'}
-                        ]},
-                            
+        var codigos = [
+            {
+                table: {
+                    dontBreakRows: true, 
+                    widths: [110, 416],
+                    body: [
+                        [
+                            {image: temporalFilesPath + imageQR, width: 100, height: 100, alignment: 'center', verticalAlign: 'middle'},
+                            {border: [false, true, true, true], text:  [
+                                {text: "Cadena original del complemento de certificación digital del SAT:\n", style: 'textotablaboldblack'},
+                                {text: `${complementoCertificacionSAT}\n\n`, style: 'textotablacodigo'},
+                                {text: "RFC del proveedor de certificación: ", style: 'textotablaboldblack'},
+                                {text: timbreFiscal.attributes.RfcProvCertif + "\n\n", style: 'textotabla'},
+                                {text: `No. De serie del certificado SAT: `, style: 'textotablaboldblack'},
+                                {text: timbreFiscal.attributes.NoCertificadoSAT + `\n\n`, style: 'textotabla'},
+                                {text: "Fecha y Hora de Certificación: ", style: 'textotablaboldblack'},
+                                {text: timbreFiscal.attributes.FechaTimbrado, style: 'textotabla'}
+                            ]},
+                                
+                        ]
                     ]
-                ]
+                },
+                layout: {
+                    hLineWidth: function () {
+                        return  0.7;
+                    },
+                    vLineWidth: function () {
+                        return 0.7;
+                    },
+                    hLineColor: function () {
+                        return 'black';
+                    },
+                    vLineColor: function () {
+                        return 'black';
+                    },
+                }	
             },
-            layout: {
-                hLineWidth: function () {
-                    return  0.7;
-                },
-                vLineWidth: function () {
-                    return 0.7;
-                },
-                hLineColor: function () {
-                    return 'black';
-                },
-                vLineColor: function () {
-                    return 'black';
-                },
-            }	
-        }
+            {text:  "\n"}
+        ]
 
         //Para poner el regimen fiscal en el pie de página
         var paramsRegimenFiscal = {
@@ -1285,69 +1304,6 @@ async function getPDFGtc(docBase64, pathLogo)
         }
 
         var resRegimenFiscal = await dbcatcatalogs.getCatalogIdDescription(paramsRegimenFiscal)
-
-        //Para poner espacios entre el codigo y las cadenas
-        var espacio1 = []
-        if(conceptos.elements.length === 1)
-        {
-            espacio1 = [
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n"
-            ]
-        }
-        else if(conceptos.elements.length === 2)
-        {
-            espacio1 = [
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n"
-            ]
-        }
-        else if(conceptos.elements.length === 3)
-        {
-            espacio1 = [
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-                "\n"
-            ]
-        }
-        else if(conceptos.elements.length === 4)
-        {
-            espacio1 = [
-                "\n",
-                "\n",
-                "\n",
-                "\n",
-            ]
-        }
-
-        else if(conceptos.elements.length === 5)
-        {
-            espacio1 = [
-                "\n",
-                "\n",
-                "\n",
-            ]
-        }
-        else
-        {
-            espacio1 = [
-                "\n",
-            ]
-        }
 
         var cartaPorte = {}
         var ubicaciones = {}
@@ -1369,92 +1325,98 @@ async function getPDFGtc(docBase64, pathLogo)
         
                 var resPaisOrigenDestino = await dbcatcatalogs.getCatalogIdDescription(paramsPaisOrigenDestino)
 
-                cartaPorte = {
-                    table: {
-                        dontBreakRows: true, 
-                        widths: [170, "*", 170],
-                                body: [
-                                    [
-                                        {border: [false, false, false, false], fillColor: '#1C932B', text: 'Complemento Carta Porte ' + cartaP.attributes.Version, alignment: 'center', style: 'textotablacolor', colSpan:3},
-                                        {},
-                                        {},
-                                    ],
-                                    [
-                                        {border: [true, true, true, false], text: 'Versión', alignment: 'center', style: 'textoTablaClienteBoldblack'},
-                                        {border: [true, true, true, false], text: "Transporte Nacional", alignment: 'center', style: 'textoTablaClienteBoldblack'},
-                                        {border: [true, true, true, false], text: "Total Distancia Recorrida", alignment: 'center', style: 'textoTablaClienteBoldblack'},
-                                    ],
-                                    [
-                                        {border: [true, false, true, true], text: cartaP.attributes.Version, alignment: 'center', style: 'textoTablaCliente'},
-                                        {border: [true, false, true, true], text: cartaP.attributes.TranspInternac, alignment: 'center', style: 'textoTablaCliente'},
-                                        {border: [true, false, true, true], text: cartaP.attributes.TotalDistRec, alignment: 'center', style: 'textoTablaCliente'},
-                                    ],
-                                    [
-                                        {border: [true, true, true, false], text: 'Entrada - Salida Mercancía', alignment: 'center', style: 'textoTablaClienteBoldblack'},
-                                        {border: [true, true, true, false], text: "País Origen - Destino", alignment: 'center', style: 'textoTablaClienteBoldblack'},
-                                        {border: [true, true, true, false], text: "Vía Entrada - Salida", alignment: 'center', style: 'textoTablaClienteBoldblack'},
-                                    ],
-                                    [
-                                        {border: [true, false, true, true], text: cartaP.attributes.EntradaSalidaMerc, alignment: 'center', style: 'textoTablaCliente'},
-                                        {border: [true, false, true, true], text: cartaP.attributes.PaisOrigenDestino + " - " + resPaisOrigenDestino, alignment: 'center', style: 'textoTablaCliente'},
-                                        {border: [true, false, true, true], text: cartaP.attributes.ViaEntradaSalida, alignment: 'center', style: 'textoTablaCliente'},
-                                    ],
-                                ]
+                cartaPorte = [
+                    {
+                        table: {
+                            dontBreakRows: true, 
+                            widths: [170, "*", 170],
+                                    body: [
+                                        [
+                                            {border: [false, false, false, false], fillColor: '#1C932B', text: 'Complemento Carta Porte ' + cartaP.attributes.Version, alignment: 'center', style: 'textotablacolor', colSpan:3},
+                                            {},
+                                            {},
+                                        ],
+                                        [
+                                            {border: [true, true, true, false], text: 'Versión', alignment: 'center', style: 'textoTablaClienteBoldblack'},
+                                            {border: [true, true, true, false], text: "Transporte Nacional", alignment: 'center', style: 'textoTablaClienteBoldblack'},
+                                            {border: [true, true, true, false], text: "Total Distancia Recorrida", alignment: 'center', style: 'textoTablaClienteBoldblack'},
+                                        ],
+                                        [
+                                            {border: [true, false, true, true], text: cartaP.attributes.Version, alignment: 'center', style: 'textoTablaCliente'},
+                                            {border: [true, false, true, true], text: cartaP.attributes.TranspInternac, alignment: 'center', style: 'textoTablaCliente'},
+                                            {border: [true, false, true, true], text: cartaP.attributes.TotalDistRec, alignment: 'center', style: 'textoTablaCliente'},
+                                        ],
+                                        [
+                                            {border: [true, true, true, false], text: 'Entrada - Salida Mercancía', alignment: 'center', style: 'textoTablaClienteBoldblack'},
+                                            {border: [true, true, true, false], text: "País Origen - Destino", alignment: 'center', style: 'textoTablaClienteBoldblack'},
+                                            {border: [true, true, true, false], text: "Vía Entrada - Salida", alignment: 'center', style: 'textoTablaClienteBoldblack'},
+                                        ],
+                                        [
+                                            {border: [true, false, true, true], text: cartaP.attributes.EntradaSalidaMerc, alignment: 'center', style: 'textoTablaCliente'},
+                                            {border: [true, false, true, true], text: cartaP.attributes.PaisOrigenDestino + " - " + resPaisOrigenDestino, alignment: 'center', style: 'textoTablaCliente'},
+                                            {border: [true, false, true, true], text: cartaP.attributes.ViaEntradaSalida, alignment: 'center', style: 'textoTablaCliente'},
+                                        ],
+                                    ]
+                        },
+                        layout: {
+                            hLineWidth: function () {
+                                return  0.7;
+                            },
+                            vLineWidth: function () {
+                                return 0.7;
+                            },
+                            hLineColor: function () {
+                                return 'gray';
+                            },
+                            vLineColor: function () {
+                                return 'gray';
+                            },
+                        }	
                     },
-                    layout: {
-                        hLineWidth: function () {
-                            return  0.7;
-                        },
-                        vLineWidth: function () {
-                            return 0.7;
-                        },
-                        hLineColor: function () {
-                            return 'gray';
-                        },
-                        vLineColor: function () {
-                            return 'gray';
-                        },
-                    }	
-                }
+                    {text:  "\n"}
+                ]
             }
             else {
-                cartaPorte = {
-                    table: {
-                        dontBreakRows: true, 
-                        widths: [170, "*", 170],
-                                body: [
-                                    [
-                                        {border: [false, false, false, false], fillColor: "#1C932B", text: 'Complemento Carta Porte ' + cartaP.attributes.Version, alignment: 'center', style: 'textotablacolor', colSpan:3},
-                                        {},
-                                        {},
-                                    ],
-                                    [
-                                        {border: [true, true, true, false], text: 'Versión', alignment: 'center', style: 'textoTablaClienteBoldblack'},
-                                        {border: [true, true, true, false], text: "Transporte Internacional", alignment: 'center', style: 'textoTablaClienteBoldblack'},
-                                        {border: [true, true, true, false], text: "Total Distancia Recorrida", alignment: 'center', style: 'textoTablaClienteBoldblack'},
-                                    ],
-                                    [
-                                        {border: [true, false, true, true], text: cartaP.attributes.Version, alignment: 'center', style: 'textoTablaCliente'},
-                                        {border: [true, false, true, true], text: cartaP.attributes.TranspInternac, alignment: 'center', style: 'textoTablaCliente'},
-                                        {border: [true, false, true, true], text: cartaP.attributes.TotalDistRec, alignment: 'center', style: 'textoTablaCliente'},
+                cartaPorte = [
+                    {
+                        table: {
+                            dontBreakRows: true, 
+                            widths: [170, "*", 170],
+                                    body: [
+                                        [
+                                            {border: [false, false, false, false], fillColor: "#1C932B", text: 'Complemento Carta Porte ' + cartaP.attributes.Version, alignment: 'center', style: 'textotablacolor', colSpan:3},
+                                            {},
+                                            {},
+                                        ],
+                                        [
+                                            {border: [true, true, true, false], text: 'Versión', alignment: 'center', style: 'textoTablaClienteBoldblack'},
+                                            {border: [true, true, true, false], text: "Transporte Internacional", alignment: 'center', style: 'textoTablaClienteBoldblack'},
+                                            {border: [true, true, true, false], text: "Total Distancia Recorrida", alignment: 'center', style: 'textoTablaClienteBoldblack'},
+                                        ],
+                                        [
+                                            {border: [true, false, true, true], text: cartaP.attributes.Version, alignment: 'center', style: 'textoTablaCliente'},
+                                            {border: [true, false, true, true], text: cartaP.attributes.TranspInternac, alignment: 'center', style: 'textoTablaCliente'},
+                                            {border: [true, false, true, true], text: cartaP.attributes.TotalDistRec, alignment: 'center', style: 'textoTablaCliente'},
+                                        ]
                                     ]
-                                ]
+                        },
+                        layout: {
+                            hLineWidth: function () {
+                                return  0.7;
+                            },
+                            vLineWidth: function () {
+                                return 0.7;
+                            },
+                            hLineColor: function () {
+                                return 'gray';
+                            },
+                            vLineColor: function () {
+                                return 'gray';
+                            },
+                        }	
                     },
-                    layout: {
-                        hLineWidth: function () {
-                            return  0.7;
-                        },
-                        vLineWidth: function () {
-                            return 0.7;
-                        },
-                        hLineColor: function () {
-                            return 'gray';
-                        },
-                        vLineColor: function () {
-                            return 'gray';
-                        },
-                    }	
-                }
+                    {text:  "\n"}
+                ]
             }
             
     
@@ -1770,68 +1732,74 @@ async function getPDFGtc(docBase64, pathLogo)
                 }
             }
     
-            ubicaciones = {
-                table: {
-                    dontBreakRows: true, 
-                    headerRows: 1,
-                    widths: [40, 50, 50, 80, 60, 50, "*"],
-                    body: ubicacionesArray
+            ubicaciones = [
+                {
+                    table: {
+                        dontBreakRows: true, 
+                        headerRows: 1,
+                        widths: [40, 50, 50, 80, 60, 50, "*"],
+                        body: ubicacionesArray
+                    },
+                    layout: {
+                        hLineWidth: function () {
+                            return  0.7;
+                        },
+                        vLineWidth: function () {
+                            return 0.7;
+                        },
+                        hLineColor: function () {
+                            return 'gray';
+                        },
+                        vLineColor: function () {
+                            return 'gray';
+                        },
+                    }	
                 },
-                layout: {
-                    hLineWidth: function () {
-                        return  0.7;
-                    },
-                    vLineWidth: function () {
-                        return 0.7;
-                    },
-                    hLineColor: function () {
-                        return 'gray';
-                    },
-                    vLineColor: function () {
-                        return 'gray';
-                    },
-                }	
-            }
+                {text:  "\n"}
+            ]
     
             var mercanciasCP = cartaP.elements.find( o => o.name === "cartaporte20:Mercancias")
     
-            mercanciasEncabezado = {
-                table: {
-                    headerRows: 3,
-                    widths: [173, 173, "*"],
-                    body: [
-                        [
-                            {border: [false, false, false, false], fillColor: "#1C932B", text: 'MERCANCÍAS', alignment: 'center', style: 'textotablacolor', colSpan:3},
-                            {},
-                            {},
-                        ],
-                        [
-                            {border: [true, true, true, false], text: 'Peso bruto total', alignment: 'center', style: 'textoTablaClienteBoldblack'},
-                            {border: [true, true, true, false], text: "Unidad de peso", alignment: 'center', style: 'textoTablaClienteBoldblack'},
-                            {border: [true, true, true, false], text: "Número total de mercancías", alignment: 'center', style: 'textoTablaClienteBoldblack'},
-                        ],
-                        [
-                            {border: [true, false, true, true], text: mercanciasCP.attributes.PesoBrutoTotal, alignment: 'center', style: 'textoTablaCliente'},
-                            {border: [true, false, true, true], text: mercanciasCP.attributes.UnidadPeso, alignment: 'center', style: 'textoTablaCliente'},
-                            {border: [true, false, true, true], text: mercanciasCP.attributes.NumTotalMercancias, alignment: 'center', style: 'textoTablaCliente'},
+            mercanciasEncabezado = [
+                {
+                    table: {
+                        headerRows: 3,
+                        widths: [173, 173, "*"],
+                        body: [
+                            [
+                                {border: [false, false, false, false], fillColor: "#1C932B", text: 'MERCANCÍAS', alignment: 'center', style: 'textotablacolor', colSpan:3},
+                                {},
+                                {},
+                            ],
+                            [
+                                {border: [true, true, true, false], text: 'Peso bruto total', alignment: 'center', style: 'textoTablaClienteBoldblack'},
+                                {border: [true, true, true, false], text: "Unidad de peso", alignment: 'center', style: 'textoTablaClienteBoldblack'},
+                                {border: [true, true, true, false], text: "Número total de mercancías", alignment: 'center', style: 'textoTablaClienteBoldblack'},
+                            ],
+                            [
+                                {border: [true, false, true, true], text: mercanciasCP.attributes.PesoBrutoTotal, alignment: 'center', style: 'textoTablaCliente'},
+                                {border: [true, false, true, true], text: mercanciasCP.attributes.UnidadPeso, alignment: 'center', style: 'textoTablaCliente'},
+                                {border: [true, false, true, true], text: mercanciasCP.attributes.NumTotalMercancias, alignment: 'center', style: 'textoTablaCliente'},
+                            ]
                         ]
-                    ]
+                    },
+                    layout: {
+                        hLineWidth: function () {
+                            return  0.7;
+                        },
+                        vLineWidth: function () {
+                            return 0.7;
+                        },
+                        hLineColor: function () {
+                            return 'gray';
+                        },
+                        vLineColor: function () {
+                            return 'gray';
+                        },
+                    }	
                 },
-                layout: {
-                    hLineWidth: function () {
-                        return  0.7;
-                    },
-                    vLineWidth: function () {
-                        return 0.7;
-                    },
-                    hLineColor: function () {
-                        return 'gray';
-                    },
-                    vLineColor: function () {
-                        return 'gray';
-                    },
-                }	
-            }
+                {text:  "\n"}
+            ]
     
             var mercanciasArray = []
             var mCount = 0
@@ -2391,27 +2359,30 @@ async function getPDFGtc(docBase64, pathLogo)
                 }
             }
     
-            mercancias = {
-                table: {
-                    headerRows: 3,
-                    widths: [70, "*", 50, 60, 60, 50, 50],
-                    body: mercanciasArray
+            mercancias = [
+                {
+                    table: {
+                        headerRows: 3,
+                        widths: [70, "*", 50, 60, 60, 50, 50],
+                        body: mercanciasArray
+                    },
+                    layout: {
+                        hLineWidth: function () {
+                            return  0.7;
+                        },
+                        vLineWidth: function () {
+                            return 0.7;
+                        },
+                        hLineColor: function () {
+                            return 'gray';
+                        },
+                        vLineColor: function () {
+                            return 'gray';
+                        },
+                    }
                 },
-                layout: {
-                    hLineWidth: function () {
-                        return  0.7;
-                    },
-                    vLineWidth: function () {
-                        return 0.7;
-                    },
-                    hLineColor: function () {
-                        return 'gray';
-                    },
-                    vLineColor: function () {
-                        return 'gray';
-                    },
-                }	
-            }
+                {text:  "\n"}
+            ]
     
             var autotransporteAux = []
             var mAuxT = 0
@@ -2424,175 +2395,187 @@ async function getPDFGtc(docBase64, pathLogo)
                 }
             }
     
-            autotransporte = {
-                table: {
-                    headerRows: 3,
-                    widths: [265, "*"],
-                    body: [
-                        [
-                            {border: [false, false, false, false], fillColor: "#1C932B", text: 'AUTOTRANSPORTE', alignment: 'center', style: 'textotablacolor', colSpan:2},
-                            {},
-                        ],
-                        [
-                            {border: [true, true, true, false], text: 'Permiso SCT', alignment: 'center', style: 'textotablaboldblack'},
-                            {border: [true, true, true, false], text: "Número de permiso", alignment: 'center', style: 'textotablaboldblack'},
-                        ],
-                        [
-                            {border: [true, false, true, true], text: autotransporteAux[0].attributes.PermSCT, alignment: 'center', style: 'textoTablaCliente'},
-                            {border: [true, false, true, true], text: autotransporteAux[0].attributes.NumPermisoSCT, alignment: 'center', style: 'textoTablaCliente'},
+            autotransporte = [
+                {
+                    table: {
+                        headerRows: 3,
+                        widths: [265, "*"],
+                        body: [
+                            [
+                                {border: [false, false, false, false], fillColor: "#1C932B", text: 'AUTOTRANSPORTE', alignment: 'center', style: 'textotablacolor', colSpan:2},
+                                {},
+                            ],
+                            [
+                                {border: [true, true, true, false], text: 'Permiso SCT', alignment: 'center', style: 'textotablaboldblack'},
+                                {border: [true, true, true, false], text: "Número de permiso", alignment: 'center', style: 'textotablaboldblack'},
+                            ],
+                            [
+                                {border: [true, false, true, true], text: autotransporteAux[0].attributes.PermSCT, alignment: 'center', style: 'textoTablaCliente'},
+                                {border: [true, false, true, true], text: autotransporteAux[0].attributes.NumPermisoSCT, alignment: 'center', style: 'textoTablaCliente'},
+                            ]
                         ]
-                    ]
+                    },
+                    layout: {
+                        hLineWidth: function () {
+                            return  0.7;
+                        },
+                        vLineWidth: function () {
+                            return 0.7;
+                        },
+                        hLineColor: function () {
+                            return 'gray';
+                        },
+                        vLineColor: function () {
+                            return 'gray';
+                        },
+                    }	
                 },
-                layout: {
-                    hLineWidth: function () {
-                        return  0.7;
-                    },
-                    vLineWidth: function () {
-                        return 0.7;
-                    },
-                    hLineColor: function () {
-                        return 'gray';
-                    },
-                    vLineColor: function () {
-                        return 'gray';
-                    },
-                }	
-            }
+                {text:  "\n"}
+            ]
     
             var identificacionVehicularCP = autotransporteAux[0].elements.find( o => o.name === "cartaporte20:IdentificacionVehicular")
     
-            identificacionVehicular = {
-                table: {
-                    headerRows: 3,
-                    widths: [150, "*", 150],
-                    body: [
-                        [
-                            {border: [false, false, false, false], fillColor: "#1C932B", text: 'Identificación Vehicular', alignment: 'center', style: 'textoTablaTrasladoHeader', colSpan:3},
-                            {},
-                            {},
-                        ],
-                        [
-                            {border: [true, true, true, false], text: 'Configuración vehicular', alignment: 'center', style: 'textotablaboldblack'},
-                            {border: [true, true, true, false], text: "Placa vehículo motor", alignment: 'center', style: 'textotablaboldblack'},
-                            {border: [true, true, true, false], text: "Año modelo", alignment: 'center', style: 'textotablaboldblack'},
-                        ],
-                        [
-                            {border: [true, false, true, true], text: identificacionVehicularCP.attributes.ConfigVehicular, alignment: 'center', style: 'textoTablaCliente'},
-                            {border: [true, false, true, true], text: identificacionVehicularCP.attributes.PlacaVM, alignment: 'center', style: 'textoTablaCliente'},
-                            {border: [true, false, true, true], text: identificacionVehicularCP.attributes.AnioModeloVM, alignment: 'center', style: 'textoTablaCliente'},
+            identificacionVehicular = [
+                {
+                    table: {
+                        headerRows: 3,
+                        widths: [150, "*", 150],
+                        body: [
+                            [
+                                {border: [false, false, false, false], fillColor: "#1C932B", text: 'Identificación Vehicular', alignment: 'center', style: 'textoTablaTrasladoHeader', colSpan:3},
+                                {},
+                                {},
+                            ],
+                            [
+                                {border: [true, true, true, false], text: 'Configuración vehicular', alignment: 'center', style: 'textotablaboldblack'},
+                                {border: [true, true, true, false], text: "Placa vehículo motor", alignment: 'center', style: 'textotablaboldblack'},
+                                {border: [true, true, true, false], text: "Año modelo", alignment: 'center', style: 'textotablaboldblack'},
+                            ],
+                            [
+                                {border: [true, false, true, true], text: identificacionVehicularCP.attributes.ConfigVehicular, alignment: 'center', style: 'textoTablaCliente'},
+                                {border: [true, false, true, true], text: identificacionVehicularCP.attributes.PlacaVM, alignment: 'center', style: 'textoTablaCliente'},
+                                {border: [true, false, true, true], text: identificacionVehicularCP.attributes.AnioModeloVM, alignment: 'center', style: 'textoTablaCliente'},
+                            ]
                         ]
-                    ]
+                    },
+                    layout: {
+                        hLineWidth: function () {
+                            return  0.7;
+                        },
+                        vLineWidth: function () {
+                            return 0.7;
+                        },
+                        hLineColor: function () {
+                            return 'gray';
+                        },
+                        vLineColor: function () {
+                            return 'gray';
+                        },
+                    }	
                 },
-                layout: {
-                    hLineWidth: function () {
-                        return  0.7;
-                    },
-                    vLineWidth: function () {
-                        return 0.7;
-                    },
-                    hLineColor: function () {
-                        return 'gray';
-                    },
-                    vLineColor: function () {
-                        return 'gray';
-                    },
-                }	
-            }
+                {text:  "\n"}
+            ]
     
             var segurosCP = autotransporteAux[0].elements.find( o => o.name === "cartaporte20:Seguros")
     
-            seguros = {
-                table: {
-                    headerRows: 3,
-                    widths: ["*", 60, 60, 60, 60, 60, 60],
-                    body: [
-                        [
-                            {border: [false, false, false, false], fillColor: "#1C932B", text: 'Seguros', alignment: 'center', style: 'textoTablaTrasladoHeader', colSpan:7},
-                            {},
-                            {},
-                            {},
-                            {},
-                            {},
-                            {},
-                        ],
-                        [
-                            {text: 'Aseguradora de responsabilidad civil', alignment: 'center', style: 'textotablaboldblack'},
-                            {text: "Número de poliza de seguro por responsabilidad civil", alignment: 'center', style: 'textotablaboldblack'},
-                            {text: "Aseguradora de medio ambiente", alignment: 'center', style: 'textotablaboldblack'},
-                            {text: "Número de poliza de seguro por medio ambiente", alignment: 'center', style: 'textotablaboldblack'},
-                            {text: "Aseguradora de la carga transportada", alignment: 'center', style: 'textotablaboldblack'},
-                            {text: "Número de poliza de la carga transportada", alignment: 'center', style: 'textotablaboldblack'},
-                            {text: "Valor de la prima del seguro", alignment: 'center', style: 'textotablaboldblack'},
-                        ],
-                        [
-                            {text: segurosCP.attributes.AseguraRespCivil, alignment: 'center', style: 'textoTablaCliente'},
-                            {text: segurosCP.attributes.PolizaRespCivil, alignment: 'center', style: 'textoTablaCliente'},
-                            {text: segurosCP.attributes.AseguraMedAmbiente, alignment: 'center', style: 'textoTablaCliente'},
-                            {text: segurosCP.attributes.PolizaMedAmbiente, alignment: 'center', style: 'textoTablaCliente'},
-                            {text: segurosCP.attributes.AseguraCarga, alignment: 'center', style: 'textoTablaCliente'},
-                            {text: segurosCP.attributes.PolizaCarga, alignment: 'center', style: 'textoTablaCliente'},
-                            {text: segurosCP.attributes.PrimaSeguro, alignment: 'center', style: 'textoTablaCliente'},
+            seguros = [
+                {
+                    table: {
+                        headerRows: 3,
+                        widths: ["*", 60, 60, 60, 60, 60, 60],
+                        body: [
+                            [
+                                {border: [false, false, false, false], fillColor: "#1C932B", text: 'Seguros', alignment: 'center', style: 'textoTablaTrasladoHeader', colSpan:7},
+                                {},
+                                {},
+                                {},
+                                {},
+                                {},
+                                {},
+                            ],
+                            [
+                                {text: 'Aseguradora de responsabilidad civil', alignment: 'center', style: 'textotablaboldblack'},
+                                {text: "Número de poliza de seguro por responsabilidad civil", alignment: 'center', style: 'textotablaboldblack'},
+                                {text: "Aseguradora de medio ambiente", alignment: 'center', style: 'textotablaboldblack'},
+                                {text: "Número de poliza de seguro por medio ambiente", alignment: 'center', style: 'textotablaboldblack'},
+                                {text: "Aseguradora de la carga transportada", alignment: 'center', style: 'textotablaboldblack'},
+                                {text: "Número de poliza de la carga transportada", alignment: 'center', style: 'textotablaboldblack'},
+                                {text: "Valor de la prima del seguro", alignment: 'center', style: 'textotablaboldblack'},
+                            ],
+                            [
+                                {text: segurosCP.attributes.AseguraRespCivil, alignment: 'center', style: 'textoTablaCliente'},
+                                {text: segurosCP.attributes.PolizaRespCivil, alignment: 'center', style: 'textoTablaCliente'},
+                                {text: segurosCP.attributes.AseguraMedAmbiente, alignment: 'center', style: 'textoTablaCliente'},
+                                {text: segurosCP.attributes.PolizaMedAmbiente, alignment: 'center', style: 'textoTablaCliente'},
+                                {text: segurosCP.attributes.AseguraCarga, alignment: 'center', style: 'textoTablaCliente'},
+                                {text: segurosCP.attributes.PolizaCarga, alignment: 'center', style: 'textoTablaCliente'},
+                                {text: segurosCP.attributes.PrimaSeguro, alignment: 'center', style: 'textoTablaCliente'},
+                            ]
                         ]
-                    ]
+                    },
+                    layout: {
+                        hLineWidth: function () {
+                            return  0.7;
+                        },
+                        vLineWidth: function () {
+                            return 0.7;
+                        },
+                        hLineColor: function () {
+                            return 'gray';
+                        },
+                        vLineColor: function () {
+                            return 'gray';
+                        },
+                    }
                 },
-                layout: {
-                    hLineWidth: function () {
-                        return  0.7;
-                    },
-                    vLineWidth: function () {
-                        return 0.7;
-                    },
-                    hLineColor: function () {
-                        return 'gray';
-                    },
-                    vLineColor: function () {
-                        return 'gray';
-                    },
-                }	
-            }
+                {text:  "\n"}
+            ]
 
             var figuraTransporteCP = cartaP.elements.find( o => o.name === "cartaporte20:FiguraTransporte")
 
-            var figuraTransporte = {
-                table: {
-                    headerRows: 3,
-                    widths: [80, 80, 80, "*"],
-                    body: [
-                        [
-                            {border: [false, false, false, false], fillColor: "#1C932B", text: 'Figura Transporte', alignment: 'center', style: 'textoTablaTrasladoHeader', colSpan: 4},
-                            {},
-                            {},
-                            {}
-                        ],
-                        [
-                            {border: [true, true, true, false], text: 'Tipo figura', alignment: 'center', style: 'textotablaboldblack'},
-                            {border: [true, true, true, false], text: "RFC figura", alignment: 'center', style: 'textotablaboldblack'},
-                            {border: [true, true, true, false], text: "Número de licencia", alignment: 'center', style: 'textotablaboldblack'},
-                            {border: [true, true, true, false], text: "Nombre figura", alignment: 'center', style: 'textotablaboldblack'}
-                        ],
-                        [
-                            {border: [true, false, true, true], text: figuraTransporteCP.elements[0].attributes.TipoFigura, alignment: 'center', style: 'textoTablaCliente'},
-                            {border: [true, false, true, true], text: figuraTransporteCP.elements[0].attributes.RFCFigura, alignment: 'center', style: 'textoTablaCliente'},
-                            {border: [true, false, true, true], text: figuraTransporteCP.elements[0].attributes.NumLicencia, alignment: 'center', style: 'textoTablaCliente'},
-                            {border: [true, false, true, true], text: figuraTransporteCP.elements[0].attributes.NombreFigura, alignment: 'center', style: 'textoTablaCliente'}
+            var figuraTransporte = [
+                {
+                    table: {
+                        headerRows: 3,
+                        widths: [80, 80, 80, "*"],
+                        body: [
+                            [
+                                {border: [false, false, false, false], fillColor: "#1C932B", text: 'Figura Transporte', alignment: 'center', style: 'textoTablaTrasladoHeader', colSpan: 4},
+                                {},
+                                {},
+                                {}
+                            ],
+                            [
+                                {border: [true, true, true, false], text: 'Tipo figura', alignment: 'center', style: 'textotablaboldblack'},
+                                {border: [true, true, true, false], text: "RFC figura", alignment: 'center', style: 'textotablaboldblack'},
+                                {border: [true, true, true, false], text: "Número de licencia", alignment: 'center', style: 'textotablaboldblack'},
+                                {border: [true, true, true, false], text: "Nombre figura", alignment: 'center', style: 'textotablaboldblack'}
+                            ],
+                            [
+                                {border: [true, false, true, true], text: figuraTransporteCP.elements[0].attributes.TipoFigura, alignment: 'center', style: 'textoTablaCliente'},
+                                {border: [true, false, true, true], text: figuraTransporteCP.elements[0].attributes.RFCFigura, alignment: 'center', style: 'textoTablaCliente'},
+                                {border: [true, false, true, true], text: figuraTransporteCP.elements[0].attributes.NumLicencia, alignment: 'center', style: 'textoTablaCliente'},
+                                {border: [true, false, true, true], text: figuraTransporteCP.elements[0].attributes.NombreFigura, alignment: 'center', style: 'textoTablaCliente'}
+                            ]
                         ]
-                    ]
+                    },
+                    layout: {
+                        hLineWidth: function () {
+                            return  0.7;
+                        },
+                        vLineWidth: function () {
+                            return 0.7;
+                        },
+                        hLineColor: function () {
+                            return 'gray';
+                        },
+                        vLineColor: function () {
+                            return 'gray';
+                        },
+                    }	
                 },
-                layout: {
-                    hLineWidth: function () {
-                        return  0.7;
-                    },
-                    vLineWidth: function () {
-                        return 0.7;
-                    },
-                    hLineColor: function () {
-                        return 'gray';
-                    },
-                    vLineColor: function () {
-                        return 'gray';
-                    },
-                }	
-            }
+                {text:  "\n"}
+            ]
         }
 
         var docDefinition = {
@@ -2620,31 +2603,18 @@ async function getPDFGtc(docBase64, pathLogo)
                 emisorReceptor,
                 "\n",
                 cfdiRel,
-                "\n",
-                //serieFolio,
                 monedaMetodo,
-                "\n",
                 conceptosTable,
-                "\n",
                 compPago,
-                "\n",
                 cadenasTable, 
-                //espacio1,
-                "\n",
                 codigos,
-                "\n",
                 cartaPorte,
-                "\n",
                 ubicaciones,
-                "\n",
                 mercanciasEncabezado,
                 mercancias,
-                {text: "\n", style: "textotabla"},
                 autotransporte,
-                {text: "\n", style: "textotabla"},
                 identificacionVehicular,
                 seguros,
-                "\n",
                 figuraTransporte
             ],
             pageBreakBefore: function(currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {

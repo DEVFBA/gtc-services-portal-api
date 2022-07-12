@@ -640,7 +640,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                         concepts[psItems] = [
                             {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion + "\n" + arrayRefCruzadas[i], style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" + noPedimento + "Objeto Imp. - " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" + noPedimento + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
@@ -664,29 +664,26 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 console.log("SI ENTRE PRIMERO")
             }
 
-            if(paramsEncabezado[35] !== undefined)
+            if(paramsEncabezado[35] !== undefined && paramsEncabezado[35] !== '|' && paramsEncabezado[35] !== '')
             {
-                if(paramsEncabezado[35] !== '|')
-                {
-                    concepts[psItems] = [
-                        {border: [true, true, true, true], text: paramsEncabezado[35], style: 'textotabla', alignment: "center", colSpan: 14},
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""},
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""},
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, true, true], text: ""}, 
-                    ]
-            
-                    psItems++
-                }
+                concepts[psItems] = [
+                    {border: [true, true, true, true], text: paramsEncabezado[35], style: 'textotabla', alignment: "center", colSpan: 14},
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""},
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""},
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, true, true], text: ""}, 
+                ]
+        
+                psItems++
             }
 
             conceptosTable = 
@@ -1015,22 +1012,19 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 }
             }
 
-            if(paramsEncabezado[35] !== undefined)
+            if(paramsEncabezado[35] !== undefined && paramsEncabezado[35] !== '|' && paramsEncabezado[35] !== '')
             {
-                if(paramsEncabezado[35] !== '|')
-                {
-                    concepts[psItems] = [
-                        {border: [true, true, true, true], text: paramsEncabezado[35], style: 'textotabla', alignment: "center", colSpan: 7},
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""},
-                        {border: [false, false, false, true], text: ""}, 
-                    ]
-            
-                    psItems++
-                }
+                concepts[psItems] = [
+                    {border: [true, true, true, true], text: paramsEncabezado[35], style: 'textotabla', alignment: "center", colSpan: 7},
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""},
+                    {border: [false, false, false, true], text: ""}, 
+                ]
+        
+                psItems++
             }
 
             conceptosTable = 
@@ -1713,7 +1707,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                         concepts[psItems] = [
                             {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" + noPedimento + "Objeto Imp. - " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" + noPedimento + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
@@ -1764,7 +1758,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                         concepts[psItems] = [
                             {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" + noPedimento + "Objeto Imp. - " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" + noPedimento + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
@@ -1783,30 +1777,26 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 }
             }
 
-            if(paramsEncabezado[35] !== undefined)
+            if(paramsEncabezado[35] !== undefined && paramsEncabezado[35] !== '|' && paramsEncabezado[35] !== '')
             {
-                if(paramsEncabezado[35] !== '|')
-                {
-                    concepts[psItems] = [
-                        {border: [true, true, true, true], text: paramsEncabezado[35], style: 'textotabla', alignment: "center", colSpan: 14},
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""},
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""},
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, true, true], text: ""}, 
-                    ]
-            
-                    psItems++
-                }
-                
+                concepts[psItems] = [
+                    {border: [true, true, true, true], text: paramsEncabezado[35], style: 'textotabla', alignment: "center", colSpan: 14},
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""},
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""},
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, true, true], text: ""}, 
+                ]
+        
+                psItems++
             }
 
             conceptosTable = 
@@ -1971,7 +1961,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                         concepts[psItems] = [
                             {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" + noPedimento + "Objeto Imp. - " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" + noPedimento + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
@@ -2022,7 +2012,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                         concepts[psItems] = [
                             {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" + noPedimento + "Objeto Imp. - " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" + noPedimento + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
@@ -2041,29 +2031,26 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 }
             }
 
-            if(paramsEncabezado[35] !== undefined)
+            if(paramsEncabezado[35] !== undefined && paramsEncabezado[35] !== '|' && paramsEncabezado[35] !== '')
             {
-                if(paramsEncabezado[35] !== '|')
-                {
-                    concepts[psItems] = [
-                        {border: [true, true, true, true], text: paramsEncabezado[35], style: 'textotabla', alignment: "center", colSpan: 14},
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""},
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""},
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, false, true], text: ""}, 
-                        {border: [false, false, true, true], text: ""}, 
-                    ]
-            
-                    psItems++
-                } 
+                concepts[psItems] = [
+                    {border: [true, true, true, true], text: paramsEncabezado[35], style: 'textotabla', alignment: "center", colSpan: 14},
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""},
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""},
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, false, true], text: ""}, 
+                    {border: [false, false, true, true], text: ""}, 
+                ]
+        
+                psItems++
             }
 
             conceptosTable = 
