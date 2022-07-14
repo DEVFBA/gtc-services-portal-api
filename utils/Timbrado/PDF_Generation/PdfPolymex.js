@@ -1,21 +1,21 @@
-var fonts = {
+/*var fonts = {
     Roboto: {
       normal: 'C:/GTC/Fonts/Roboto-Regular.ttf',
       bold: 'C:/GTC/Fonts/Roboto-Bold.ttf',
       italics: 'C:/GTC/Fonts/Montserrat-Italic.ttf',
       bolditalics: 'C:/GTC/Fonts/Montserrat-BoldItalic.ttf'
     }
-}
+}*/
 
 
-/*var fonts = {
+var fonts = {
     Roboto: {
       normal: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Roboto-Regular.ttf',
       bold: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Roboto-Bold.ttf',
       italics: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Montserrat-Italic.ttf',
       bolditalics: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Montserrat-BoldItalic.ttf'
     }
-};*/
+};
 
 var convert = require('xml-js');
 var PdfPrinter = require('pdfmake');
@@ -578,12 +578,12 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, false], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "$" + parseFloat(traslados.elements[0].attributes.Base).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(traslados.elements[0].attributes.Base).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: traslados.elements[0].attributes.Impuesto, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, false], text: traslados.elements[0].attributes.TipoFactor, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: traslados.elements[0].attributes.TasaOCuota, style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
@@ -598,12 +598,12 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "$" + parseFloat(traslados.elements[0].attributes.Base).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat(traslados.elements[0].attributes.Base).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: traslados.elements[0].attributes.Impuesto, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: traslados.elements[0].attributes.TipoFactor, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: traslados.elements[0].attributes.TasaOCuota, style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
@@ -628,12 +628,12 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, false], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
@@ -648,12 +648,12 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
@@ -805,7 +805,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             {border: [false, false, false, false], text: mercArray.elements[i].attributes.CantidadAduana, style: 'textotabla', alignment: "center"}, 
                             {border: [false, false, false, false], text: mercArray.elements[i].attributes.UnidadAduana, style: 'textotabla', alignment: "center"}, 
                             {border: [false, false, false, false], text: mercArray.elements[i].attributes.ValorUnitarioAduana, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, true, false], text: "$" + parseFloat(mercArray.elements[i].attributes.ValorDolares).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "center"},
+                            {border: [false, false, true, false], text: "$" + parseFloat(mercArray.elements[i].attributes.ValorDolares).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "center"},
                         ]
                 
                         psItems++
@@ -840,7 +840,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             {border: [false, false, false, false], text: mercArray.elements[i].attributes.CantidadAduana, style: 'textotabla', alignment: "center"}, 
                             {border: [false, false, false, false], text: mercArray.elements[i].attributes.UnidadAduana, style: 'textotabla', alignment: "center"}, 
                             {border: [false, false, false, false], text: mercArray.elements[i].attributes.ValorUnitarioAduana, style: 'textotabla', alignment: "center"}, 
-                            {border: [false, false, true, false], text: "$" + parseFloat(mercArray.elements[i].attributes.ValorDolares).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "center"},
+                            {border: [false, false, true, false], text: "$" + parseFloat(mercArray.elements[i].attributes.ValorDolares).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "center"},
                         ]
                 
                         psItems++
@@ -993,8 +993,8 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                         {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + noPedimento + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"},  
                         {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla', alignment: "center"},
-                        {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
-                        {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
+                        {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "center"}, 
+                        {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "center"}, 
                     ]
             
                     psItems++
@@ -1006,8 +1006,8 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                         {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" + noPedimento + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla', alignment: "center"},
-                        {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
-                        {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
+                        {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "center"}, 
+                        {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "center"}, 
                     ]
             
                     psItems++
@@ -1091,7 +1091,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
 
             pagos[psItems] = [
                 {border: [true, false, false, false], text: `Fecha de Pago: `  + pago.elements[0].attributes.FechaPago, style: 'textotablaEmisorReceptor', alignment: "left"},
-                {border: [false, false, true, false], text: `Total del Pago: ` + "$" + parseFloat(pago.elements[0].attributes.Monto).toFixed(2).toLocaleString("en").toLocaleString("en"), style: 'textotablaEmisorReceptor', alignment: "left"}, 
+                {border: [false, false, true, false], text: `Total del Pago: ` + "$" + parseFloat(pago.elements[0].attributes.Monto).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotablaEmisorReceptor', alignment: "left"}, 
             ]
 
             psItems++
@@ -1231,7 +1231,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             //Se realiza la suma de todas las retencionesDR+
                             for(var j=0; j<retencionesDR.elements.length; j++)
                             {
-                                impuestoRetencionesDR = impuestoRetencionesDR + parseInt(retencionesDR.elements[j].attributes.ImporteDR,10).toFixed(2).toLocaleString("en");
+                                impuestoRetencionesDR = impuestoRetencionesDR + parseInt(retencionesDR.elements[j].attributes.ImporteDR,10).toLocaleString(undefined, {minimumFractionDigits: 2});
                             }
                         }
                     }
@@ -1245,10 +1245,10 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                         {border: [false, false, false, false], text: pago20.elements[i].attributes.Folio, style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, false, false], text: pago20.elements[i].attributes.ObjetoImpDR, style: 'textotabla', alignment: "center"}, 
                         {border: [false, false, false, false], text: pago20.elements[i].attributes.EquivalenciaDR, style: 'textotabla', alignment: "center"}, 
-                        {border: [false, false, false, false], text: "$" + parseFloat(impuestoRetencionesDR).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
-                        {border: [false, false, false, false], text: "$" + parseFloat(pago20.elements[i].attributes.ImpSaldoInsoluto).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
-                        {border: [false, false, false, false], text: "$" + parseFloat(pago20.elements[i].attributes.ImpSaldoAnt).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
-                        {border: [false, false, true, false], text: "$" + parseFloat(pago20.elements[i].attributes.ImpPagado).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
+                        {border: [false, false, false, false], text: "$" + parseFloat(impuestoRetencionesDR).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "center"}, 
+                        {border: [false, false, false, false], text: "$" + parseFloat(pago20.elements[i].attributes.ImpSaldoInsoluto).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "center"}, 
+                        {border: [false, false, false, false], text: "$" + parseFloat(pago20.elements[i].attributes.ImpSaldoAnt).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "center"}, 
+                        {border: [false, false, true, false], text: "$" + parseFloat(pago20.elements[i].attributes.ImpPagado).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "center"}, 
                     ]
         
                     psItems++
@@ -1277,7 +1277,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                         {border: [false, false, false, false], text: ""}, 
                         {border: [false, false, true, false], text: [
                             {text: "Impuesto Retenciones del Pago: ", style: 'textotablaboldblack'},
-                            {text: "$" + parseFloat(impuestoRetencionesP).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "center"}
+                            {text: "$" + parseFloat(impuestoRetencionesP).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "center"}
                         ], colSpan: 4}, 
                         {border: [false, false, false, false], text: ""}, 
                         {border: [false, false, false, false], text: ""}, 
@@ -1306,7 +1306,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, true, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [true, true, true, false],  text: "Total retenciones IVA", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, true, false, false],  text: ""}, 
-                    {border: [true, true, true, false],  text: "$" + parseFloat(retIva).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, true, true, false],  text: "$" + parseFloat(retIva).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, true, true, false],  text: ""}, 
                 ]
     
@@ -1326,7 +1326,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [true, false, true, false],  text: "Total Retenciones ISR", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, false, false, false],  text: ""}, 
-                    {border: [true, false, true, false],  text: "$" + parseFloat(retIsr).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, false, true, false],  text: "$" + parseFloat(retIsr).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
                 ]
     
@@ -1346,7 +1346,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [true, false, true, false],  text: "Total Retenciones IEPS", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, false, false, false],  text: ""}, 
-                    {border: [true, false, true, false],  text: "$" + parseFloat(retIeps).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, false, true, false],  text: "$" + parseFloat(retIeps).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
                 ]
     
@@ -1366,7 +1366,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [true, false, true, false],  text: "Total Traslado Base IVA 16 ", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, false, false, false],  text: ""}, 
-                    {border: [true, false, true, false],  text: "$" + parseFloat(trasIB16).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, false, true, false],  text: "$" + parseFloat(trasIB16).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
                 ]
     
@@ -1386,7 +1386,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [true, false, true, false],  text: "Total Traslados Impuesto IVA 16", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, false, false, false],  text: ""}, 
-                    {border: [true, false, true, false],  text: "$" + parseFloat(trasI16).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, false, true, false],  text: "$" + parseFloat(trasI16).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
                 ]
     
@@ -1406,7 +1406,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [true, false, true, false],  text: "Total Traslados Base IVA 8", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, false, false, false],  text: ""}, 
-                    {border: [true, false, true, false],  text: "$" + parseFloat(trasIB8).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, false, true, false],  text: "$" + parseFloat(trasIB8).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
                 ]
     
@@ -1426,7 +1426,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [true, false, true, false],  text: "Total Traslados Impuestos IVA 8", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, false, false, false],  text: ""}, 
-                    {border: [true, false, true, false],  text: "$" + parseFloat(trasII8).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, false, true, false],  text: "$" + parseFloat(trasII8).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
                 ]
     
@@ -1446,7 +1446,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [true, false, true, false],  text: "Total Traslados Base IVA 0", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, false, false, false],  text: ""}, 
-                    {border: [true, false, true, false],  text: "$" + parseFloat(trasBI0).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, false, true, false],  text: "$" + parseFloat(trasBI0).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
                 ]
     
@@ -1466,7 +1466,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [true, false, true, false],  text: "Total Traslado Impuesto IVA 0", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, false, false, false],  text: ""}, 
-                    {border: [true, false, true, false],  text: "$" + parseFloat(trasII0).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, false, true, false],  text: "$" + parseFloat(trasII0).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
                 ]
     
@@ -1486,7 +1486,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                     {border: [true, false, true, false],  text: "Total Trasladados Base IVA Excento", style: 'textotabla', alignment: "left", colSpan:2},
                     {border: [false, false, false, false],  text: ""}, 
-                    {border: [true, false, true, false],  text: "$" + parseFloat(trasBI6).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
+                    {border: [true, false, true, false],  text: "$" + parseFloat(trasBI6).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "left", colSpan:2}, 
                     {border: [false, false, true, false],  text: ""}, 
                 ]
     
@@ -1507,7 +1507,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 {border: [false, false, false, false],  text: "", style: 'textotabla', alignment: "center"}, 
                 {border: [true, false, true, true],  text: "Monto Total Pagos", style: 'textotabla', alignment: "left", colSpan:2},
                 {border: [false, false, false, false],  text: ""}, 
-                {border: [true, false, true, true],  text: "$" + parseFloat(montoTP).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "left", colSpan:2}, 
+                {border: [true, false, true, true],  text: "$" + parseFloat(montoTP).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "left", colSpan:2}, 
                 {border: [false, false, true, false],  text: ""}, 
             ]
 
@@ -1695,12 +1695,12 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, false], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "$" + parseFloat(traslados.elements[0].attributes.Base).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(traslados.elements[0].attributes.Base).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: traslados.elements[0].attributes.Impuesto, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, false], text: traslados.elements[0].attributes.TipoFactor, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: traslados.elements[0].attributes.TasaOCuota, style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
@@ -1715,12 +1715,12 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "$" + parseFloat(traslados.elements[0].attributes.Base).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat(traslados.elements[0].attributes.Base).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: traslados.elements[0].attributes.Impuesto, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: traslados.elements[0].attributes.TipoFactor, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: traslados.elements[0].attributes.TasaOCuota, style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
@@ -1746,12 +1746,12 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, false], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
@@ -1766,12 +1766,12 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
@@ -1949,17 +1949,18 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, false], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "$" + parseFloat(traslados.elements[0].attributes.Base).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(traslados.elements[0].attributes.Base).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "center"}, 
                             {border: [false, false, false, false], text: traslados.elements[0].attributes.Impuesto, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, false], text: traslados.elements[0].attributes.TipoFactor, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: traslados.elements[0].attributes.TasaOCuota, style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toFixed(2).toLocaleString("en"), style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla', alignment: "center"}, 
                         ]
                 
                         psItems++
                     }
                     else {
+
                         concepts[psItems] = [
                             {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
@@ -1969,12 +1970,12 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "$" + parseFloat(traslados.elements[0].attributes.Base).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat(traslados.elements[0].attributes.Base).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: traslados.elements[0].attributes.Impuesto, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: traslados.elements[0].attributes.TipoFactor, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: traslados.elements[0].attributes.TasaOCuota, style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
@@ -2000,12 +2001,12 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, false], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: "$" + parseFloat(conceptos.elements[i].attributes.ValorUnitario).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: "", style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, false], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
@@ -2020,12 +2021,12 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: arrayLotes[i], style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: arrayPiezas[i], style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, true], text: "$" + parseFloat( conceptos.elements[i].attributes.ValorUnitario).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: "$" + parseFloat( conceptos.elements[i].attributes.ValorUnitario).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: "", style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toFixed(2).toLocaleString("en"), style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, true, true], text: "$" + parseFloat(conceptos.elements[i].attributes.Importe).toLocaleString(undefined, {minimumFractionDigits: 2}), style: 'textotabla3', alignment: "center"}, 
                         ]
                 
                         psItems++
@@ -2302,14 +2303,14 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 if(iva16 !== undefined)
                 {
                     cadenaIVA = "I.V.A. 16%\n\n";
-                    cadenaIVAValor = "$" + parseFloat(iva16.attributes.Importe).toFixed(2).toLocaleString("en") + "\n\n"
+                    cadenaIVAValor = "$" + parseFloat(iva16.attributes.Importe).toLocaleString(undefined, {minimumFractionDigits: 2}) + "\n\n"
                 }
 
                 var iva0 = trasladosN.elements.find( o => o.attributes.TasaOCuota === "0.000000")
                 if(iva0 !== undefined)
                 {
                     cadenaIVA = "I.V.A. 0%\n\n";
-                    cadenaIVAValor = "$" + parseFloat(iva0.attributes.Importe).toFixed(2).toLocaleString("en") + "\n\n"
+                    cadenaIVAValor = "$" + parseFloat(iva0.attributes.Importe).toLocaleString(undefined, {minimumFractionDigits: 2}) + "\n\n"
                 }
             }
         }
@@ -2334,9 +2335,9 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                             {text: "Total", alignment: 'left', style: "textotablatotales"},
                         ]},
                         {border: [false, true, true, true], text:  [
-                            {text: "$" + parseFloat(attributes.SubTotal).toFixed(2).toLocaleString("en") + "\n\n", alignment: 'left', style: "textotablatotales"},
+                            {text: "$" + parseFloat(attributes.SubTotal).toLocaleString(undefined, {minimumFractionDigits: 2}) + "\n\n", alignment: 'left', style: "textotablatotales"},
                             {text:  cadenaIVAValor, alignment: 'left', style: "textotablatotales"},
-                            {text:  "$" + parseFloat(attributes.Total).toFixed(2).toLocaleString("en") + "\n\n", alignment: 'left', style: "textotablatotales"}
+                            {text:  "$" + parseFloat(attributes.Total).toLocaleString(undefined, {minimumFractionDigits: 2}) + "\n\n", alignment: 'left', style: "textotablatotales"}
                         ]},
                     ],
                 ]
@@ -2615,7 +2616,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
     
 }
 
-//getPDFPolymex(xmlNotaCredito_IPM6203226B4_RM_9238_20220623, "/Users/alexishernandezolvera/Desktop/IPM6203226B4_RM_9238_20220623.txt", "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/images/Logo_Polymex.png")
+getPDFPolymex(xmlNotaCredito_IPM6203226B4_RM_9238_20220623, "/Users/alexishernandezolvera/Desktop/IPM6203226B4_RM_9238_20220623.txt", "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/images/Logo_Polymex.png")
 
 var numeroALetras = (function() {
     
