@@ -105,4 +105,9 @@ router.use('/customer-uoms', require('./customer-uoms.js'));
  */
  router.use('/customer-bill-tos', require('./customer-bill-tos.js'));
 
+ /**
+ * * Request Customer Items
+ */
+  router.use('/customer-items', require('./customer-items.js'));
+
 module.exports = router;

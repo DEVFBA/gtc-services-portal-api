@@ -121,7 +121,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
             arrayPiezas = lotesPiezas[2].split("^")
 
             //Para obtener las referencias cruzadas
-            arrayRefCruzadas = lotesPiezas[3].split("^")
+            arrayRefCruzadas = lotesPiezas[2].split("^")
         }
 
         //Condicionar la leyenda de exportación, si no viene no pintarla.
