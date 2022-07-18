@@ -40,8 +40,7 @@ const {
 const { DOMParser, XMLSerializer } = require('@xmldom/xmldom');
 
 const { 
-    timbrarFactura,
-    getComprobante
+    timbrarFactura
 } = require('../utils/Timbrado/InvoiceOne');
 
 const {
