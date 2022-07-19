@@ -14,7 +14,7 @@ router.route('/').get(auth, (request, response)=>{
 
 //Ruta para obtener todos los Customers por IdCustomer
 router.route('/:idCustomer').get(auth, (request, response)=>{
-    dbcustomeritems.getCustomerItem(request.params.idCustomer).then(result => {
+    dbcustomeritems.getCustomerItems(request.params.idCustomer).then(result => {
         response.json(result[0]);
     })
 })
@@ -23,7 +23,7 @@ router.route('/:idCustomer').get(auth, (request, response)=>{
 router.route('/insert').post(auth, (request, response)=>{
     let register = {...request.body}
     logger.info(JSON.stringify({...request.body}) + "/insert - POST -")
-    dbcustomeritems.insertCustomerItem(register).then(result => {
+    dbcustomeritems.insertCustomerItems(register).then(result => {
         response.json(result[0]);
     })
 })
@@ -32,7 +32,7 @@ router.route('/insert').post(auth, (request, response)=>{
 router.route('/update').put(auth, (request, response)=>{
     let register = {...request.body}
     logger.info(JSON.stringify({...request.body}) + "/update - POST -")
-    dbcustomeritems.updateCustomerItem(register).then(result => {
+    dbcustomeritems.updateCustomerItems(register).then(result => {
         response.json(result[0]);
     })
 })

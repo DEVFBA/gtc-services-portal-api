@@ -8,7 +8,7 @@ async function getCustomersItems(){
         let pool = await sql.connect(config);
         let customers = await pool.request()
             .input('pvOptionCRUD', sql.VarChar, "R")
-            .execute('spCustomer_Bill_Tos_CRUD_Records')
+            .execute('spCustomer_Items_CRUD_Records')
         return customers.recordsets
     }catch(error){
         console.log(error)
@@ -21,7 +21,7 @@ async function getCustomerItems(idCustomer){
         let customers = await pool.request()
             .input('pvOptionCRUD', sql.VarChar, "R")
             .input('piIdCustomer', sql.Int, idCustomer)
-            .execute('spCustomer_Bill_Tos_CRUD_Records')
+            .execute('spCustomer_Items_CRUD_Records')
         return customers.recordsets
     }catch(error){
         console.log(error)
@@ -35,20 +35,23 @@ async function insertCustomerItems(register){
         let pool = await sql.connect(config);
         let insertRegister = await pool.request()
             .input('pvOptionCRUD', sql.VarChar, "C")
-            .input('pvIdEntityType', sql.VarChar, register.pvIdEntityType)
-            .input('pvIdCountry', sql.VarChar, register.pvIdCountry)
-            .input('pvIdCFDIUse', sql.VarChar, register.pvIdCFDIUse)
             .input('piIdCustomer', sql.Int, register.piIdCustomer)
-            .input('pvIdTaxRegimen', sql.VarChar, register.pvIdTaxRegimen)
-            .input('pvZipCodes', sql.VarChar, register.pvZipCodes)
-            .input('pvTaxId', sql.VarChar, register.pvTaxId)
-            .input('pvName', sql.VarChar, register.pvName)
-            .input('pbForeign', sql.Bit, register.pbForeign)
-            .input('pvForeignTaxId', sql.VarChar, register.pvForeignTaxId)
+            .input('pvIdItem', sql.VarChar, register.pvIdItem)
+            .input('pvIdProductServiceCode', sql.VarChar, register.pvIdProductServiceCode)
+            .input('pvIdUoMCode', sql.VarChar, register.pvIdUoMCode)
+            .input('pvIdTaxObject', sql.VarChar, register.pvIdTaxObject)
+            .input('pvIdHarmonizedTariffCode', sql.VarChar, register.pvIdHarmonizedTariffCode)
+            .input('pvIdCustom_UoMs', sql.VarChar, register.pvIdCustom_UoMs)
+            .input('pvShortDesc', sql.VarChar, register.pvShortDesc)
+            .input('pvLongDesc', sql.VarChar, register.pvLongDesc)
+            .input('pvBranch', sql.VarChar, register.pvBranch)
+            .input('pvModel', sql.VarChar, register.pvModel)
+            .input('pvSubModel', sql.VarChar, register.pvSubModel)
+            .input('pvSerialNumber', sql.VarChar, register.pvSerialNumber)
             .input('pbStatus', sql.Bit, register.pbStatus)
             .input('pvUser', sql.VarChar, register.pvUser)
             .input('pvIP', sql.VarChar, register.pvIP)
-            .execute('spCustomer_Bill_Tos_CRUD_Records')
+            .execute('spCustomer_Items_CRUD_Records')
         console.log(JSON.stringify(insertRegister.recordsets[0][0])); 
         return insertRegister.recordsets
     }catch(error){
@@ -63,21 +66,23 @@ async function updateCustomerItems(register){
         let pool = await sql.connect(config);
         let updateRegister = await pool.request()
             .input('pvOptionCRUD', sql.VarChar, "U")
-            .input('piIdBillTo', sql.Int, register.piIdBillTo)
-            .input('pvIdEntityType', sql.VarChar, register.pvIdEntityType)
-            .input('pvIdCountry', sql.VarChar, register.pvIdCountry)
-            .input('pvIdCFDIUse', sql.VarChar, register.pvIdCFDIUse)
             .input('piIdCustomer', sql.Int, register.piIdCustomer)
-            .input('pvIdTaxRegimen', sql.VarChar, register.pvIdTaxRegimen)
-            .input('pvZipCodes', sql.VarChar, register.pvZipCodes)
-            .input('pvTaxId', sql.VarChar, register.pvTaxId)
-            .input('pvName', sql.VarChar, register.pvName)
-            .input('pbForeign', sql.Bit, register.pbForeign)
-            .input('pvForeignTaxId', sql.VarChar, register.pvForeignTaxId)
+            .input('pvIdItem', sql.VarChar, register.pvIdItem)
+            .input('pvIdProductServiceCode', sql.VarChar, register.pvIdProductServiceCode)
+            .input('pvIdUoMCode', sql.VarChar, register.pvIdUoMCode)
+            .input('pvIdTaxObject', sql.VarChar, register.pvIdTaxObject)
+            .input('pvIdHarmonizedTariffCode', sql.VarChar, register.pvIdHarmonizedTariffCode)
+            .input('pvIdCustom_UoMs', sql.VarChar, register.pvIdCustom_UoMs)
+            .input('pvShortDesc', sql.VarChar, register.pvShortDesc)
+            .input('pvLongDesc', sql.VarChar, register.pvLongDesc)
+            .input('pvBranch', sql.VarChar, register.pvBranch)
+            .input('pvModel', sql.VarChar, register.pvModel)
+            .input('pvSubModel', sql.VarChar, register.pvSubModel)
+            .input('pvSerialNumber', sql.VarChar, register.pvSerialNumber)
             .input('pbStatus', sql.Bit, register.pbStatus)
             .input('pvUser', sql.VarChar, register.pvUser)
             .input('pvIP', sql.VarChar, register.pvIP)
-            .execute('spCustomer_Bill_Tos_CRUD_Records')
+            .execute('spCustomer_Items_CRUD_Records')
         console.log(JSON.stringify(updateRegister.recordsets[0][0])); 
         return updateRegister.recordsets
     }catch(error){
