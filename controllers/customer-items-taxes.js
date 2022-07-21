@@ -59,6 +59,7 @@ async function updateCustomerItemsTaxes(register){
         let pool = await sql.connect(config);
         let updateRegister = await pool.request()
             .input('pvOptionCRUD', sql.VarChar, "U")
+            .input('piIdItemTaxes', sql.Int, register.piIdItemTaxes)
             .input('piIdCustomer', sql.Int, register.piIdCustomer)
             .input('pvIdItem', sql.VarChar, register.pvIdItem)
             .input('pvIdFactorType', sql.VarChar, register.pvIdFactorType)

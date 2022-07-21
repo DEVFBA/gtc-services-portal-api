@@ -1,21 +1,21 @@
-var fonts = {
+/*var fonts = {
     Roboto: {
       normal: 'C:/GTC/Fonts/Roboto-Regular.ttf',
       bold: 'C:/GTC/Fonts/Roboto-Bold.ttf',
       italics: 'C:/GTC/Fonts/Montserrat-Italic.ttf',
       bolditalics: 'C:/GTC/Fonts/Montserrat-BoldItalic.ttf'
     }
-}
+}*/
 
 
-/*var fonts = {
+var fonts = {
     Roboto: {
       normal: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Roboto-Regular.ttf',
       bold: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Roboto-Bold.ttf',
       italics: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Montserrat-Italic.ttf',
       bolditalics: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Montserrat-BoldItalic.ttf'
     }
-};*/
+};
 
 var convert = require('xml-js');
 var PdfPrinter = require('pdfmake');
@@ -1083,6 +1083,30 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
     
             var resMoneda2 = await dbcatcatalogs.getCatalogIdShortDescription(paramsMoneda2);
 
+            var bancoEmisor = ""
+            if(pago20.attributes.NomBancoOrdExt !== undefined)
+            {
+                bancoEmisor = pago20.attributes.NomBancoOrdExt
+            }
+            else {
+                var paramsBancoEmisor = {
+                    pvOptionCRUD: "R",
+                    pvTaxId: pago20.attributes.RfcEmisorCtaOrd,
+                    table: "SAT_Cat_Banks"
+                }
+        
+                bancoEmisor = await dbcatcatalogs.getNameBank(paramsBancoEmisor);
+            }
+
+            var paramsBancoEmisor = {
+                pvOptionCRUD: "R",
+                pvTaxId: pago20.attributes.RfcEmisorCtaBen,
+                table: "SAT_Cat_Banks"
+            }
+    
+            var bancoBeneficiario = await dbcatcatalogs.getNameBank(paramsBancoEmisor);
+            
+
             pagos[psItems] = [
                 {border: [true, true, true, true], text: `Complemento de pago versión 2.0`, style: 'textotablaEmisorReceptorBold', alignment: "center", colSpan: 2},
                 {border: [true, true, true, false], text: ``}, 
@@ -1112,8 +1136,8 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
             psItems++
 
             pagos[psItems] = [
-                {border: [true, false, false, false], text: `Nombre Entidad Emisora: ` , style: 'textotablaEmisorReceptor', alignment: "left"},
-                {border: [false, false, true, false], text: `Nombre Entidad Beneficiaria: `, style: 'textotablaEmisorReceptor', alignment: "left"}, 
+                {border: [true, false, false, false], text: `Nombre Entidad Emisora: ` + bancoEmisor, style: 'textotablaEmisorReceptor', alignment: "left"},
+                {border: [false, false, true, false], text: `Nombre Entidad Beneficiaria: ` + bancoBeneficiario, style: 'textotablaEmisorReceptor', alignment: "left"}, 
             ]
 
             psItems++
@@ -2511,7 +2535,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     fontSize: 7,
                 },
                 textotabla3: {
-                    fontSize: 4.5,
+                    fontSize: 6,
                 },
                 textotablacodigo: {
                     fontSize: 6.0,
@@ -2632,7 +2656,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
     
 }
 
-//getPDFPolymex(xmlPago_P457, "/Users/alexishernandezolvera/Desktop/P457.txt", "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/images/Logo_Polymex.png")
+getPDFPolymex(xmlPago_P457, "/Users/alexishernandezolvera/Desktop/P457.txt", "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/images/Logo_Polymex.png")
 
 var numeroALetras = (function() {
     
