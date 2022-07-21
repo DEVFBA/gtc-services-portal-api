@@ -110,4 +110,9 @@ router.use('/customer-uoms', require('./customer-uoms.js'));
  */
   router.use('/customer-items', require('./customer-items.js'));
 
+   /**
+ * * Request Customer Items Taxes
+ */
+    router.use('/customer-items-taxes', require('./customer-items-taxes.js'));
+
 module.exports = router;

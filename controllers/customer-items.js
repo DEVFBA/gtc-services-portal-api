@@ -30,7 +30,6 @@ async function getCustomerItems(idCustomer){
 
 //Insertar un registro
 async function insertCustomerItems(register){
-    console.log(register)
     try{
         let pool = await sql.connect(config);
         let insertRegister = await pool.request()
@@ -61,7 +60,6 @@ async function insertCustomerItems(register){
 
 //Actualizar un registro
 async function updateCustomerItems(register){
-    console.log(register)
     try{
         let pool = await sql.connect(config);
         let updateRegister = await pool.request()

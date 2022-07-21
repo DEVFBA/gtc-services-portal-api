@@ -1,21 +1,21 @@
-/*var fonts = {
+var fonts = {
     Roboto: {
       normal: 'C:/GTC/Fonts/Roboto-Regular.ttf',
       bold: 'C:/GTC/Fonts/Roboto-Bold.ttf',
       italics: 'C:/GTC/Fonts/Montserrat-Italic.ttf',
       bolditalics: 'C:/GTC/Fonts/Montserrat-BoldItalic.ttf'
     }
-}*/
+}
 
 
-var fonts = {
+/*var fonts = {
     Roboto: {
       normal: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Roboto-Regular.ttf',
       bold: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Roboto-Bold.ttf',
       italics: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Montserrat-Italic.ttf',
       bolditalics: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Montserrat-BoldItalic.ttf'
     }
-};
+};*/
 
 var convert = require('xml-js');
 var PdfPrinter = require('pdfmake');
@@ -154,8 +154,8 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
             text: [
                 "\n",
                 "\n",
-                {text: emisor.attributes.Nombre + `\n`, style: 'textotablaboldlarge'},
-                {text: "DOMICILIO FISCAL EMISOR\n", style: 'encabezadoDomicilio'},
+                {text: emisor.attributes.Nombre + `\n`, style: 'header'},
+                {text: "DOMICILIO FISCAL EMISOR\n", style: 'encabezadoTexto'},
                 {text: paramsEncabezado[0] + " No. " + paramsEncabezado[1] + "\n", style: 'encabezadoTexto'},
                 {text: paramsEncabezado[2] + "\n", style: 'encabezadoTexto'},
                 {text: paramsEncabezado[3] + ", " + paramsEncabezado[4] +  " CP: " + paramsEncabezado[5] +  " " + paramsEncabezado[8] + "\n", style: 'encabezadoTexto'},
@@ -1084,7 +1084,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
             var resMoneda2 = await dbcatcatalogs.getCatalogIdShortDescription(paramsMoneda2);
 
             pagos[psItems] = [
-                {border: [true, true, true, false], text: `Complemento de pago versión 2.0`, style: 'textotablaEmisorReceptor', alignment: "center", colSpan: 2},
+                {border: [true, true, true, true], text: `Complemento de pago versión 2.0`, style: 'textotablaEmisorReceptorBold', alignment: "center", colSpan: 2},
                 {border: [true, true, true, false], text: ``}, 
             ]
 
@@ -2320,9 +2320,17 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
         }
 
         var cadenaObligaciones = ""
-        if(attributes.TipoDeComprobante !== "E")
+        if(attributes.TipoDeComprobante !== "E" && attributes.TipoDeComprobante !== "P")
         {
-            cadenaObligaciones = `DEBO(EMOS) Y PAGARE(MOS) A LA ORDEN DE ITW POLY MEX S DE RL DE CV A LA VISTA LA CANTIDAD INDICADA, PAGOS EFECTUADOS DESPUES DEL VENCIMIENTO CAUSARÁN INTERESES MORATORIOS A RAZÓN DEL % MENSUAL. \n\n` 
+            cadenaObligaciones = `DEBO(EMOS) Y PAGARE(MOS) A LA ORDEN DE ITW POLY MEX S DE RL DE CV A LA VISTA LA CANTIDAD INDICADA, PAGOS EFECTUADOS DESPUES DEL VENCIMIENTO CAUSARÁN INTERESES MORATORIOS A RAZÓN DEL % MENSUAL. \n\n`  + `${totalLetra} ${attributes.Moneda}`
+        }
+        else if(attributes.TipoDeComprobante === "E")
+        {
+            cadenaObligaciones = `${totalLetra} ${attributes.Moneda}`;
+        }
+        else if(attributes.TipoDeComprobante === "P")
+        {
+            cadenaObligaciones = `${totalLetra}`;
         }
         
         var codigos = {
@@ -2332,7 +2340,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 body: [
                     [
                         {image: temporalFilesPath + imageQR, width: 100, height: 100, alignment: 'center', verticalAlign: 'middle'},
-                        {border: [false, true, true, true], text:  cadenaObligaciones + `${totalLetra} ${attributes.Moneda}`, alignment: 'left', style: "textotablaEmisorReceptor"},
+                        {border: [false, true, true, true], text:  cadenaObligaciones, alignment: 'left', style: "textotablaEmisorReceptor"},
                         {border: [false, true, true, true], text:[
                             {text: "Subtotal\n\n", alignment: 'left', style: "textotablatotales"},
                             {text: cadenaIVA, alignment: 'left', style: "textotablatotales"},
@@ -2426,7 +2434,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     color: '#000000',
                 },
                 encabezadoTexto: {
-                    fontSize: 10,
+                    fontSize: 9,
                 },
                 textoTablaTrasladoHeader: {
                     fontSize: 8,
@@ -2470,7 +2478,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 header: {
                     fontSize: 15,
                     bold: true,
-                    color: '#d82b26',
+                    color: '#000000',
                 },
                 index: {
                     fontSize: 11,
@@ -2531,7 +2539,11 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     fontSize: 11,
                 },
                 textotablaEmisorReceptor: {
-                    fontSize: 9,
+                    fontSize: 8,
+                },
+                textotablaEmisorReceptorBold: {
+                    fontSize: 8,
+                    bold: true
                 },
                 textotablacolor: {
                     fontSize: 6.5,
@@ -2620,7 +2632,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
     
 }
 
-getPDFPolymex(xmlNotaCredito_IPM6203226B4_RM_8715_20220719, "/Users/alexishernandezolvera/Desktop/IPM6203226B4_RM_8715_20220719.txt", "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/images/Logo_Polymex.png")
+//getPDFPolymex(xmlPago_P457, "/Users/alexishernandezolvera/Desktop/P457.txt", "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/images/Logo_Polymex.png")
 
 var numeroALetras = (function() {
     
