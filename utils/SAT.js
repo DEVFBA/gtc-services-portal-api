@@ -36,6 +36,8 @@ const certificar = (certificado) => {
     console.log('ERROR: Error al Certificar: ', error);
     logger.error('ERROR: Error al Certificar: ' + JSON.stringify(error));
 
+    return false;
+
   }
 
 
