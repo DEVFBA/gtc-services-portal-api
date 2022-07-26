@@ -43,9 +43,17 @@ const {
     getCadena40
 } = require('../utils/SAT');
 
+const {
+    sendMail
+} = require('../utils/mail');
+
 const { 
     timbrarFactura
 } = require('../utils/Timbrado/InvoiceOne');
+
+const {
+    zipFiles
+} = require('../utils/zipFiles');
 
 const {
     getTemporalFileName
@@ -520,7 +528,7 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
              }
  
             /**
-              * * * 9. Get Issuer Name
+              * * * 9. Get Issuer and Customer Name
             */
              logger.info('***Recuperando Nombre del Emisor.***');
 
@@ -537,6 +545,24 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
                   logger.info('El Documento XML recibido contiene Nombre del Emisor.');
 
                   issuerName = xmlDoc.getElementsByTagName('cfdi:Emisor')[0].getAttribute('Nombre');
+  
+             }
+
+             logger.info('***Recuperando Nombre del Cliente.***');
+
+             let customerName = '';
+  
+             if( !xmlDoc.getElementsByTagName('cfdi:Receptor')[0].getAttribute('Nombre') ) {
+  
+                  logger.info('El Documento XML recibido no tiene Nombre del Receptor.');
+
+                  customerName = '';
+  
+             } else {
+  
+                  logger.info('El Documento XML recibido contiene Nombre del Receptor.');
+
+                  issuerName = xmlDoc.getElementsByTagName('cfdi:Receptor')[0].getAttribute('Nombre');
   
              }
 
@@ -669,19 +695,18 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
              
             logger.info('El CFDI se timbró exitosamente.');
             
-            
             /**
              * * * 16. Save Stamped XML File and get Base64
-             */
-            logger.info('***Guardando XML del CFDI Timbrado.***');
+            */
+             logger.info('***Guardando XML del CFDI Timbrado.***');
             
-            fs.writeFileSync(`${xmlPath}${timbradoFileName}.xml`, timbradoResult.cfdiTimbrado.toString(), {encoding: 'utf-8'});
+             fs.writeFileSync(`${xmlPath}${timbradoFileName}.xml`, timbradoResult.cfdiTimbrado.toString(), {encoding: 'utf-8'});
             
-            logger.info('Se ha guardado el archivo: ' + `${xmlPath}${timbradoFileName}.xml`);
+             logger.info('Se ha guardado el archivo: ' + `${xmlPath}${timbradoFileName}.xml`);
             
             /**
              * * * 17. Get XML Data for cfdis Array -- XML Section
-             */
+            */
              logger.info('***Asignando datos de Timbrado a la Sección XML del Array CFDIs');
             
              const stampedXMLBase64             = Buffer.from(timbradoResult.  cfdiTimbrado.toString()).toString('base64');
@@ -711,22 +736,221 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
                     pdfFunction: pdfFunction
                 }
 
-                const pdfData               = await getInvoicePDF( tempFilesPath, xmlBase64, xmls[i].additionalFiles, pdfOptions );
+                const pdfData               = await getInvoicePDF( tempFilesPath, stampedXMLBase64, xmls[i].additionalFiles, pdfOptions );
 
                 pdfBase64                   = getBase64String(pdfData.pdfBase64);
                 emailTo                     = pdfData.emailTo;
                 emailCC                     = pdfData.emailCC;
                 poNumber                    = pdfData.poNumber;
 
-                console.log('PO Number:', poNumber);
+             }
+
+            /**
+             * * * 19. Decodificar y guardar Archivo PDF
+             * * *     Se asigna la información correspondiente al XML que se está
+             * * *     procesando en la sección PDF
+            */
+             logger.info('***Decodificando y guardando Archivo PDF.***');
+
+             if( pdfBase64.trim().length === 0 ) {
+
+                logger.info('El PDF no se generó exitosamente o no existe función para generar PDF.');
+
+                cfdiData.timbrado.statusPDF     = 500;
+                cfdiData.timbrado.pdf           = '';
+
+             } else {
+
+                logger.info('El PDF se generó existosamente.');
+                logger.info('Guardando PDF del CFDI Timbrado.');
+
+                fs.writeFileSync(`${pdfPath}${timbradoFileName}.pdf`, pdfBase64, 'base64');
+
+                logger.info('Archivo PDF guardado: ' + `${pdfPath}${timbradoFileName}.pdf`);
+
+                cfdiData.timbrado.statusPDF     = 200;
+                cfdiData.timbrado.pdf           = pdfBase64;
 
              }
              
+            /**
+             * * * 20. Send Mail
+            */
+             logger.info('***Enviando Correo Electrónico.***');
+
+             if( !parseInt(taxIdTimbradoSettings.data.configuration.SendMail) ) {
+
+                /**
+                 * * El Value en SendMail dentro de los Settings de timbrado del RFC
+                 * * debe ser 0 ó 1; en caso de tener algún string regresará siempre 
+                 * * False debido a que al hacer la conversión a número se vuelve NaN
+                 * 
+                */
+
+                logger.info('La configuración del timbrado indica que no se debe enviar correo.');
+
+             } else {
+
+                logger.info('La configuración del timbrado indica que sí se debe enviar correo.');
+
+                /**
+                  * ****** 20.1 Retrieving Mail Subject
+                */
+                logger.info('Resolviendo el Asunto del Correo.');
+
+                let mailSubject             = taxIdTimbradoSettings.data.configuration.MailSubject;
+                const mailSubjectFormat     = taxIdTimbradoSettings.data.configuration.MailSubjectFormat;
+
+                if( !mailSubject || mailSubject.trim() === '' ) {
+
+                    logger.info('Se debe enviar un Formato de Asunto Personalizado.')
+
+                    if( !mailSubjectFormat || mailSubjectFormat.trim() === '' ){
+
+                        logger.info('No se especifica el Formato de Asunto Personalizado, se envía genérico.')
+
+                        mailSubject = 'Envío de CFDI';
+
+                    } else {
+
+                        logger.info('El formato personalizado del Asunto es: ' + mailSubjectFormat);
+
+                        const mailSubjectOptions = {
+
+                            serie: serie,
+                            folio: folio,
+                            poNumber: poNumber,
+                            issuer: issuerName
+
+                        }
+
+                        mailSubject = getCustomMailSubject( mailSubjectFormat, mailSubjectOptions );
+
+                    }
+
+                }
+
+                /**
+                  * ****** 20.2 Retrieving Dynamic Mail HTML Template
+                */
+                logger.info('Resolviendo la Plantilla HTML del Correo.');
+
+                const htmlTemplateString = fs.readFileSync(taxIdTimbradoSettings.data.configuration.MailHTML,{encoding:'utf-8'});
+                const htmlData = {
+                    serie: serie,
+                    folio: folio,
+                    customerName: customerName,
+                    poNumber: poNumber,
+                    ccEmail: emailCC,
+                    issuerName: issuerName
+                }
+
+                const htmlString = modifyHTMLString( htmlTemplateString, htmlData );
+
+                const tempHTMLFileName      = getTemporalFileName() + '.html';
+                const htmlTempFilePath      = path.join(tempFilesPath, tempHTMLFileName);
+
+                fs.writeFileSync(htmlTempFilePath, htmlString);
+
+                const emailOptions = {
+
+                    mailSettingType: 1,
+                    mailManualSettings:{
+                        mailHost:  taxIdTimbradoSettings.data.configuration.MailHost,
+                        mailPort: taxIdTimbradoSettings.data.configuration.MailPort,
+                        mailUser: taxIdTimbradoSettings.data.configuration.MailUser,
+                        mailPassword: taxIdTimbradoSettings.data.configuration.MailPassword,
+                        mailSubject: mailSubject,
+                        mailHTML: htmlTempFilePath
+                    }
+
+                }
+
+                console.log(emailOptions);
+
+                /**
+                  * ****** 20.3 Zip XML and PDF Files
+                */
+
+                logger.info('Generando Zip de Archivos de Factura');
+
+                let zippedEmailAttachments      = [];
+
+                const invoiceXMLExists = fs.existsSync(`${xmlPath}${timbradoFileName}.xml`);
+                const invoicePDFExists = fs.existsSync(`${pdfPath}${timbradoFileName}.pdf`);
+
+                if( !invoiceXMLExists ) {
+
+                    logger.info('El archivo XML de la Factura no existe.');
+
+                } else {
+
+                    zippedEmailAttachments           = [...zippedEmailAttachments, `${xmlPath}${timbradoFileName}.xml`];
+
+                }
+
+                if( !invoicePDFExists ) {
+
+                    logger.info('El archivo PDF de la Factura no existe.');
+
+                } else {
+
+                    zippedEmailAttachments           = [...zippedEmailAttachments, `${pdfPath}${timbradoFileName}.pdf`];
+
+                }
+
+                const invoiceZipFileName            = path.join(taxIdTimbradoSettings.data.configuration.ZipPath, `${timbradoFileName}.zip`);
+
+                const zippedFiles = await zipFiles(zippedEmailAttachments, invoiceZipFileName);
+
+                logger.info('Archivos en el ZIP: ' + zippedEmailAttachments);
+
+                /**
+                  * ****** 20.4 Send Mail
+                */
+                let emailAttachment                 = [];
+                const invoiceZipFileExists          = fs.existsSync(invoiceZipFileName);
+
+                if( !invoiceZipFileExists ) {
+
+                    logger.info('El Archivo Zip de la Factura no fue generado o no existe.');
+
+                } else {
+
+                    logger.info('Se genera el objeto del Attachment.');
+
+                    emailAttachment.push({
+                        path: invoiceZipFileName, 
+                        filename: `${timbradoFileName}.zip`
+                    });
+
+                }
+
+                const emailSent = await sendMail( emailTo, emailCC, emailAttachment, emailOptions );
+
+                if( emailSent ){
+
+                    logger.info('Correo enviado correctamente.')
+
+                } else {
+
+                    logger.info('WARNING: Correo no se envío correctamente.')
+
+                }
+
+                const htmlTempFileExists = fs.existsSync(htmlTempFilePath);
+
+                if( htmlTempFileExists ) {
+                    
+                    fs.unlinkSync(htmlTempFilePath);
+
+                }
+
+             }
+
              cfdis = [...cfdis, cfdiData];
              
             }
-
-            console.log('CFDIs: ', cfdis );
             
             return cfdis;
             
@@ -740,6 +964,44 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
         }
         
     }
+
+function getCustomMailSubject(mailSubjectFormat, options) {
+
+    logger.info('Las Opciones recibidas para el Asunto son: ' + options.toString());
+
+    if( mailSubjectFormat === 'Serie,Folio|Issuer|PO' ) {
+
+        return `${options.serie}${options.folio} ${options.issuer} ${options.poNumber}`;
+
+    } else {
+
+        logger.info('No se tiene programado el Asunto Personalizado para el Correo: ' + mailSubjectFormat);
+        logger.info('Se regresa el Asunto Genérico');
+
+        return 'Envío de CFDI';
+
+    }
+
+}
+
+function modifyHTMLString( originalHTMLString, htmlData) {
+
+    const htmlDataLength    = Object.keys(htmlData).length;
+    const htmlDataValues    = Object.values(htmlData);
+
+    let newHTMLString           = null;
+
+    for(let i = 0; i < htmlDataLength; i ++){
+
+        newHTMLString =  originalHTMLString.replace(`|${i}|`,htmlDataValues[i]);
+
+        originalHTMLString = newHTMLString;
+
+    }
+
+    return newHTMLString;
+
+}
 
 module.exports = {
     timbrar

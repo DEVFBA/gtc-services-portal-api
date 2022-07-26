@@ -70,7 +70,6 @@ async function getCustomerByTaxId(taxId, country){
 
         const taxIdCustomerId = taxIdCustomers[0].Id_Customer;
 
-        console.log('Customers in getCustomerByTaxId: ', taxIdCustomerId);
         logger.info('El Customer Id para el RFC es: ' + taxIdCustomerId );
         
         return taxIdCustomerId;

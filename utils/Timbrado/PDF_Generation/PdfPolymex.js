@@ -1,21 +1,21 @@
-/*var fonts = {
+var fonts = {
     Roboto: {
       normal: 'C:/GTC/Fonts/Roboto-Regular.ttf',
       bold: 'C:/GTC/Fonts/Roboto-Bold.ttf',
       italics: 'C:/GTC/Fonts/Montserrat-Italic.ttf',
       bolditalics: 'C:/GTC/Fonts/Montserrat-BoldItalic.ttf'
     }
-}*/
+}
 
 
-var fonts = {
+/* var fonts = {
     Roboto: {
       normal: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Roboto-Regular.ttf',
       bold: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Roboto-Bold.ttf',
       italics: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Montserrat-Italic.ttf',
       bolditalics: '/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/fonts/Montserrat-BoldItalic.ttf'
     }
-};
+}; */
 
 var convert = require('xml-js');
 var PdfPrinter = require('pdfmake');
@@ -2616,7 +2616,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
     
 }
 
-getPDFPolymex(xmlNotaCredito_IPM6203226B4_RM_9238_20220623, "/Users/alexishernandezolvera/Desktop/IPM6203226B4_RM_9238_20220623.txt", "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/images/Logo_Polymex.png")
+//getPDFPolymex(xmlNotaCredito_IPM6203226B4_RM_9238_20220623, "/Users/alexishernandezolvera/Desktop/IPM6203226B4_RM_9238_20220623.txt", "/Users/alexishernandezolvera/Desktop/GTC/PROYECTOS/gtc-services-portal-api/utils/images/Logo_Polymex.png")
 
 var numeroALetras = (function() {
     
