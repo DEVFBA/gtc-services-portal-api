@@ -116,7 +116,7 @@ async function getApplicationSettings(idApplication, idCustomer) {
         /**
          * * Validate if Application Exists or if it's enabled
          */
-        logger.info('Validando si existe o está habilitada la aplicación Id: ' + idApplication );
+        logger.info('***Validando si existe o está habilitada la aplicación Id: ' + idApplication + '***' );
 
         if( Object.keys(applicationData).length === 0 || !applicationData.Status ) {
 
@@ -154,7 +154,7 @@ async function getApplicationSettings(idApplication, idCustomer) {
             }
         ]
 
-        logger.info('Recuperando las configuraciones de la Aplicación Id: ' + idApplication + ' para el Customer: ' + idCustomer);
+        logger.info('***Recuperando las configuraciones de la Aplicación Id: ' + idApplication + ' para el Customer: ' + idCustomer + '***' );
 
         let applicationSettings = await execStoredProcedure( 'spApplication_Settings_CRUD_Records', sqlParams );
 

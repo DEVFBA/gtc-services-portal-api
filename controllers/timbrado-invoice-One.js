@@ -402,13 +402,12 @@ async function procesarXMLs( xmls, timbradoSettings, tempPath, idCustomer, user,
             logger.info('Borrando archivo Temporal ' + `${tempPath}${fileName}`);
         
             fs.unlinkSync(`${tempPath}${fileName}`);
-        
             logger.info('Enviando a Timbrar a Invoice One el archivo: ' + stringXML);
 
             const environment = await getEnvironment();
 
             const timbradoResponse = await timbrarFactura(stringXML, timbradoWSURL, timbradoWSUser, timbradoPassword, environment);
-
+            /** Aquí voy */
             const request                       = timbradoResponse.request;
             const response                      = timbradoResponse.response;
 

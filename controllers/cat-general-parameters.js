@@ -84,6 +84,8 @@ async function getEnvironment() {
 
         console.log('Error en getEnvironment: ' + JSON.stringify(error));
 
+        return false;
+
     }
 
 }

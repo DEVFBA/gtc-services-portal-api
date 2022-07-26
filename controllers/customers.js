@@ -3,6 +3,12 @@ const sql = require("mssql"); //necesitamos el paquete sql
 
 var fs = require('fs');
 
+const logger = require('../utils/logger');
+
+const {
+    execStoredProcedure
+} =  require('../utils/mssql-database');
+
 async function getCustomers(params){
     try{
         let pool = await sql.connect(config);
@@ -39,6 +45,44 @@ async function getCustomer(name){
     }catch(error){
         console.log(error)
     }
+}
+
+async function getCustomerByTaxId(taxId, country){
+
+    try{
+
+        const sqlParams = [
+            {
+                name: 'pvOptionCRUD',
+                type: sql.VarChar(1),
+                value: 'R'
+            }
+        ]
+
+        logger.info('***Función getCustomerByTaxId***' );
+        logger.info('***Recuperando el ID del Cliente del RFC ' + taxId + '.***' );
+
+        let customers = await execStoredProcedure( 'spCustomers_CRUD_Records', sqlParams );
+
+        const taxIdCustomers = customers[0].filter((customer) => {
+            return (customer.Tax_Id === taxId && customer.Id_Country === country);
+        });
+
+        const taxIdCustomerId = taxIdCustomers[0].Id_Customer;
+
+        logger.info('El Customer Id para el RFC es: ' + taxIdCustomerId );
+        
+        return taxIdCustomerId;
+
+    }catch(error){
+
+        console.log(error);
+        logger.error('Error en función getCustomerByTaxId.');
+
+        return false;
+
+    }
+
 }
 
 // Get Customer Name
@@ -314,5 +358,6 @@ module.exports = {
     getFullAddress : getFullAddress,
     getCustomerName : getCustomerName,
     getCustomer : getCustomer, 
-    getCustomerById : getCustomerById
+    getCustomerById : getCustomerById,
+    getCustomerByTaxId : getCustomerByTaxId
 }
