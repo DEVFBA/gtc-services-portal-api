@@ -334,8 +334,9 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
 
                 logger.info('El Base 64 no es un XML válido de CFDI.');
 
-                cfdiData.error      = true;
-                cfdiData.message    = 'El Base 64 no es un XML válido de CFDI.';
+                cfdiData.error          = true;
+                cfdiData.message        = 'El Base 64 no es un XML válido de CFDI.';
+                cfdiData.timbrado.file  = path.basename(fileName,'.xml');
 
                 cfdis = [...cfdis, cfdiData];
 
@@ -345,8 +346,9 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
 
                 logger.info('El XML no cuenta con RFC Emisor.');
 
-                cfdiData.error      = true;
-                cfdiData.message    = 'El XML no cuenta con RFC Emisor.';
+                cfdiData.error              = true;
+                cfdiData.message            = 'El XML no cuenta con RFC Emisor.';
+                cfdiData.timbrado.file      = path.basename(fileName,'.xml');
 
                 cfdis = [...cfdis, cfdiData];
 
@@ -380,8 +382,9 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
 
              if( !validCompany ) {
 
-                cfdiData.error      = true;
-                cfdiData.message    = 'El RFC no corresponde a una compañía válida de timbrado para el Cliente.';
+                cfdiData.error              = true;
+                cfdiData.message            = 'El RFC no corresponde a una compañía válida de timbrado para el Cliente.';
+                cfdiData.timbrado.file      = path.basename(fileName,'.xml');
 
                 logger.error('El RFC no corresponde a una compañía válida de timbrado para el Cliente.');
 
@@ -400,8 +403,9 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
 
              if( !taxIdTimbradoSettings.data.success ) {
 
-                cfdiData.error      = true;
-                cfdiData.message    = 'El RFC no tiene sus configuraciones de Timbrado.';
+                cfdiData.error              = true;
+                cfdiData.message            = 'El RFC no tiene sus configuraciones de Timbrado.';
+                cfdiData.timbrado.file      = path.basename(fileName,'.xml');
 
                 logger.error('El RFC no tiene sus configuraciones de Timbrado.');
 
@@ -432,8 +436,9 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
 
              if( !fs.existsSync(taxIdTimbradoSettings.data.configuration.CerFile) ) {
 
-               cfdiData.error      = true;
-               cfdiData.message    = 'El archivo cer de la ruta ' + taxIdTimbradoSettings.data.configuration.CerFile + ' no existe.';
+               cfdiData.error               = true;
+               cfdiData.message             = 'El archivo cer de la ruta ' + taxIdTimbradoSettings.data.configuration.CerFile + ' no existe.';
+               cfdiData.timbrado.file       = path.basename(fileName,'.xml');
 
                logger.error('El archivo cer de la ruta ' + taxIdTimbradoSettings.data.configuration.CerFile + ' no existe.');
 
@@ -447,8 +452,9 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
 
              if( !fs.existsSync(taxIdTimbradoSettings.data.configuration.KeyFile) ) {
 
-                cfdiData.error      = true;
-                cfdiData.message    = 'El archivo key de la ruta ' + taxIdTimbradoSettings.data.configuration.KeyFile + ' no existe.';
+                cfdiData.error                  = true;
+                cfdiData.message                = 'El archivo key de la ruta ' + taxIdTimbradoSettings.data.configuration.KeyFile + ' no existe.';
+                cfdiData.timbrado.file          = path.basename(fileName,'.xml');
  
                 logger.error('El archivo key de la ruta ' + taxIdTimbradoSettings.data.configuration.KeyFile + ' no existe.');
  
@@ -469,8 +475,9 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
 
              if( !certificateNumber ) {
 
-                cfdiData.error      = true;
-                cfdiData.message    = 'No se pudo resolver el Número de Certificado con el archivo Certificado configurado.';
+                cfdiData.error              = true;
+                cfdiData.message            = 'No se pudo resolver el Número de Certificado con el archivo Certificado configurado.';
+                cfdiData.timbrado.file      = path.basename(fileName,'.xml');
 
                 logger.error('No se pudo resolver el Número de Certificado con el archivo Certificado configurado.');
 
@@ -577,6 +584,7 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
 
             /**
              * * * 11. Generate cadena
+             * * *     Aquí es donde ocupa la versión del CFDI
             */
              logger.info('***Generando cadena.***');
 
@@ -652,8 +660,9 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
 
              if( !timbradoResult ) {
 
-                cfdiData.error      = true;
-                cfdiData.message    = 'Hubo un error al momento de recuperar la Respuesta de Timbrado.';
+                cfdiData.error              = true;
+                cfdiData.message            = 'Hubo un error al momento de recuperar la Respuesta de Timbrado.';
+                cfdiData.timbrado.file      = path.basename(fileName,'.xml');
 
                 logger.error('Hubo un error al momento de recuperar la Respuesta de Timbrado.');
 
@@ -684,6 +693,7 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
                 cfdiData.error          = true;          
                 cfdiData.message        = timbradoResult.errorMessage;
                 cfdiData.statusCFDI     = timbradoResult.errorCode;
+                cfdiData.timbrado.file  = path.basename(fileName,'.xml');
 
                 cfdis = [...cfdis, cfdiData];
 
