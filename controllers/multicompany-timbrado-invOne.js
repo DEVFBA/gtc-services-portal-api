@@ -59,6 +59,10 @@ const {
     getTemporalFileName
 } = require('../utils/general');
 
+const {
+    addCustomerStampingRecord
+} = require('./request-customer-stamping')
+
 async function timbrar(req) {
   
     let response = {
@@ -122,8 +126,6 @@ async function timbrar(req) {
          logger.info('***Recuperando las configuraciones de la aplicación principal***');
     
          let timbradoSettings = await getApplicationSettings(idApplication, idParentCustomer);
-    
-         console.log('Settings Timbrado: ', timbradoSettings);
     
          if( !timbradoSettings.data.success ) {
     
@@ -222,7 +224,6 @@ async function timbrar(req) {
 
     } catch (error) {
 
-        console.log('Error en timbrar: ', error);
         logger.error('Error en timbrar: ' + error);
 
         response.data.success   = false;
@@ -418,8 +419,6 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
                 logger.info('Configuraciones de Timbrado para el RFC recuperadas exitosamente.');
 
              }
-             
-             console.log('Configuraciones de Timbrado del RFC: ', taxIdTimbradoSettings);
 
              const cerFile              = taxIdTimbradoSettings.data.configuration.CerFile;
              const keyFile              = taxIdTimbradoSettings.data.configuration.KeyFile;
@@ -682,7 +681,7 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
              let uuid                   = timbradoResult.uuid;
 
              let timbradoFileName       = path.basename(fileName, '.xml');
-             let timbradoSuccess        = false;
+             let timbradoSuccess        = true;
              cfdiData.timbrado.serie    = serie;
              cfdiData.timbrado.folio    = folio;
 
@@ -694,10 +693,43 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
                 cfdiData.message        = timbradoResult.errorMessage;
                 cfdiData.statusCFDI     = timbradoResult.errorCode;
                 cfdiData.timbrado.file  = path.basename(fileName,'.xml');
+                timbradoSuccess         = false;
 
                 cfdis = [...cfdis, cfdiData];
 
                 logger.info('Se regresa el error del timbrado en el Response del XML Procesado.');
+
+                /** 
+                  * ****** 15.1. Update Timbres Control
+                */
+                 let timbreData = {
+                    customer: idParentCustomer,
+                    uuid: uuid,
+                    response: timbradoResponse,
+                    request: timbradoRequest,
+                    fileName: fileName,
+                    serie: serie,
+                    folio: folio,
+                    executionMessage: timbradoSuccess ? 'EXITOSO' : 'ERROR',
+                    timbradoSuccess: timbradoSuccess,
+                    user: user,
+                    ip: '0.0.0.0'
+                 }
+               
+                 logger.info('Timbre Data: '+  JSON.stringify(timbreData));
+               
+                 const updateTimbresControl = await addCustomerStampingRecord(timbreData);
+               
+                 if( updateTimbresControl.Code_Successful && updateTimbresControl.Code_Type === 'Success' ) {
+               
+                    logger.info('Registro de Timbrado insertado correctamente. Los timbres disponibles fueron actualizados para el Cliente: ' + idParentCustomer);
+               
+                 } else {
+               
+                    logger.info('WARNING: No se registró el Timbrado en el Log. Los timbres disponibles no fueron actualizados para el Cliente: ' + idParentCustomer);
+                    logger.info('Mensaje de la Base de Datos: ' + updateTimbresControl.Code_Message_User );
+               
+                 }
 
                 continue;
 
@@ -876,8 +908,6 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
 
                 }
 
-                console.log(emailOptions);
-
                 /**
                   * ****** 20.3 Zip XML and PDF Files
                 */
@@ -958,15 +988,47 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
 
              }
 
-             cfdis = [...cfdis, cfdiData];
              
+            /** 
+             * * * 21. Update Timbres Control
+            */
+             let timbreData = {
+                 customer: idParentCustomer,
+                 uuid: uuid,
+                 response: timbradoResponse,
+                 request: timbradoRequest,
+                 fileName: fileName,
+                 serie: serie,
+                 folio: folio,
+                 executionMessage: timbradoSuccess ? 'EXITOSO' : 'ERROR',
+                 timbradoSuccess: timbradoSuccess,
+                 user: user,
+                 ip: '0.0.0.0'
+                }
+                
+                logger.info('Timbre Data: '+  JSON.stringify(timbreData));
+                
+                const updateTimbresControl = await addCustomerStampingRecord(timbreData);
+                
+            if( updateTimbresControl.Code_Successful && updateTimbresControl.Code_Type === 'Success' ) {
+                
+                logger.info('Registro de Timbrado insertado correctamente. Los timbres disponibles fueron actualizados para el Cliente: ' + idParentCustomer);
+                
+            } else {
+                
+                logger.info('WARNING: No se registró el Timbrado en el Log. Los timbres disponibles no fueron actualizados para el Cliente: ' + idParentCustomer);
+                logger.info('Mensaje de la Base de Datos: ' + updateTimbresControl.Code_Message_User );
+                
+            }
+
+             cfdis = [...cfdis, cfdiData];
+            
             }
             
             return cfdis;
             
         } catch (error) {
             
-            console.log('Error en procesarXMLs: ', error);
             logger.error('Error en procesarXMLs: ' + error);
             
             return false;
