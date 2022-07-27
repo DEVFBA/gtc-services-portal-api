@@ -568,7 +568,7 @@ async function procesarXMLs( xmls, timbradoSettings, tempFilesPath, idParentCust
   
                   logger.info('El Documento XML recibido contiene Nombre del Receptor.');
 
-                  issuerName = xmlDoc.getElementsByTagName('cfdi:Receptor')[0].getAttribute('Nombre');
+                  customerName = xmlDoc.getElementsByTagName('cfdi:Receptor')[0].getAttribute('Nombre');
   
              }
 
