@@ -64,20 +64,26 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
 
     try {
 
-        logger.info('Procesando PDF de Factura de Polymex.');
+        logger.info('**************************************************************');
+        logger.info('       Función getPDFPolymex.');
+        logger.info('**************************************************************');
 
+        logger.info('Obteniendo la información del TXT');
         //Leo el archivo guardado anteriormente
         const txtString  = fs.readFileSync(txtDocument, 'utf-8');
 
         //Separamos el archivo por \r para obtener cada uno de los elementos.
         var arrayLineas = txtString.split("\n")
         
+        logger.info('Obteniendo la información del TXT: emailTo');
         //Obtenemos el array de correos para emailTo
         var arrayEmailTo = arrayLineas[0].split(",")
 
+        logger.info('Obteniendo la información del TXT: emailCC');
         //Obtenemos el array de correos para emailCC
         var arrayEmailCC = arrayLineas[1].split(",")
 
+        logger.info('Obteniendo la información del TXT: encabezado');
         //Quitamos primer y último elemento de la cadena de parámetros encabezado.
         var params = arrayLineas[2].slice(1,-1)
 
@@ -98,32 +104,45 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
 
         var xmlString = await xml.serializeXML(docBase64)
 
+        logger.info('Convirtiendo el archivo XML a json.');
         var options = {compact: false, ignoreComment: true, spaces: 4};
         const jsonString = convert.xml2json(xmlString, options);
         const jsonData = JSON.parse(jsonString)
-        var conceptos = jsonData.elements[0].elements.find( o => o.name === "cfdi:Conceptos")
-        var attributes = jsonData.elements[0].attributes
-        var informacionGlobal =  jsonData.elements[0].elements.find( o => o.name === "cfdi:InformacionGlobal")
-        var emisor = jsonData.elements[0].elements.find( o => o.name === "cfdi:Emisor")
-        var receptor = jsonData.elements[0].elements.find( o => o.name === "cfdi:Receptor")
-        var impuestosF = jsonData.elements[0].elements.find( o => o.name === "cfdi:Impuestos")
-        var complemento = jsonData.elements[0].elements.find( o => o.name === "cfdi:Complemento")
-        var timbreFiscal = complemento.elements.find( o => o.name === "tfd:TimbreFiscalDigital")
-        var leyendaFiscal = complemento.elements.find( o => o.name === "leyendasFisc:LeyendasFiscales")
-        var pago = complemento.elements.find( o => o.name === "pago20:Pagos")
-        var comercioExterior = complemento.elements.find( o => o.name === "cce11:ComercioExterior")
-        var cfdiRelacionadosGeneral = jsonData.elements[0].elements.find( o => o.name === "cfdi:CfdiRelacionados")
+
+        logger.info('Obteniendo la Información Global del xml.');
+        var informacionGlobal =  jsonData.elements[0].elements.find( o => o.name === "cfdi:InformacionGlobal");
+
+        logger.info('Obteniendo los Atributos del xml.');
+        var attributes = jsonData.elements[0].attributes;
+
+        logger.info('Obteniendo la información del Emisor');
+        var emisor = jsonData.elements[0].elements.find( o => o.name === "cfdi:Emisor");
+
+        logger.info('Obteniendo la información del Receptor');
+        var receptor = jsonData.elements[0].elements.find( o => o.name === "cfdi:Receptor");
+
+        logger.info('Obteniendo la información de los Conceptos');
+        var conceptos = jsonData.elements[0].elements.find( o => o.name === "cfdi:Conceptos");
+
+        logger.info('Obteniendo la información del Complemento');
+        var complemento = jsonData.elements[0].elements.find( o => o.name === "cfdi:Complemento");
+
+        logger.info('Obteniendo la información del Timbre Fiscal Digital');
+        var timbreFiscal = complemento.elements.find( o => o.name === "tfd:TimbreFiscalDigital");
 
         if(attributes.TipoDeComprobante === "I" || attributes.TipoDeComprobante === "T" || attributes.TipoDeComprobante === "E")
         {
             lotesPiezas = arrayLineas[3].split("|")
 
+            logger.info('Obteniendo la información del TXT: Lotes');
             //Para obtener los lotes
             arrayLotes = lotesPiezas[1].split("^")
 
+            logger.info('Obteniendo la información del TXT: Piezas');
             //Para obtener las piezas
             arrayPiezas = lotesPiezas[2].split("^")
 
+            logger.info('Obteniendo la información del TXT: Referencias Cruzadas');
             //Para obtener las referencias cruzadas
             arrayRefCruzadas = lotesPiezas[3].split("^")
         }
@@ -176,7 +195,6 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
         }
         else if(attributes.TipoDeComprobante === "P")
         {
-            
             textoEncabezado = "Complemento de pago " + pago.attributes.Version;
         }
         else if(attributes.TipoDeComprobante === "T")
@@ -402,6 +420,10 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
         var espacio1={}
         var cfdiRelacionadosLabel = "";
         var cfdiRelacionadosUUIDs = ""
+
+        logger.info('Obteniendo la información de los CFDI Relacionados');
+        var cfdiRelacionadosGeneral = jsonData.elements[0].elements.find( o => o.name === "cfdi:CfdiRelacionados")
+
         if(cfdiRelacionadosGeneral !== undefined)
         {
             let paramsCFDIRelacionados = {
@@ -614,19 +636,12 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     }
                 }
                 else {
-                    var informacionAduanera = conceptos.elements[i].elements.find( o => o.name === "cfdi:InformacionAduanera")
-                    var noPedimento = ""
-                    if(informacionAduanera !== undefined)
-                    {
-                        noPedimento = "Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
-                    }
-
                     if(i !== conceptos.elements.length-1)
                     {
                         concepts[psItems] = [
                             {border: [true, false, false, false], text: conceptos.elements[i].attributes.NoIdentificacion + "\n" + arrayRefCruzadas[i], style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + noPedimento + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla', alignment: "center"}, 
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
@@ -646,7 +661,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                         concepts[psItems] = [
                             {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion + "\n" + arrayRefCruzadas[i], style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" + noPedimento + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
@@ -693,7 +708,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     table: {
                         dontBreakRows: true, 
                         headerRows: 1,
-                        widths: [27,30,"*",23,23,24,27,25,39,39,25,23,27,39],
+                        widths: [27,27,"*",23,23,23,23,23,39,39,28,20,25,39],
                         body: concepts
                     },
                     layout: {
@@ -713,6 +728,9 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 },
                 {text: "\n"}
             ]
+
+            logger.info('Obteniendo la información del Complemento de Comercio Exterior');
+            var comercioExterior = complemento.elements.find( o => o.name === "cce11:ComercioExterior")
 
             if(comercioExterior !== undefined)
             {
@@ -1055,8 +1073,10 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 {text: "\n"}   
             ]
 
-           
+            logger.info('Obteniendo la información del Complemento de Pago');
+            var pago = complemento.elements.find( o => o.name === "pago20:Pagos");
 
+            logger.info('Obteniendo la información del Complemento de Pago: Totales');
             var pagoTotales = pago.elements.find( o => o.name === "pago20:Totales");
             var montoTotalPagos;
             if(pagoTotales !== undefined)
@@ -1872,20 +1892,13 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     }
                 }
                 else {
-                    var informacionAduanera = conceptos.elements[i].elements.find( o => o.name === "cfdi:InformacionAduanera")
-                    var noPedimento = ""
-                    if(informacionAduanera !== undefined)
-                    {
-                        noPedimento = "Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
-                    }
-
                     if(i !== conceptos.elements.length-1)
                     {
                         console.log(conceptos.elements[i].attributes)
                         concepts[psItems] = [
                             {border: [true, false, false, false], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + noPedimento + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
@@ -1905,7 +1918,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                         concepts[psItems] = [
                             {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" + noPedimento + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
@@ -1952,7 +1965,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     table: {
                         dontBreakRows: true, 
                         headerRows: 1,
-                        widths: [27,30,"*",23,23,24,27,25,39,39,25,23,27,39],
+                        widths: [27,27,"*",23,23,23,23,23,39,39,28,20,25,39],
                         body: concepts
                     },
                     layout: {
@@ -2127,20 +2140,14 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                     }
                 }
                 else {
-                    var informacionAduanera = conceptos.elements[i].elements.find( o => o.name === "cfdi:InformacionAduanera")
-                    var noPedimento = ""
-                    if(informacionAduanera !== undefined)
-                    {
-                        noPedimento = "Pedimento: " + informacionAduanera.attributes.NumeroPedimento + "\n";
-                    }
-
+                   
                     if(i !== conceptos.elements.length-1)
                     {
                         console.log(conceptos.elements[i].attributes)
                         concepts[psItems] = [
                             {border: [true, false, false, false], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + noPedimento + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, false], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, false], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
@@ -2160,7 +2167,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                         concepts[psItems] = [
                             {border: [true, false, false, true], text: conceptos.elements[i].attributes.NoIdentificacion, style: 'textotabla3', alignment: "center"},
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveProdServ, style: 'textotabla3', alignment: "center"}, 
-                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" + noPedimento + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
+                            {border: [false, false, false, true], text: conceptos.elements[i].attributes.Descripcion + "\n" + "Objeto Imp.: " + conceptos.elements[i].attributes.ObjetoImp, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Unidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.ClaveUnidad, style: 'textotabla3', alignment: "center"}, 
                             {border: [false, false, false, true], text: conceptos.elements[i].attributes.Cantidad, style: 'textotabla3', alignment: "center"},
@@ -2232,6 +2239,8 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
         var leyendasF = {}
         var norma = {}
 
+        logger.info('Obteniendo la información de las Leyendas Fiscales'); 
+        var leyendaFiscal = complemento.elements.find( o => o.name === "leyendasFisc:LeyendasFiscales")
         if(leyendaFiscal !== undefined)
         {
             leyendasF = [
@@ -2408,6 +2417,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
         var resTemporalFiles = await dbcatgeneralparameters.getGeneralParametersbyID(paramsTemporalFiles)
         //console.log((resTemporalFiles[0])[0].Value)
 
+        logger.info('Generando Código QR'); 
         var imageQR = timbreFiscal.attributes.UUID + ".png"
         //console.log(imageQR)
 
@@ -2419,6 +2429,7 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
         var temporalFilesPath = (resTemporalFiles[0])[0].Value
         //console.log(temporalFilesPath)
         
+        logger.info('Guardando Imagen de Código QR'); 
         fs.writeFileSync(temporalFilesPath + imageQR, buffer);
 
         var paramsMoneda = {
@@ -2448,11 +2459,14 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
         //Para obtener el IVA
         var cadenaIVA = ""
         var cadenaIVAValor = ""
+
+        logger.info('Obteniendo la información de los Impuestos');
+        var impuestosF = jsonData.elements[0].elements.find( o => o.name === "cfdi:Impuestos");
+
         if(impuestosF !== undefined)
         {
-            //console.log(impuestosF)
             var trasladosN = impuestosF.elements.find( o => o.name === "cfdi:Traslados")
-            //console.log(trasladosN.elements)
+            
             if(trasladosN !== undefined)
             {
                 var iva16 = trasladosN.elements.find( o => o.attributes.TasaOCuota === "0.160000")
@@ -2738,10 +2752,11 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
         pdfDoc.pipe(fs.createWriteStream("Documento.pdf"));
         pdfDoc.end();
 
-        
         return new Promise( ( resolve, reject ) => {
 
             var pdfDoc = printer.createPdfKitDocument(docDefinition);
+
+            logger.info('Eliminando imagen Código QR');
             fs.unlinkSync(temporalFilesPath + imageQR)
 
             var chunks = [];
@@ -2751,28 +2766,31 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
                 chunks.push(chunk);
             });
             
+            logger.info('Convirtiendo PDF A Base 64');
             pdfDoc.on('end', function () {
 
                 result = Buffer.concat(chunks);
 
                 base64 = result.toString('base64');
 
-                var result = {
+                let result = {
                     pdfBase64: base64,
                     emailTo : arrayEmailTo,
                     emailCC: arrayEmailCC,
                     poNumber: paramsEncabezado[30]
                 }
-                resolve(result);
+                resolve("");
 
             });
 
             pdfDoc.on('error', (error) => {
-                
-                console.log(error);
-                
-                reject('')
-
+                var result = {
+                    pdfBase64: "",
+                    emailTo : arrayEmailTo,
+                    emailCC: arrayEmailCC,
+                    poNumber: paramsEncabezado[30]
+                }
+                reject(result)
             });
 
             pdfDoc.end();
@@ -2780,9 +2798,16 @@ async function getPDFPolymex(docBase64, txtDocument, pathLogo)
         });
 
     } catch (err) {
+        logger.info('Hubo un error al procesar el PDF de Polymex: ' + err);
+        
+        var result = {
+            pdfBase64: "",
+            emailTo : arrayEmailTo,
+            emailCC: arrayEmailCC,
+            poNumber: paramsEncabezado[30]
+        }
 
-        console.error('Error: ', err)
-
+        return result;
     }
     
 }
@@ -2815,7 +2840,7 @@ var numeroALetras = (function() {
         }
 
         return '';
-    } //Unidades()
+    }
 
     function Decenas(num) {
 
@@ -2864,14 +2889,14 @@ var numeroALetras = (function() {
             case 0:
                 return Unidades(unidad);
         }
-    } //Unidades()
+    }
 
     function DecenasY(strSin, numUnidades) {
         if (numUnidades > 0)
             return strSin + ' Y ' + Unidades(numUnidades)
 
         return strSin;
-    } //DecenasY()
+    }
 
     function Centenas(num) {
         let centenas = Math.floor(num / 100);
@@ -2901,7 +2926,7 @@ var numeroALetras = (function() {
         }
 
         return Decenas(decenas);
-    } //Centenas()
+    }
 
     function Seccion(num, divisor, strSingular, strPlural) {
         let cientos = Math.floor(num / divisor)
@@ -2919,7 +2944,7 @@ var numeroALetras = (function() {
             letras += '';
 
         return letras;
-    } //Seccion()
+    }
 
     function Miles(num) {
         let divisor = 1000;
@@ -2933,7 +2958,7 @@ var numeroALetras = (function() {
             return strCentenas;
 
         return strMiles + ' ' + strCentenas;
-    } //Miles()
+    }
 
     function Millones(num) {
         let divisor = 1000000;
