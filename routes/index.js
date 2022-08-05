@@ -115,4 +115,9 @@ router.use('/customer-uoms', require('./customer-uoms.js'));
  */
     router.use('/customer-items-taxes', require('./customer-items-taxes.js'));
 
+  /**
+ * * Request Invoices (facturación)
+ */
+   router.use('/invoices', require('./invoices.js'));
+
 module.exports = router;
