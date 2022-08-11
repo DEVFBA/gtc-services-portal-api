@@ -8,6 +8,7 @@ var objeto = {
         currency: 'MXN',
         receiptType: 'I',
         paymentMethod: 'EX1',
+        serie: 'GI',
         paymentInstrument: '27'
     },
     emisor: {
@@ -311,7 +312,7 @@ async function crearXML(dataInvoice)
         var xsi_schemaLocation = "http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd http://www.sat.gob.mx/leyendasFiscales http://www.sat.gob.mx/sitio_internet/cfd/leyendasFiscales/leyendasFisc.xsd";
         var xmlns_leyendasFisc = "http://www.sat.gob.mx/leyendasFiscales";
         var version             = "4.0";
-        var serie               = "";
+        var serie               = dataInvoice.generales.paymentInstrument;
         var folio               = "";
         var fecha               = fechaFormat;
         //var sello               = "";

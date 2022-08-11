@@ -120,4 +120,9 @@ router.use('/customer-uoms', require('./customer-uoms.js'));
  */
    router.use('/invoices', require('./invoices.js'));
 
+     /**
+ * * Request Customer Receipt Types Series
+ */
+      router.use('/customer-receipt-types-series', require('./customer-receipt-types-series.js'));
+
 module.exports = router;
