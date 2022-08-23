@@ -312,7 +312,7 @@ async function crearXML(dataInvoice)
         var xsi_schemaLocation = "http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd http://www.sat.gob.mx/leyendasFiscales http://www.sat.gob.mx/sitio_internet/cfd/leyendasFiscales/leyendasFisc.xsd";
         var xmlns_leyendasFisc = "http://www.sat.gob.mx/leyendasFiscales";
         var version             = "4.0";
-        var serie               = dataInvoice.generales.paymentInstrument;
+        var serie               = dataInvoice.generales.serie;
         var folio               = "";
         var fecha               = fechaFormat;
         //var sello               = "";
@@ -568,7 +568,7 @@ async function crearXML(dataInvoice)
                         }
 
                         //Atributo requerido
-                        if(importe !== undefined)
+                        if(importe === undefined)
                         {
                             //MANDAR ERROR, ESTE ATRIBUTO ES OBLIGATORIO
                             logger.info('ERROR. El Importe del Impuesto - Retención es OBLIGATORIO.');

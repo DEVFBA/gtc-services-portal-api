@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/4"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd http://www.sat.gob.mx/leyendasFiscales http://www.sat.gob.mx/sitio_internet/cfd/leyendasFiscales/leyendasFisc.xsd" Version="4.0" Serie="GI" Folio="" Fecha="2022-08-02T16:09:40" Sello="" FormaPago="03" NoCertificado="" Certificado="" SubTotal="18" Moneda="MXN" Total="28.08" TipoDeComprobante="I" MetodoPago="PUE" LugarExpedicion="03230">
+    <cfdi:Emisor Rfc="GTC140218GX2" Nombre="Garantía Total en Consultoría Tecnológica Avanzada SA de CV" RegimenFiscal="601"/>
+    <cfdi:Receptor Rfc="HEOA961021BE4" Nombre="Alexis Hernández Olvera" DomicilioFiscalReceptor="61080" RegimenFiscalReceptor="601" UsoCFDI="15"/>
+    <cfdi:Conceptos>
+        <cfdi:Concepto ClaveProdServ="10101500" Cantidad="2" ClaveUnidad="EX7" Descripcion="Animales vivos de granja" ValorUnitario="3" Importe="18" ObjetoImp="02">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="6" Impuesto="001" TipoFactor="Tasa" TasaOCuota="2" Importe="12"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="10101500" Cantidad="3" ClaveUnidad="EX7" Descripcion="Animales vivos de granja" ValorUnitario="4" Importe="10.08" ObjetoImp="02">
+            <cfdi:Impuestos>
+                <cfdi:Retenciones>
+                    <cfdi:Retencion Base="12" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.16" Importe="1.92"/>
+                </cfdi:Retenciones>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+    <cfdi:Conceptos>
+    <cfdi:Impuestos>
+        <cfdi:Retenciones>
+            <cfdi:Retencion Base="12" Impuesto="002"/>
+        </cfdi:Retenciones>
+        <cfdi:Traslados>
+            <cfdi:Traslado Base="6" Impuesto="001" TipoFactor="Tasa" TasaOCuota="2" Importe="12"/>
+        </cfdi:Traslados>
+    </cfdi:Impuestos>
+</cfdi:Comprobante>
