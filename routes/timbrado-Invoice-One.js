@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const auth = require('./auth-external-applications');
-const timbrado = require('../controllers/timbrado-Invoice-One');
+const timbrado = require('../controllers/multicompany-timbrado-invOne');
 
 const logger = require('../utils/logger');
 

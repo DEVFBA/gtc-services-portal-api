@@ -37,8 +37,6 @@ async function timbrarFactura( stringXML, timbradoWSURL, timbradoWSUser, timbrad
 
         logger.info('Empieza proceso de función timbrarFactura.');
 
-        logger.info('El ambiente de timbrado es: ' + environment);
-
         let args = {};
 
         if( environment === 'PROD' ) {
@@ -87,6 +85,8 @@ async function timbrarFactura( stringXML, timbradoWSURL, timbradoWSUser, timbrad
 
         console.log('ERROR: Error en timbrarFactura: ', error);
         logger.error('ERROR: Error en timbrarFactura: ' + error);
+
+        return false;
         
     }
 

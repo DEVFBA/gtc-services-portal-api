@@ -3,6 +3,12 @@ const sql = require("mssql"); //necesitamos el paquete sql
 
 var fs = require('fs');
 
+const logger = require('../utils/logger');
+
+const {
+    execStoredProcedure
+} =  require('../utils/mssql-database');
+
 async function getCustomers(params){
     try{
         let pool = await sql.connect(config);
@@ -13,6 +19,70 @@ async function getCustomers(params){
     }catch(error){
         console.log(error)
     }
+}
+
+async function getCustomerById(id){
+    try{
+        let pool = await sql.connect(config);
+        let customers = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, "R")
+            .input('piIdCustomer', sql.VarChar, id)
+            .execute('spCustomers_CRUD_Records')
+        return customers.recordsets
+    }catch(error){
+        console.log(error)
+    }
+}
+
+async function getCustomer(name){
+    try{
+        let pool = await sql.connect(config);
+        let customers = await pool.request()
+            .input('pvOptionCRUD', sql.VarChar, "R")
+            .input('pvName', sql.VarChar, name)
+            .execute('spCustomers_CRUD_Records')
+        return customers.recordsets
+    }catch(error){
+        console.log(error)
+    }
+}
+
+async function getCustomerByTaxId(taxId, country){
+
+    try{
+
+        const sqlParams = [
+            {
+                name: 'pvOptionCRUD',
+                type: sql.VarChar(1),
+                value: 'R'
+            }
+        ]
+
+        logger.info('***Función getCustomerByTaxId***' );
+        logger.info('***Recuperando el ID del Cliente del RFC ' + taxId + '.***' );
+
+        let customers = await execStoredProcedure( 'spCustomers_CRUD_Records', sqlParams );
+
+        const taxIdCustomers = customers[0].filter((customer) => {
+            return (customer.Tax_Id === taxId && customer.Id_Country === country);
+        });
+
+        const taxIdCustomerId = taxIdCustomers[0].Id_Customer;
+
+        logger.info('El Customer Id para el RFC es: ' + taxIdCustomerId );
+        
+        return taxIdCustomerId;
+
+    }catch(error){
+
+        console.log(error);
+        logger.error('Error en función getCustomerByTaxId.');
+
+        return false;
+
+    }
+
 }
 
 // Get Customer Name
@@ -129,6 +199,7 @@ async function insertCustomerRegister(userRegister){
             let insertCustomer = await pool.request()
                 .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
                 .input('pvIdCountry', sql.VarChar, userRegister.pvIdCountry)
+                .input('pvIdTaxRegimen', sql.VarChar, userRegister.pvIdTaxRegimen)
                 .input('pvName', sql.VarChar, userRegister.pvName)
                 .input('pvTaxId', sql.VarChar, userRegister.pvTaxId)
                 .input('pvStreet', sql.VarChar, userRegister.pvStreet)
@@ -141,6 +212,7 @@ async function insertCustomerRegister(userRegister){
                 .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
                 .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
                 .input('pvLogo', sql.VarChar, filename)
+                .input('pbStampingMaster', sql.Bit, 0)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
                 .input('pvUser', sql.Bit, userRegister.pvUser)
                 .input('pvIP', sql.VarChar, userRegister.pvIP)
@@ -157,6 +229,7 @@ async function insertCustomerRegister(userRegister){
             let insertCustomer = await pool.request()
                 .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
                 .input('pvIdCountry', sql.VarChar, userRegister.pvIdCountry)
+                .input('pvIdTaxRegimen', sql.VarChar, userRegister.pvIdTaxRegimen)
                 .input('pvName', sql.VarChar, userRegister.pvName)
                 .input('pvTaxId', sql.VarChar, userRegister.pvTaxId)
                 .input('pvStreet', sql.VarChar, userRegister.pvStreet)
@@ -168,6 +241,7 @@ async function insertCustomerRegister(userRegister){
                 .input('pvPhone1', sql.VarChar, userRegister.pvPhone1)
                 .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
                 .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
+                .input('pbStampingMaster', sql.Bit, 0)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
                 .input('pvUser', sql.Bit, userRegister.pvUser)
                 .input('pvIP', sql.VarChar, userRegister.pvIP)
@@ -227,6 +301,7 @@ async function updateCustomerRegister(userRegister){
                 .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
                 .input('piIdCustomer', sql.VarChar, userRegister.piIdCustomer)
                 .input('pvIdCountry', sql.VarChar, userRegister.pvIdCountry)
+                .input('pvIdTaxRegimen', sql.VarChar, userRegister.pvIdTaxRegimen)
                 .input('pvName', sql.VarChar, userRegister.pvName)
                 .input('pvTaxId', sql.VarChar, userRegister.pvTaxId)
                 .input('pvStreet', sql.VarChar, userRegister.pvStreet)
@@ -239,6 +314,7 @@ async function updateCustomerRegister(userRegister){
                 .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
                 .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
                 .input('pvLogo', sql.VarChar, filename)
+                .input('pbStampingMaster', sql.Bit, 0)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
                 .input('pvUser', sql.Bit, userRegister.pvUser)
                 .input('pvIP', sql.VarChar, userRegister.pvIP)
@@ -256,6 +332,7 @@ async function updateCustomerRegister(userRegister){
                 .input('pvOptionCRUD', sql.VarChar, userRegister.pvOptionCRUD)
                 .input('piIdCustomer', sql.VarChar, userRegister.piIdCustomer)
                 .input('pvIdCountry', sql.VarChar, userRegister.pvIdCountry)
+                .input('pvIdTaxRegimen', sql.VarChar, userRegister.pvIdTaxRegimen)
                 .input('pvName', sql.VarChar, userRegister.pvName)
                 .input('pvTaxId', sql.VarChar, userRegister.pvTaxId)
                 .input('pvStreet', sql.VarChar, userRegister.pvStreet)
@@ -268,6 +345,7 @@ async function updateCustomerRegister(userRegister){
                 .input('pvPhone2', sql.VarChar, userRegister.pvPhone2)
                 .input('pvWebPage', sql.VarChar, userRegister.pvWebPage)
                 .input('pvLogo', sql.VarChar, userRegister.pvLogo)
+                .input('pbStampingMaster', sql.Bit, 0)
                 .input('pbStatus', sql.Bit, userRegister.pbStatus)
                 .input('pvUser', sql.Bit, userRegister.pvUser)
                 .input('pvIP', sql.VarChar, userRegister.pvIP)
@@ -286,5 +364,8 @@ module.exports = {
     insertCustomerRegister : insertCustomerRegister,
     updateCustomerRegister : updateCustomerRegister,
     getFullAddress : getFullAddress,
-    getCustomerName : getCustomerName
+    getCustomerName : getCustomerName,
+    getCustomer : getCustomer, 
+    getCustomerById : getCustomerById,
+    getCustomerByTaxId : getCustomerByTaxId
 }
