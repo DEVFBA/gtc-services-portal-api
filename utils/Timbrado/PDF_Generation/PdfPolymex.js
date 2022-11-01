@@ -20,7 +20,7 @@ var fonts = {
 var convert = require('xml-js');
 var PdfPrinter = require('pdfmake');
 var printer = new PdfPrinter(fonts);
-const { AwesomeQR } = require("awesome-qr");
+const { AwesomeQR } = require("awesome-qr"); 
 const fs = require("fs");
 
 const xml = require('../../xml.js')
