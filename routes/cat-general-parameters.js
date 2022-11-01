@@ -13,4 +13,12 @@ router.route('/').get(auth,(request, response)=>{
     })
 })
 
+//Ruta para actualizar un parámetro general
+router.route('/update').put(auth, (request, response)=>{
+    let register = {...request.body}
+    dbgeneralparameters.updateGeneralParameter(register).then(result => {
+        response.json(result[0]);
+    })
+})
+
 module.exports = router;

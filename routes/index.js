@@ -85,9 +85,44 @@ router.use('/external-applications', require('./external-applications.js'));
  */
 router.use('/customers-stamping', require('./customers-stamping.js'));
 
- /**
+/**
  * * Request Customer Stamping Routes
  */
-  router.use('/request-customer-stamping', require('./request-customer-stamping.js'));
+router.use('/request-customer-stamping', require('./request-customer-stamping.js'));
+
+/**
+ * * Request Customer Service Codes
+ */
+router.use('/customer-service-codes', require('./customer-service-codes.js'));
+
+/**
+ * * Request Customer UoMs
+ */
+router.use('/customer-uoms', require('./customer-uoms.js'));
+
+/**
+ * * Request Customer Bill Tos
+ */
+ router.use('/customer-bill-tos', require('./customer-bill-tos.js'));
+
+ /**
+ * * Request Customer Items
+ */
+  router.use('/customer-items', require('./customer-items.js'));
+
+   /**
+ * * Request Customer Items Taxes
+ */
+    router.use('/customer-items-taxes', require('./customer-items-taxes.js'));
+
+  /**
+ * * Request Invoices (facturación)
+ */
+   router.use('/invoices', require('./invoices.js'));
+
+     /**
+ * * Request Customer Receipt Types Series
+ */
+      router.use('/customer-receipt-types-series', require('./customer-receipt-types-series.js'));
 
 module.exports = router;

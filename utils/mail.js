@@ -115,7 +115,6 @@ async function sendMail( emailTo, emailCC, attachments, options ) {
         attachments: attachments
       } );
     
-      console.log('Correo enviado: %s', info.messageId);
       logger.info('Correo enviado: %s' + info.messageId)
 
       return true;

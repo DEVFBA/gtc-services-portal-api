@@ -16,13 +16,12 @@ auth.use(async (req, res, next) => {
               mensaje: 'Token inválida.' 
             }
           } ); 
-        } else {
-          console.log(decoded)
+        } 
+        else {
           const pool = await sql.connect(configDataBase);
           const validUser = await pool.request()
             .input('pvOptionCRUD', sql.VarChar, 'R')
             .input('pvIdUser', sql.VarChar, decoded.id)
-            //.input('pvIdUser', sql.VarChar, 'decoded.userName')
             .execute('spSecurity_Users_CRUD_Records');
           
           if( validUser.recordset.length === 0 || !validUser.recordset[0].Status ){
@@ -41,7 +40,7 @@ auth.use(async (req, res, next) => {
         error: {
           mensaje: 'Token no proveída.' 
         }
-      } ); 
+      }); 
     }
 });
 

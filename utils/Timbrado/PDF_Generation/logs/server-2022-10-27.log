@@ -1,0 +1,200 @@
+2022-10-27T14:27:12.713Z [32minfo[39m: 	**************************************************************
+2022-10-27T14:27:12.714Z [32minfo[39m: 	       Función getPDFPolymex33.
+2022-10-27T14:27:12.714Z [32minfo[39m: 	**************************************************************
+2022-10-27T14:27:12.714Z [32minfo[39m: 	Obteniendo la información del TXT
+2022-10-27T14:27:12.714Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2022-10-27T14:27:12.715Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2022-10-27T14:27:12.715Z [32minfo[39m: 	Obteniendo la información del TXT: encabezado
+2022-10-27T14:27:12.719Z [32minfo[39m: 	Convirtiendo el archivo XML a json.
+2022-10-27T14:27:12.724Z [32minfo[39m: 	Obteniendo la Información Global del xml.
+2022-10-27T14:27:12.724Z [32minfo[39m: 	Obteniendo los Atributos del xml.
+2022-10-27T14:27:12.724Z [32minfo[39m: 	Obteniendo la información del Emisor
+2022-10-27T14:27:12.724Z [32minfo[39m: 	Obteniendo la información del Receptor
+2022-10-27T14:27:12.724Z [32minfo[39m: 	Obteniendo la información de los Conceptos
+2022-10-27T14:27:12.725Z [32minfo[39m: 	Obteniendo la información del Complemento
+2022-10-27T14:27:12.725Z [32minfo[39m: 	Obteniendo la información del TXT: Lotes
+2022-10-27T14:27:12.725Z [32minfo[39m: 	Obteniendo la información del TXT: Piezas
+2022-10-27T14:27:12.725Z [32minfo[39m: 	Obteniendo la información del TXT: Referencias Cruzadas
+2022-10-27T14:27:43.647Z [32minfo[39m: 	Obteniendo la información de los CFDI Relacionados
+2022-10-27T14:27:43.802Z [32minfo[39m: 	Obteniendo la información de las Leyendas Fiscales
+2022-10-27T14:27:43.802Z [32minfo[39m: 	Obteniendo la información del Timbre Fiscal Digital
+2022-10-27T14:27:43.881Z [32minfo[39m: 	Generando Código QR
+2022-10-27T14:27:44.383Z [32minfo[39m: 	Guardando Imagen de Código QR
+2022-10-27T14:27:45.020Z [32minfo[39m: 	Obteniendo la información de los Impuestos
+2022-10-27T14:27:45.510Z [32minfo[39m: 	Eliminando imagen Código QR
+2022-10-27T14:27:45.511Z [32minfo[39m: 	Convirtiendo PDF A Base 64
+2022-10-27T14:28:28.055Z [32minfo[39m: 	**************************************************************
+2022-10-27T14:28:28.057Z [32minfo[39m: 	       Función getPDFPolymex33.
+2022-10-27T14:28:28.057Z [32minfo[39m: 	**************************************************************
+2022-10-27T14:28:28.057Z [32minfo[39m: 	Obteniendo la información del TXT
+2022-10-27T14:28:28.057Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2022-10-27T14:28:28.057Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2022-10-27T14:28:28.057Z [32minfo[39m: 	Obteniendo la información del TXT: encabezado
+2022-10-27T14:28:28.062Z [32minfo[39m: 	Convirtiendo el archivo XML a json.
+2022-10-27T14:28:28.069Z [32minfo[39m: 	Obteniendo la Información Global del xml.
+2022-10-27T14:28:28.069Z [32minfo[39m: 	Obteniendo los Atributos del xml.
+2022-10-27T14:28:28.069Z [32minfo[39m: 	Obteniendo la información del Emisor
+2022-10-27T14:28:28.069Z [32minfo[39m: 	Obteniendo la información del Receptor
+2022-10-27T14:28:28.069Z [32minfo[39m: 	Obteniendo la información de los Conceptos
+2022-10-27T14:28:28.069Z [32minfo[39m: 	Obteniendo la información del Complemento
+2022-10-27T14:28:28.069Z [32minfo[39m: 	Obteniendo la información del TXT: Lotes
+2022-10-27T14:28:28.069Z [32minfo[39m: 	Obteniendo la información del TXT: Piezas
+2022-10-27T14:28:28.069Z [32minfo[39m: 	Obteniendo la información del TXT: Referencias Cruzadas
+2022-10-27T14:28:29.038Z [32minfo[39m: 	Obteniendo la información de los CFDI Relacionados
+2022-10-27T14:28:29.151Z [32minfo[39m: 	Obteniendo la información de las Leyendas Fiscales
+2022-10-27T14:28:29.151Z [32minfo[39m: 	Obteniendo la información del Timbre Fiscal Digital
+2022-10-27T14:28:29.221Z [32minfo[39m: 	Generando Código QR
+2022-10-27T14:28:29.669Z [32minfo[39m: 	Guardando Imagen de Código QR
+2022-10-27T14:28:30.295Z [32minfo[39m: 	Obteniendo la información de los Impuestos
+2022-10-27T14:28:30.709Z [32minfo[39m: 	Eliminando imagen Código QR
+2022-10-27T14:28:30.710Z [32minfo[39m: 	Convirtiendo PDF A Base 64
+2022-10-27T14:33:32.978Z [32minfo[39m: 	**************************************************************
+2022-10-27T14:33:32.980Z [32minfo[39m: 	       Función getPDFPolymex33.
+2022-10-27T14:33:32.980Z [32minfo[39m: 	**************************************************************
+2022-10-27T14:33:32.980Z [32minfo[39m: 	Obteniendo la información del TXT
+2022-10-27T14:33:32.980Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2022-10-27T14:33:32.980Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2022-10-27T14:33:32.981Z [32minfo[39m: 	Obteniendo la información del TXT: encabezado
+2022-10-27T14:33:32.984Z [32minfo[39m: 	Convirtiendo el archivo XML a json.
+2022-10-27T14:33:32.991Z [32minfo[39m: 	Obteniendo la Información Global del xml.
+2022-10-27T14:33:32.991Z [32minfo[39m: 	Obteniendo los Atributos del xml.
+2022-10-27T14:33:32.991Z [32minfo[39m: 	Obteniendo la información del Emisor
+2022-10-27T14:33:32.991Z [32minfo[39m: 	Obteniendo la información del Receptor
+2022-10-27T14:33:32.991Z [32minfo[39m: 	Obteniendo la información de los Conceptos
+2022-10-27T14:33:32.992Z [32minfo[39m: 	Obteniendo la información del Complemento
+2022-10-27T14:33:32.992Z [32minfo[39m: 	Obteniendo la información del TXT: Lotes
+2022-10-27T14:33:32.992Z [32minfo[39m: 	Obteniendo la información del TXT: Piezas
+2022-10-27T14:33:32.992Z [32minfo[39m: 	Obteniendo la información del TXT: Referencias Cruzadas
+2022-10-27T14:33:33.993Z [32minfo[39m: 	Obteniendo la información de los CFDI Relacionados
+2022-10-27T14:33:34.126Z [32minfo[39m: 	Obteniendo la información de las Leyendas Fiscales
+2022-10-27T14:33:34.127Z [32minfo[39m: 	Obteniendo la información del Timbre Fiscal Digital
+2022-10-27T14:33:34.199Z [32minfo[39m: 	Generando Código QR
+2022-10-27T14:33:34.647Z [32minfo[39m: 	Guardando Imagen de Código QR
+2022-10-27T14:33:35.270Z [32minfo[39m: 	Obteniendo la información de los Impuestos
+2022-10-27T14:33:35.707Z [32minfo[39m: 	Eliminando imagen Código QR
+2022-10-27T14:33:35.708Z [32minfo[39m: 	Convirtiendo PDF A Base 64
+2022-10-27T14:35:50.166Z [32minfo[39m: 	**************************************************************
+2022-10-27T14:35:50.168Z [32minfo[39m: 	       Función getPDFPolymex33.
+2022-10-27T14:35:50.168Z [32minfo[39m: 	**************************************************************
+2022-10-27T14:35:50.168Z [32minfo[39m: 	Obteniendo la información del TXT
+2022-10-27T14:35:50.168Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2022-10-27T14:35:50.168Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2022-10-27T14:35:50.168Z [32minfo[39m: 	Obteniendo la información del TXT: encabezado
+2022-10-27T14:35:50.172Z [32minfo[39m: 	Convirtiendo el archivo XML a json.
+2022-10-27T14:35:50.179Z [32minfo[39m: 	Obteniendo la Información Global del xml.
+2022-10-27T14:35:50.179Z [32minfo[39m: 	Obteniendo los Atributos del xml.
+2022-10-27T14:35:50.179Z [32minfo[39m: 	Obteniendo la información del Emisor
+2022-10-27T14:35:50.179Z [32minfo[39m: 	Obteniendo la información del Receptor
+2022-10-27T14:35:50.179Z [32minfo[39m: 	Obteniendo la información de los Conceptos
+2022-10-27T14:35:50.179Z [32minfo[39m: 	Obteniendo la información del Complemento
+2022-10-27T14:35:50.179Z [32minfo[39m: 	Obteniendo la información del TXT: Lotes
+2022-10-27T14:35:50.179Z [32minfo[39m: 	Obteniendo la información del TXT: Piezas
+2022-10-27T14:35:50.179Z [32minfo[39m: 	Obteniendo la información del TXT: Referencias Cruzadas
+2022-10-27T14:35:51.165Z [32minfo[39m: 	Obteniendo la información de los CFDI Relacionados
+2022-10-27T14:35:51.303Z [32minfo[39m: 	Obteniendo la información de las Leyendas Fiscales
+2022-10-27T14:35:51.303Z [32minfo[39m: 	Obteniendo la información del Timbre Fiscal Digital
+2022-10-27T14:35:51.374Z [32minfo[39m: 	Generando Código QR
+2022-10-27T14:35:51.818Z [32minfo[39m: 	Guardando Imagen de Código QR
+2022-10-27T14:35:52.439Z [32minfo[39m: 	Obteniendo la información de los Impuestos
+2022-10-27T14:35:52.868Z [32minfo[39m: 	Eliminando imagen Código QR
+2022-10-27T14:35:52.869Z [32minfo[39m: 	Convirtiendo PDF A Base 64
+2022-10-27T14:37:03.507Z [32minfo[39m: 	**************************************************************
+2022-10-27T14:37:03.508Z [32minfo[39m: 	       Función getPDFPolymex33.
+2022-10-27T14:37:03.508Z [32minfo[39m: 	**************************************************************
+2022-10-27T14:37:03.508Z [32minfo[39m: 	Obteniendo la información del TXT
+2022-10-27T14:37:03.508Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2022-10-27T14:37:03.509Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2022-10-27T14:37:03.509Z [32minfo[39m: 	Obteniendo la información del TXT: encabezado
+2022-10-27T14:37:03.513Z [32minfo[39m: 	Convirtiendo el archivo XML a json.
+2022-10-27T14:37:03.520Z [32minfo[39m: 	Obteniendo la Información Global del xml.
+2022-10-27T14:37:03.521Z [32minfo[39m: 	Obteniendo los Atributos del xml.
+2022-10-27T14:37:03.521Z [32minfo[39m: 	Obteniendo la información del Emisor
+2022-10-27T14:37:03.521Z [32minfo[39m: 	Obteniendo la información del Receptor
+2022-10-27T14:37:03.521Z [32minfo[39m: 	Obteniendo la información de los Conceptos
+2022-10-27T14:37:03.521Z [32minfo[39m: 	Obteniendo la información del Complemento
+2022-10-27T14:37:03.521Z [32minfo[39m: 	Obteniendo la información del TXT: Lotes
+2022-10-27T14:37:03.521Z [32minfo[39m: 	Obteniendo la información del TXT: Piezas
+2022-10-27T14:37:03.521Z [32minfo[39m: 	Obteniendo la información del TXT: Referencias Cruzadas
+2022-10-27T14:37:04.526Z [32minfo[39m: 	Obteniendo la información de los CFDI Relacionados
+2022-10-27T14:37:04.659Z [32minfo[39m: 	Obteniendo la información de las Leyendas Fiscales
+2022-10-27T14:37:04.659Z [32minfo[39m: 	Obteniendo la información del Timbre Fiscal Digital
+2022-10-27T14:37:04.731Z [32minfo[39m: 	Generando Código QR
+2022-10-27T14:37:05.158Z [32minfo[39m: 	Guardando Imagen de Código QR
+2022-10-27T14:37:05.787Z [32minfo[39m: 	Obteniendo la información de los Impuestos
+2022-10-27T14:37:06.206Z [32minfo[39m: 	Eliminando imagen Código QR
+2022-10-27T14:37:06.206Z [32minfo[39m: 	Convirtiendo PDF A Base 64
+2022-10-27T14:39:35.205Z [32minfo[39m: 	**************************************************************
+2022-10-27T14:39:35.207Z [32minfo[39m: 	       Función getPDFPolymex33.
+2022-10-27T14:39:35.207Z [32minfo[39m: 	**************************************************************
+2022-10-27T14:39:35.207Z [32minfo[39m: 	Obteniendo la información del TXT
+2022-10-27T14:39:35.207Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2022-10-27T14:39:35.207Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2022-10-27T14:39:35.207Z [32minfo[39m: 	Obteniendo la información del TXT: encabezado
+2022-10-27T14:39:35.213Z [32minfo[39m: 	Convirtiendo el archivo XML a json.
+2022-10-27T14:39:35.221Z [32minfo[39m: 	Obteniendo la Información Global del xml.
+2022-10-27T14:39:35.221Z [32minfo[39m: 	Obteniendo los Atributos del xml.
+2022-10-27T14:39:35.222Z [32minfo[39m: 	Obteniendo la información del Emisor
+2022-10-27T14:39:35.222Z [32minfo[39m: 	Obteniendo la información del Receptor
+2022-10-27T14:39:35.222Z [32minfo[39m: 	Obteniendo la información de los Conceptos
+2022-10-27T14:39:35.222Z [32minfo[39m: 	Obteniendo la información del Complemento
+2022-10-27T14:39:35.222Z [32minfo[39m: 	Obteniendo la información del TXT: Lotes
+2022-10-27T14:39:35.222Z [32minfo[39m: 	Obteniendo la información del TXT: Piezas
+2022-10-27T14:39:35.222Z [32minfo[39m: 	Obteniendo la información del TXT: Referencias Cruzadas
+2022-10-27T14:39:36.207Z [32minfo[39m: 	Obteniendo la información de los CFDI Relacionados
+2022-10-27T14:39:36.346Z [32minfo[39m: 	Obteniendo la información de las Leyendas Fiscales
+2022-10-27T14:39:36.346Z [32minfo[39m: 	Obteniendo la información del Timbre Fiscal Digital
+2022-10-27T14:39:36.416Z [32minfo[39m: 	Generando Código QR
+2022-10-27T14:39:36.858Z [32minfo[39m: 	Guardando Imagen de Código QR
+2022-10-27T14:39:37.482Z [32minfo[39m: 	Obteniendo la información de los Impuestos
+2022-10-27T14:39:37.910Z [32minfo[39m: 	Eliminando imagen Código QR
+2022-10-27T14:39:37.910Z [32minfo[39m: 	Convirtiendo PDF A Base 64
+2022-10-27T14:42:19.594Z [32minfo[39m: 	**************************************************************
+2022-10-27T14:42:19.595Z [32minfo[39m: 	       Función getPDFPolymex33.
+2022-10-27T14:42:19.595Z [32minfo[39m: 	**************************************************************
+2022-10-27T14:42:19.595Z [32minfo[39m: 	Obteniendo la información del TXT
+2022-10-27T14:42:19.596Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2022-10-27T14:42:19.596Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2022-10-27T14:42:19.596Z [32minfo[39m: 	Obteniendo la información del TXT: encabezado
+2022-10-27T14:42:19.600Z [32minfo[39m: 	Convirtiendo el archivo XML a json.
+2022-10-27T14:42:19.607Z [32minfo[39m: 	Obteniendo la Información Global del xml.
+2022-10-27T14:42:19.607Z [32minfo[39m: 	Obteniendo los Atributos del xml.
+2022-10-27T14:42:19.607Z [32minfo[39m: 	Obteniendo la información del Emisor
+2022-10-27T14:42:19.607Z [32minfo[39m: 	Obteniendo la información del Receptor
+2022-10-27T14:42:19.607Z [32minfo[39m: 	Obteniendo la información de los Conceptos
+2022-10-27T14:42:19.607Z [32minfo[39m: 	Obteniendo la información del Complemento
+2022-10-27T14:42:19.607Z [32minfo[39m: 	Obteniendo la información del TXT: Lotes
+2022-10-27T14:42:19.607Z [32minfo[39m: 	Obteniendo la información del TXT: Piezas
+2022-10-27T14:42:19.607Z [32minfo[39m: 	Obteniendo la información del TXT: Referencias Cruzadas
+2022-10-27T14:42:20.582Z [32minfo[39m: 	Obteniendo la información de los CFDI Relacionados
+2022-10-27T14:42:20.700Z [32minfo[39m: 	Obteniendo la información de las Leyendas Fiscales
+2022-10-27T14:42:20.700Z [32minfo[39m: 	Obteniendo la información del Timbre Fiscal Digital
+2022-10-27T14:42:20.770Z [32minfo[39m: 	Generando Código QR
+2022-10-27T14:42:21.210Z [32minfo[39m: 	Guardando Imagen de Código QR
+2022-10-27T14:42:21.839Z [32minfo[39m: 	Obteniendo la información de los Impuestos
+2022-10-27T14:42:22.279Z [32minfo[39m: 	Eliminando imagen Código QR
+2022-10-27T14:42:22.280Z [32minfo[39m: 	Convirtiendo PDF A Base 64
+2022-10-27T15:05:53.672Z [32minfo[39m: 	**************************************************************
+2022-10-27T15:05:53.673Z [32minfo[39m: 	       Función getPDFPolymex33.
+2022-10-27T15:05:53.673Z [32minfo[39m: 	**************************************************************
+2022-10-27T15:05:53.674Z [32minfo[39m: 	Obteniendo la información del TXT
+2022-10-27T15:05:53.674Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2022-10-27T15:05:53.674Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2022-10-27T15:05:53.674Z [32minfo[39m: 	Obteniendo la información del TXT: encabezado
+2022-10-27T15:05:53.678Z [32minfo[39m: 	Convirtiendo el archivo XML a json.
+2022-10-27T15:05:53.685Z [32minfo[39m: 	Obteniendo la Información Global del xml.
+2022-10-27T15:05:53.685Z [32minfo[39m: 	Obteniendo los Atributos del xml.
+2022-10-27T15:05:53.685Z [32minfo[39m: 	Obteniendo la información del Emisor
+2022-10-27T15:05:53.685Z [32minfo[39m: 	Obteniendo la información del Receptor
+2022-10-27T15:05:53.685Z [32minfo[39m: 	Obteniendo la información de los Conceptos
+2022-10-27T15:05:53.685Z [32minfo[39m: 	Obteniendo la información del Complemento
+2022-10-27T15:05:53.685Z [32minfo[39m: 	Obteniendo la información del TXT: Lotes
+2022-10-27T15:05:53.685Z [32minfo[39m: 	Obteniendo la información del TXT: Piezas
+2022-10-27T15:05:53.685Z [32minfo[39m: 	Obteniendo la información del TXT: Referencias Cruzadas
+2022-10-27T15:05:54.728Z [32minfo[39m: 	Obteniendo la información de los CFDI Relacionados
+2022-10-27T15:05:54.864Z [32minfo[39m: 	Obteniendo la información de las Leyendas Fiscales
+2022-10-27T15:05:54.864Z [32minfo[39m: 	Obteniendo la información del Timbre Fiscal Digital
+2022-10-27T15:05:54.936Z [32minfo[39m: 	Generando Código QR
+2022-10-27T15:05:55.378Z [32minfo[39m: 	Guardando Imagen de Código QR
+2022-10-27T15:05:56.040Z [32minfo[39m: 	Obteniendo la información de los Impuestos
+2022-10-27T15:05:56.457Z [32minfo[39m: 	Eliminando imagen Código QR
+2022-10-27T15:05:56.458Z [32minfo[39m: 	Convirtiendo PDF A Base 64
