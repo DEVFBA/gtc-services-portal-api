@@ -1,0 +1,41 @@
+2023-04-13T22:00:29.918Z [32minfo[39m: 	**************************************************************
+2023-04-13T22:00:29.920Z [32minfo[39m: 	       Función getPDFPolymex.
+2023-04-13T22:00:29.920Z [32minfo[39m: 	**************************************************************
+2023-04-13T22:00:29.920Z [32minfo[39m: 	Obteniendo la información del TXT
+2023-04-13T22:00:29.921Z [32minfo[39m: 	Hubo un error al procesar el PDF de Polymex: Error: ENOENT: no such file or directory, open '/Users/alexishernandezolvera/Desktop/IPM6203226B4_RI_106078_20230412.txt.txt'
+2023-04-13T22:01:51.176Z [32minfo[39m: 	**************************************************************
+2023-04-13T22:01:51.178Z [32minfo[39m: 	       Función getPDFPolymex.
+2023-04-13T22:01:51.178Z [32minfo[39m: 	**************************************************************
+2023-04-13T22:01:51.178Z [32minfo[39m: 	Obteniendo la información del TXT
+2023-04-13T22:01:51.179Z [32minfo[39m: 	Hubo un error al procesar el PDF de Polymex: Error: ENOENT: no such file or directory, open '/Users/alexishernandezolvera/Desktop/IPM6203226B4_RI_106078_20230412.txt.txt'
+2023-04-13T22:03:31.594Z [32minfo[39m: 	**************************************************************
+2023-04-13T22:03:31.595Z [32minfo[39m: 	       Función getPDFPolymex.
+2023-04-13T22:03:31.595Z [32minfo[39m: 	**************************************************************
+2023-04-13T22:03:31.595Z [32minfo[39m: 	Obteniendo la información del TXT
+2023-04-13T22:03:31.600Z [32minfo[39m: 	Hubo un error al procesar el PDF de Polymex: Error: ENOENT: no such file or directory, open '/Users/alexishernandezolvera/Desktop/IPM6203226B4_RI_106078_20230412.txt.txt'
+2023-04-13T22:03:52.353Z [32minfo[39m: 	**************************************************************
+2023-04-13T22:03:52.354Z [32minfo[39m: 	       Función getPDFPolymex.
+2023-04-13T22:03:52.354Z [32minfo[39m: 	**************************************************************
+2023-04-13T22:03:52.354Z [32minfo[39m: 	Obteniendo la información del TXT
+2023-04-13T22:03:52.357Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2023-04-13T22:03:52.357Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2023-04-13T22:03:52.357Z [32minfo[39m: 	Obteniendo la información del TXT: encabezado
+2023-04-13T22:03:52.362Z [32minfo[39m: 	Convirtiendo el archivo XML a json.
+2023-04-13T22:03:52.371Z [32minfo[39m: 	Obteniendo la Información Global del xml.
+2023-04-13T22:03:52.371Z [32minfo[39m: 	Obteniendo los Atributos del xml.
+2023-04-13T22:03:52.371Z [32minfo[39m: 	Obteniendo la información del Emisor
+2023-04-13T22:03:52.371Z [32minfo[39m: 	Obteniendo la información del Receptor
+2023-04-13T22:03:52.372Z [32minfo[39m: 	Obteniendo la información de los Conceptos
+2023-04-13T22:03:52.372Z [32minfo[39m: 	Obteniendo la información del Complemento
+2023-04-13T22:03:52.372Z [32minfo[39m: 	Obteniendo la información del TXT: Lotes
+2023-04-13T22:03:52.372Z [32minfo[39m: 	Obteniendo la información del TXT: Piezas
+2023-04-13T22:03:52.372Z [32minfo[39m: 	Obteniendo la información del TXT: Referencias Cruzadas
+2023-04-13T22:03:54.995Z [32minfo[39m: 	Obteniendo la información de los CFDI Relacionados
+2023-04-13T22:03:55.055Z [32minfo[39m: 	Obteniendo la información del Complemento de Comercio Exterior
+2023-04-13T22:03:55.055Z [32minfo[39m: 	Obteniendo la información de las Leyendas Fiscales
+2023-04-13T22:03:55.055Z [32minfo[39m: 	Obteniendo la información del Timbre Fiscal Digital
+2023-04-13T22:03:55.236Z [32minfo[39m: 	Generando Código QR
+2023-04-13T22:03:55.464Z [32minfo[39m: 	Guardando Imagen de Código QR
+2023-04-13T22:03:56.716Z [32minfo[39m: 	Obteniendo la información de los Impuestos
+2023-04-13T22:03:57.329Z [32minfo[39m: 	Eliminando imagen Código QR
+2023-04-13T22:03:57.330Z [32minfo[39m: 	Convirtiendo PDF A Base 64

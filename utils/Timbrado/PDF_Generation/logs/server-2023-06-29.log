@@ -1,0 +1,24 @@
+2023-06-30T00:22:48.229Z [32minfo[39m: 	**************************************************************
+2023-06-30T00:22:48.231Z [32minfo[39m: 	       Función getPDFPolymex.
+2023-06-30T00:22:48.232Z [32minfo[39m: 	**************************************************************
+2023-06-30T00:22:48.232Z [32minfo[39m: 	Obteniendo la información del TXT
+2023-06-30T00:22:48.244Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2023-06-30T00:22:48.244Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2023-06-30T00:22:48.244Z [32minfo[39m: 	Obteniendo la información del TXT: encabezado
+2023-06-30T00:22:48.254Z [32minfo[39m: 	Convirtiendo el archivo XML a json.
+2023-06-30T00:22:48.272Z [32minfo[39m: 	Obteniendo la Información Global del xml.
+2023-06-30T00:22:48.272Z [32minfo[39m: 	Obteniendo los Atributos del xml.
+2023-06-30T00:22:48.272Z [32minfo[39m: 	Obteniendo la información del Emisor
+2023-06-30T00:22:48.272Z [32minfo[39m: 	Obteniendo la información del Receptor
+2023-06-30T00:22:48.272Z [32minfo[39m: 	Obteniendo la información de los Conceptos
+2023-06-30T00:22:48.273Z [32minfo[39m: 	Obteniendo la información del Complemento
+2023-06-30T00:22:51.558Z [32minfo[39m: 	Obteniendo la información de los CFDI Relacionados
+2023-06-30T00:22:51.625Z [32minfo[39m: 	Obteniendo la información del Complemento de Pago
+2023-06-30T00:22:51.626Z [32minfo[39m: 	Obteniendo la información del Complemento de Pago: Totales
+2023-06-30T00:22:52.231Z [32minfo[39m: 	Obteniendo la información de las Leyendas Fiscales
+2023-06-30T00:22:52.231Z [32minfo[39m: 	Obteniendo la información del Timbre Fiscal Digital
+2023-06-30T00:22:52.403Z [32minfo[39m: 	Generando Código QR
+2023-06-30T00:22:52.604Z [32minfo[39m: 	Guardando Imagen de Código QR
+2023-06-30T00:22:53.975Z [32minfo[39m: 	Obteniendo la información de los Impuestos
+2023-06-30T00:22:54.570Z [32minfo[39m: 	Eliminando imagen Código QR
+2023-06-30T00:22:54.571Z [32minfo[39m: 	Convirtiendo PDF A Base 64

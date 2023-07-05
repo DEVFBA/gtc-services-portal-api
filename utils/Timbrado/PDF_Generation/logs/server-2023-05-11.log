@@ -1,0 +1,26 @@
+2023-05-12T01:15:20.078Z [32minfo[39m: 	**************************************************************
+2023-05-12T01:15:20.080Z [32minfo[39m: 	       Función getPDFPolymex.
+2023-05-12T01:15:20.080Z [32minfo[39m: 	**************************************************************
+2023-05-12T01:15:20.080Z [32minfo[39m: 	Obteniendo la información del TXT
+2023-05-12T01:15:20.084Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2023-05-12T01:15:20.085Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2023-05-12T01:15:20.085Z [32minfo[39m: 	Obteniendo la información del TXT: encabezado
+2023-05-12T01:15:20.092Z [32minfo[39m: 	Convirtiendo el archivo XML a json.
+2023-05-12T01:15:20.104Z [32minfo[39m: 	Obteniendo la Información Global del xml.
+2023-05-12T01:15:20.104Z [32minfo[39m: 	Obteniendo los Atributos del xml.
+2023-05-12T01:15:20.104Z [32minfo[39m: 	Obteniendo la información del Emisor
+2023-05-12T01:15:20.104Z [32minfo[39m: 	Obteniendo la información del Receptor
+2023-05-12T01:15:20.104Z [32minfo[39m: 	Obteniendo la información de los Conceptos
+2023-05-12T01:15:20.104Z [32minfo[39m: 	Obteniendo la información del Complemento
+2023-05-12T01:15:20.104Z [32minfo[39m: 	Obteniendo la información del TXT: Lotes
+2023-05-12T01:15:20.104Z [32minfo[39m: 	Obteniendo la información del TXT: Piezas
+2023-05-12T01:15:20.104Z [32minfo[39m: 	Obteniendo la información del TXT: Referencias Cruzadas
+2023-05-12T01:15:21.753Z [32minfo[39m: 	Obteniendo la información de los CFDI Relacionados
+2023-05-12T01:15:21.816Z [32minfo[39m: 	Obteniendo la información del Complemento de Comercio Exterior
+2023-05-12T01:15:21.816Z [32minfo[39m: 	Obteniendo la información de las Leyendas Fiscales
+2023-05-12T01:15:21.816Z [32minfo[39m: 	Obteniendo la información del Timbre Fiscal Digital
+2023-05-12T01:15:21.921Z [32minfo[39m: 	Generando Código QR
+2023-05-12T01:15:22.127Z [32minfo[39m: 	Guardando Imagen de Código QR
+2023-05-12T01:15:22.952Z [32minfo[39m: 	Obteniendo la información de los Impuestos
+2023-05-12T01:15:23.516Z [32minfo[39m: 	Eliminando imagen Código QR
+2023-05-12T01:15:23.516Z [32minfo[39m: 	Convirtiendo PDF A Base 64

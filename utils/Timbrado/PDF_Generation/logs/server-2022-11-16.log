@@ -1,0 +1,77 @@
+2022-11-17T01:46:06.780Z [32minfo[39m: 	**************************************************************
+2022-11-17T01:46:06.781Z [32minfo[39m: 	       Función getPDFPolymex.
+2022-11-17T01:46:06.781Z [32minfo[39m: 	**************************************************************
+2022-11-17T01:46:06.781Z [32minfo[39m: 	Obteniendo la información del TXT
+2022-11-17T01:46:06.781Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2022-11-17T01:46:06.782Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2022-11-17T01:46:06.783Z [32minfo[39m: 	Hubo un error al procesar el PDF de Polymex: TypeError: Cannot read property 'split' of undefined
+2022-11-17T01:48:27.907Z [32minfo[39m: 	**************************************************************
+2022-11-17T01:48:27.908Z [32minfo[39m: 	       Función getPDFPolymex.
+2022-11-17T01:48:27.908Z [32minfo[39m: 	**************************************************************
+2022-11-17T01:48:27.908Z [32minfo[39m: 	Obteniendo la información del TXT
+2022-11-17T01:48:27.909Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2022-11-17T01:48:27.909Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2022-11-17T01:48:27.910Z [32minfo[39m: 	Hubo un error al procesar el PDF de Polymex: TypeError: Cannot read property 'split' of undefined
+2022-11-17T01:56:52.251Z [32minfo[39m: 	**************************************************************
+2022-11-17T01:56:52.252Z [32minfo[39m: 	       Función getPDFPolymex.
+2022-11-17T01:56:52.252Z [32minfo[39m: 	**************************************************************
+2022-11-17T01:56:52.252Z [32minfo[39m: 	Obteniendo la información del TXT
+2022-11-17T01:56:52.252Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2022-11-17T01:56:52.252Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2022-11-17T01:56:52.252Z [32minfo[39m: 	Obteniendo la información del TXT: encabezado
+2022-11-17T01:56:52.257Z [32minfo[39m: 	Convirtiendo el archivo XML a json.
+2022-11-17T01:56:52.264Z [32minfo[39m: 	Obteniendo la Información Global del xml.
+2022-11-17T01:56:52.264Z [32minfo[39m: 	Obteniendo los Atributos del xml.
+2022-11-17T01:56:52.264Z [32minfo[39m: 	Obteniendo la información del Emisor
+2022-11-17T01:56:52.264Z [32minfo[39m: 	Obteniendo la información del Receptor
+2022-11-17T01:56:52.264Z [32minfo[39m: 	Obteniendo la información de los Conceptos
+2022-11-17T01:56:52.264Z [32minfo[39m: 	Obteniendo la información del Complemento
+2022-11-17T01:56:52.264Z [32minfo[39m: 	Obteniendo la información del TXT: Lotes
+2022-11-17T01:56:52.264Z [32minfo[39m: 	Obteniendo la información del TXT: Piezas
+2022-11-17T01:56:52.264Z [32minfo[39m: 	Obteniendo la información del TXT: Referencias Cruzadas
+2022-11-17T01:57:22.328Z [32minfo[39m: 	Obteniendo la información de los CFDI Relacionados
+2022-11-17T01:57:22.393Z [32minfo[39m: 	Obteniendo la información del Complemento de Comercio Exterior
+2022-11-17T01:57:22.393Z [32minfo[39m: 	Obteniendo la información de las Leyendas Fiscales
+2022-11-17T01:57:22.393Z [32minfo[39m: 	Obteniendo la información del Timbre Fiscal Digital
+2022-11-17T01:57:22.395Z [32minfo[39m: 	Generando Código QR
+2022-11-17T01:57:22.840Z [32minfo[39m: 	Hubo un error al procesar el PDF de Polymex: TypeError: Cannot read property '0' of undefined
+2022-11-17T01:57:28.779Z [32minfo[39m: 	**************************************************************
+2022-11-17T01:57:28.780Z [32minfo[39m: 	       Función getPDFPolymex.
+2022-11-17T01:57:28.780Z [32minfo[39m: 	**************************************************************
+2022-11-17T01:57:28.780Z [32minfo[39m: 	Obteniendo la información del TXT
+2022-11-17T01:57:28.781Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2022-11-17T01:57:28.781Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2022-11-17T01:57:28.781Z [32minfo[39m: 	Obteniendo la información del TXT: encabezado
+2022-11-17T01:57:28.789Z [32minfo[39m: 	Convirtiendo el archivo XML a json.
+2022-11-17T01:57:28.796Z [32minfo[39m: 	Obteniendo la Información Global del xml.
+2022-11-17T01:57:28.797Z [32minfo[39m: 	Obteniendo los Atributos del xml.
+2022-11-17T01:57:28.797Z [32minfo[39m: 	Obteniendo la información del Emisor
+2022-11-17T01:57:28.797Z [32minfo[39m: 	Obteniendo la información del Receptor
+2022-11-17T01:57:28.797Z [32minfo[39m: 	Obteniendo la información de los Conceptos
+2022-11-17T01:57:28.797Z [32minfo[39m: 	Obteniendo la información del Complemento
+2022-11-17T01:57:28.797Z [32minfo[39m: 	Obteniendo la información del TXT: Lotes
+2022-11-17T01:57:28.797Z [32minfo[39m: 	Obteniendo la información del TXT: Piezas
+2022-11-17T01:57:28.797Z [32minfo[39m: 	Obteniendo la información del TXT: Referencias Cruzadas
+2022-11-17T01:57:33.903Z [32minfo[39m: 	Obteniendo la información de los CFDI Relacionados
+2022-11-17T01:57:33.932Z [32minfo[39m: 	Obteniendo la información del Complemento de Comercio Exterior
+2022-11-17T01:57:33.932Z [32minfo[39m: 	Obteniendo la información de las Leyendas Fiscales
+2022-11-17T01:57:33.932Z [32minfo[39m: 	Obteniendo la información del Timbre Fiscal Digital
+2022-11-17T01:57:34.530Z [32minfo[39m: 	Generando Código QR
+2022-11-17T01:57:34.954Z [32minfo[39m: 	Guardando Imagen de Código QR
+2022-11-17T01:57:37.314Z [32minfo[39m: 	Obteniendo la información de los Impuestos
+2022-11-17T01:57:38.156Z [32minfo[39m: 	Eliminando imagen Código QR
+2022-11-17T01:57:38.156Z [32minfo[39m: 	Convirtiendo PDF A Base 64
+2022-11-17T02:18:45.857Z [32minfo[39m: 	**************************************************************
+2022-11-17T02:18:45.859Z [32minfo[39m: 	       Función getPDFPolymex.
+2022-11-17T02:18:45.859Z [32minfo[39m: 	**************************************************************
+2022-11-17T02:18:45.859Z [32minfo[39m: 	Obteniendo la información del TXT
+2022-11-17T02:18:45.859Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2022-11-17T02:18:45.859Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2022-11-17T02:18:45.862Z [32minfo[39m: 	Hubo un error al procesar el PDF de Polymex: TypeError: Cannot read property 'split' of undefined
+2022-11-17T02:19:16.186Z [32minfo[39m: 	**************************************************************
+2022-11-17T02:19:16.187Z [32minfo[39m: 	       Función getPDFPolymex.
+2022-11-17T02:19:16.187Z [32minfo[39m: 	**************************************************************
+2022-11-17T02:19:16.187Z [32minfo[39m: 	Obteniendo la información del TXT
+2022-11-17T02:19:16.190Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2022-11-17T02:19:16.190Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2022-11-17T02:19:16.192Z [32minfo[39m: 	Hubo un error al procesar el PDF de Polymex: TypeError: Cannot read property 'split' of undefined
