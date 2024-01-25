@@ -1,0 +1,52 @@
+2022-12-14T00:38:02.057Z [32minfo[39m: 	**************************************************************
+2022-12-14T00:38:02.058Z [32minfo[39m: 	       Función getPDFPolymex.
+2022-12-14T00:38:02.058Z [32minfo[39m: 	**************************************************************
+2022-12-14T00:38:02.062Z [32minfo[39m: 	Obteniendo la información del TXT
+2022-12-14T00:38:02.066Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2022-12-14T00:38:02.066Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2022-12-14T00:38:02.068Z [32minfo[39m: 	Hubo un error al procesar el PDF de Polymex: TypeError: Cannot read property 'split' of undefined
+2022-12-14T00:40:01.158Z [32minfo[39m: 	**************************************************************
+2022-12-14T00:40:01.159Z [32minfo[39m: 	       Función getPDFPolymex.
+2022-12-14T00:40:01.159Z [32minfo[39m: 	**************************************************************
+2022-12-14T00:40:01.159Z [32minfo[39m: 	Obteniendo la información del TXT
+2022-12-14T00:40:01.162Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2022-12-14T00:40:01.162Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2022-12-14T00:40:01.162Z [32minfo[39m: 	Obteniendo la información del TXT: encabezado
+2022-12-14T00:40:01.172Z [32minfo[39m: 	Convirtiendo el archivo XML a json.
+2022-12-14T00:40:01.175Z [32minfo[39m: 	Obteniendo la Información Global del xml.
+2022-12-14T00:40:01.176Z [32minfo[39m: 	Obteniendo los Atributos del xml.
+2022-12-14T00:40:01.176Z [32minfo[39m: 	Obteniendo la información del Emisor
+2022-12-14T00:40:01.176Z [32minfo[39m: 	Obteniendo la información del Receptor
+2022-12-14T00:40:01.176Z [32minfo[39m: 	Obteniendo la información de los Conceptos
+2022-12-14T00:40:01.176Z [32minfo[39m: 	Obteniendo la información del Complemento
+2022-12-14T00:40:01.176Z [32minfo[39m: 	Obteniendo la información del TXT: Lotes
+2022-12-14T00:40:01.176Z [32minfo[39m: 	Obteniendo la información del TXT: Piezas
+2022-12-14T00:40:01.176Z [32minfo[39m: 	Obteniendo la información del TXT: Referencias Cruzadas
+2022-12-14T00:40:02.931Z [32minfo[39m: 	Obteniendo la información de los CFDI Relacionados
+2022-12-14T00:40:03.112Z [32minfo[39m: 	Obteniendo la información de las Leyendas Fiscales
+2022-12-14T00:40:03.116Z [32minfo[39m: 	Hubo un error al procesar el PDF de Polymex: TypeError: Cannot read property 'elements' of undefined
+2022-12-14T00:43:45.802Z [32minfo[39m: 	**************************************************************
+2022-12-14T00:43:45.803Z [32minfo[39m: 	       Función getPDFPolymex.
+2022-12-14T00:43:45.804Z [32minfo[39m: 	**************************************************************
+2022-12-14T00:43:45.804Z [32minfo[39m: 	Obteniendo la información del TXT
+2022-12-14T00:43:45.806Z [32minfo[39m: 	Obteniendo la información del TXT: emailTo
+2022-12-14T00:43:45.807Z [32minfo[39m: 	Obteniendo la información del TXT: emailCC
+2022-12-14T00:43:45.807Z [32minfo[39m: 	Obteniendo la información del TXT: encabezado
+2022-12-14T00:43:45.820Z [32minfo[39m: 	Convirtiendo el archivo XML a json.
+2022-12-14T00:43:45.827Z [32minfo[39m: 	Obteniendo la Información Global del xml.
+2022-12-14T00:43:45.827Z [32minfo[39m: 	Obteniendo los Atributos del xml.
+2022-12-14T00:43:45.827Z [32minfo[39m: 	Obteniendo la información del Emisor
+2022-12-14T00:43:45.827Z [32minfo[39m: 	Obteniendo la información del Receptor
+2022-12-14T00:43:45.827Z [32minfo[39m: 	Obteniendo la información de los Conceptos
+2022-12-14T00:43:45.827Z [32minfo[39m: 	Obteniendo la información del Complemento
+2022-12-14T00:43:45.827Z [32minfo[39m: 	Obteniendo la información del TXT: Lotes
+2022-12-14T00:43:45.827Z [32minfo[39m: 	Obteniendo la información del TXT: Piezas
+2022-12-14T00:43:45.828Z [32minfo[39m: 	Obteniendo la información del TXT: Referencias Cruzadas
+2022-12-14T00:43:47.634Z [32minfo[39m: 	Obteniendo la información de los CFDI Relacionados
+2022-12-14T00:43:47.819Z [32minfo[39m: 	Obteniendo la información de las Leyendas Fiscales
+2022-12-14T00:43:47.820Z [32minfo[39m: 	Obteniendo la información del Timbre Fiscal Digital
+2022-12-14T00:43:47.944Z [32minfo[39m: 	Generando Código QR
+2022-12-14T00:43:48.424Z [32minfo[39m: 	Guardando Imagen de Código QR
+2022-12-14T00:43:49.439Z [32minfo[39m: 	Obteniendo la información de los Impuestos
+2022-12-14T00:43:49.922Z [32minfo[39m: 	Eliminando imagen Código QR
+2022-12-14T00:43:49.923Z [32minfo[39m: 	Convirtiendo PDF A Base 64
