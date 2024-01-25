@@ -5,6 +5,7 @@
                 xmlns:fn="http://www.w3.org/2005/xpath-functions"
                 xmlns:cfdi="http://www.sat.gob.mx/cfd/4"
                 xmlns:cce11="http://www.sat.gob.mx/ComercioExterior11"
+				xmlns:cce20="http://www.sat.gob.mx/ComercioExterior20"
                 xmlns:donat="http://www.sat.gob.mx/donat"
                 xmlns:divisas="http://www.sat.gob.mx/divisas"
                 xmlns:implocal="http://www.sat.gob.mx/implocal"
@@ -66,6 +67,7 @@
 	<xsl:include href="http://www.sat.gob.mx/sitio_internet/cfd/arteantiguedades/obrasarteantiguedades.xslt"/> -->
 	<!-- <xsl:include href="http://www.sat.gob.mx/sitio_internet/cfd/ComercioExterior11/ComercioExterior11.xslt"/> -->
 	<xsl:include href="ComercioExterior11.xslt"/>
+	<xsl:include href="ComercioExterior20.xslt"/>
 	<!-- <xsl:include href="http://www.sat.gob.mx/sitio_internet/cfd/ine/ine11.xslt"/>
 	<xsl:include href="http://www.sat.gob.mx/sitio_internet/cfd/iedu/iedu.xslt"/>
 	<xsl:include href="http://www.sat.gob.mx/sitio_internet/cfd/ventavehiculos/ventavehiculos11.xslt"/>
